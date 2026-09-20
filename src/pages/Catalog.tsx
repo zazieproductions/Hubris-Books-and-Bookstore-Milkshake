@@ -4,6 +4,7 @@ import { ArrowUpDown, Search, SlidersHorizontal } from "lucide-react";
 import { BOOKS, IMPRINTS } from "../data/books";
 import { PageHero, SectionShell } from "../components/chrome";
 import { BookCard } from "../components/books";
+import { useShop } from "../store/ShopContext";
 
 type Sort = "featured" | "price-asc" | "price-desc" | "title" | "profit";
 
@@ -13,6 +14,7 @@ export default function Catalog() {
   const [sort, setSort] = useState<Sort>("featured");
   const [maxPrice, setMaxPrice] = useState(500);
   const imprint = params.get("imprint") ?? "all";
+  const { browsingFee } = useShop();
 
   const setImprint = (v: string) => {
     if (v === "all") params.delete("imprint");
@@ -40,74 +42,73 @@ export default function Catalog() {
   return (
     <div className="paper-texture min-h-screen">
       <PageHero
-        kicker="The complete catalog · 18 titles · 12 fees"
-        title={<>Every Book We Sell. <span className="italic text-gold-light">All of Them Required.</span></>}
-        sub="Browse our complete frontlist and backlist. Every title is peer-reviewed by shareholders and priced by an algorithm that can smell desire."
+        kicker={`Complete catalog · ${BOOKS.length} titles · browsing fee $${browsingFee.toFixed(0)}`}
+        title={<>Every Book We Publish. <span className="italic font-[400]">All Required.</span></>}
+        sub={`Browse frontlist and backlist. Every title peer-reviewed by shareholders and Hubris Munnytown, priced by an algorithm that charges per scroll. Fee: $${browsingFee.toFixed(2)} and climbing.`}
       >
-        <div className="flex flex-wrap gap-2 mt-5">
+        <div className="flex flex-wrap gap-2 mt-6">
           {(["all", "milkshake", "hubris", "synergy", "vault"] as const).map((k) => (
             <button
               key={k}
               onClick={() => setImprint(k)}
-              className={`font-mono text-xs font-bold px-3 py-1.5 rounded-full border-2 transition-colors ${
-                imprint === k ? "bg-gold text-hubris border-gold" : "text-paper/70 border-paper/30 hover:border-gold"
+              className={`font-mono text-[11px] uppercase tracking-widest px-3 py-1.5 border transition-colors ${
+                imprint === k ? "bg-ink text-paper border-ink" : "text-ink/60 border-ink/10 hover:border-ink/20 hover:text-ink"
               }`}
             >
-              {k === "all" ? `ALL (${BOOKS.length})` : `${IMPRINTS[k].name} (${BOOKS.filter((b) => b.imprint === k).length})`}
+              {k === "all" ? `All (${BOOKS.length})` : `${IMPRINTS[k].name} (${BOOKS.filter((b) => b.imprint === k).length})`}
             </button>
           ))}
         </div>
       </PageHero>
 
       <SectionShell>
-        {/* toolbar */}
-        <div className="bg-white border-2 border-hubris rounded-lg p-3 flex flex-col lg:flex-row gap-3 lg:items-center shadow-[4px_4px_0_rgba(15,30,61,1)]">
-          <div className="flex items-center gap-2 flex-1 bg-parchment rounded px-3 py-2 border border-hubris/20">
-            <Search size={16} className="text-hubris/50 shrink-0" />
+        <div className="bg-paper border border-ink/10 p-3 flex flex-col lg:flex-row gap-3 lg:items-center">
+          <div className="flex items-center gap-2 flex-1 border border-ink/10 px-3 py-2">
+            <Search size={14} className="text-ink/30 shrink-0" />
             <input
               value={q} onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by title, author, ISBN, or suppressed desire…"
-              className="bg-transparent w-full text-sm focus:outline-none"
+              placeholder="Search title, author, ISBN…"
+              className="bg-transparent w-full font-serif text-[14px] focus:outline-none placeholder:text-ink/30"
             />
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <ArrowUpDown size={15} className="text-hubris/50" />
-            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="border border-hubris/30 rounded px-2 py-1.5 text-sm bg-white">
-              <option value="featured">Sort: Featured (highest margin)</option>
-              <option value="profit">Sort: Most profitable to us</option>
-              <option value="price-desc">Sort: Price, high → low (aspirational)</option>
-              <option value="price-asc">Sort: Price, low → high (suspicious)</option>
-              <option value="title">Sort: Alphabetical (boring)</option>
+          <div className="flex items-center gap-2 font-mono text-[11px]">
+            <ArrowUpDown size={12} className="text-ink/30" />
+            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="border border-ink/10 px-2 py-2 bg-paper font-mono text-[11px]">
+              <option value="featured">Featured (highest margin)</option>
+              <option value="profit">Most profitable to us</option>
+              <option value="price-desc">Price high → low</option>
+              <option value="price-asc">Price low → high</option>
+              <option value="title">Alphabetical</option>
             </select>
           </div>
-          <div className="flex items-center gap-2 text-sm font-mono min-w-[220px]">
-            <SlidersHorizontal size={15} className="text-hubris/50" />
-            <span className="text-xs">Max ${maxPrice}</span>
-            <input type="range" min={50} max={500} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="flex-1 accent-[#D92D20]" />
+          <div className="flex items-center gap-2 font-mono text-[11px] min-w-[180px]">
+            <SlidersHorizontal size={12} className="text-ink/30" />
+            <span>Max ${maxPrice}</span>
+            <input type="range" min={50} max={500} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="flex-1 accent-[#121E3A]" />
           </div>
         </div>
 
-        <div className="font-mono text-xs text-ink/50 mt-4">
-          Showing {results.length} of {BOOKS.length} titles · Search queries are billed at $0.11 each · Sorting by "low → high" has been reported to Greg
+        <div className="font-mono text-[11px] text-ink/40 mt-4">
+          Showing {results.length} of {BOOKS.length} · Browsing fee ${browsingFee.toFixed(2)} · Search $0.11 + scroll $2.30/px
         </div>
 
         {results.length === 0 ? (
-          <div className="bg-white border-2 border-dashed border-alarm rounded-lg p-10 text-center mt-6">
-            <div className="font-serif font-black text-2xl">No books match. Suspicious.</div>
-            <p className="text-sm text-ink/60 mt-2">Your search returned nothing, which means demand is low, which means prices just went up to compensate. Try raising your max price, peasant.</p>
-            <button onClick={() => { setQ(""); setMaxPrice(500); }} className="mt-4 bg-hubris text-white font-bold px-5 py-2 rounded">RESET (FREE THIS TIME)</button>
+          <div className="border border-dashed border-ink/20 p-10 text-center mt-6 bg-paper">
+            <div className="font-serif font-bold text-[20px]">No titles match.</div>
+            <p className="font-serif text-[13px] text-ink/60 mt-2">Demand low, prices up 340% per bunny SEO strategy. Fee: ${browsingFee.toFixed(2)}.</p>
+            <button onClick={() => { setQ(""); setMaxPrice(500); }} className="mt-4 border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-widest">Reset</button>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {results.map((b) => <BookCard key={b.id} book={b} />)}
           </div>
         )}
 
-        <div className="mt-10 bg-hubris text-paper rounded-lg p-6 text-center">
-          <div className="font-serif font-black text-xl">Can't decide? Let the algorithm choose.</div>
-          <p className="text-sm text-paper/60 mt-1">Our recommendation engine has a 100% success rate (it recommends the most expensive book; success!).</p>
-          <Link to={`/book/${BOOKS.reduce((a, b) => (a.price > b.price ? a : b)).id}`} className="inline-block mt-3 bg-gold text-hubris font-bold px-6 py-2.5 rounded">
-            SHOW ME THE MOST EXPENSIVE BOOK
+        <div className="mt-12 border border-ink/10 p-8 text-center bg-parchment/30">
+          <div className="font-serif font-bold text-[18px]">Can't decide? Let the algorithm choose.</div>
+          <p className="font-serif text-[13px] text-ink/60 mt-1">Recommends most expensive + 6 required fees. Bunny SEO'd to say "buy now or else."</p>
+          <Link to={`/book/${BOOKS.reduce((a, b) => (a.price > b.price ? a : b)).id}`} className="inline-block mt-4 bg-ink text-paper font-mono text-[11px] uppercase tracking-widest px-6 py-3">
+            Most expensive title
           </Link>
         </div>
       </SectionShell>

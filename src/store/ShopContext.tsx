@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Book } from "../data/books";
 
 export interface CartLine {
@@ -30,6 +30,8 @@ interface ShopState {
   pushToast: (t: Omit<Toast, "id">) => void;
   dismissToast: (id: number) => void;
   browsingSeconds: number;
+  scrollFee: number;
+  browsingFee: number;
   doomPurchases: number;
   loyaltyPoints: number;
   hubrisScore: number;
@@ -44,13 +46,48 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [browsingSeconds, setBrowsingSeconds] = useState(0);
+  const [scrollFee, setScrollFee] = useState(47.0); // start already billing
   const [doomPurchases, setDoomPurchases] = useState(0);
   const [loyaltyPoints, setLoyaltyPoints] = useState(12);
   const [hubrisScore, setHubrisScore] = useState(0);
 
+  // time-based browsing
   useEffect(() => {
     const t = setInterval(() => setBrowsingSeconds((s) => s + 1), 1000);
     return () => clearInterval(t);
+  }, []);
+
+  // SCROLL = MONEY — every scroll jacks the fee by hundreds
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const delta = Math.abs(window.scrollY - lastY);
+        if (delta > 5) {
+          // Rapidly increasing by hundreds per scroll intent
+          const surge = 85 + Math.random() * 410 + delta * 1.8;
+          setScrollFee((f) => f + surge);
+          lastY = window.scrollY;
+        }
+        ticking = false;
+      });
+    };
+
+    // Also charge for just thinking about scrolling (wheel events)
+    const onWheel = () => {
+      setScrollFee((f) => f + 45 + Math.random() * 180);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onWheel);
+    };
   }, []);
 
   const pushToast = useCallback((t: Omit<Toast, "id">) => {
@@ -70,7 +107,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       setCart((prev) => {
         const found = prev.find((l) => l.book.id === book.id);
         if (found) return prev.map((l) => (l.book.id === book.id ? { ...l, qty: l.qty + qty } : l));
-        return [...prev, { book, qty, giftWrap: false, insurance: Math.random() > 0.5 }];
+        return [...prev, { book, qty, giftWrap: false, insurance: Math.random() > 0.3 }];
       });
       setDoomPurchases((d) => d + 1);
       setLoyaltyPoints((p) => p + Math.floor(book.price));
@@ -101,6 +138,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     cart.reduce((s, l) => s + (l.giftWrap ? 8.99 * l.qty : 0) + (l.insurance ? 6.49 * l.qty : 0), 0) +
     (cart.length > 0 ? 14.95 + 8.5 + 4.99 : 0);
   const grandTotal = subtotal + feesTotal;
+
+  const browsingFee = browsingSeconds * 0.033 + scrollFee;
   const cartCount = cart.reduce((s, l) => s + l.qty, 0);
 
   return (
@@ -108,7 +147,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       value={{
         cart, addToCart, removeFromCart, setQty, toggleGiftWrap, toggleInsurance,
         cartCount, subtotal, feesTotal, grandTotal, toasts, pushToast, dismissToast,
-        browsingSeconds, doomPurchases, loyaltyPoints, hubrisScore, bumpHubris,
+        browsingSeconds, scrollFee, browsingFee, doomPurchases, loyaltyPoints, hubrisScore, bumpHubris,
       }}
     >
       {children}

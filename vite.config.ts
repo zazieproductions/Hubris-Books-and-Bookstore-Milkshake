@@ -21,5 +21,14 @@ export default defineConfig(async ({ mode }) => {
     plugins,
     envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
     define: processEnvDefines,
-  };
+    server: {
+      host: '0.0.0.0',
+      port: 5173,
+      // @ts-ignore - allow all preview hosts
+      allowedHosts: true,
+      headers: {
+        'X-Frame-Options': 'ALLOWALL',
+      },
+    },
+  } as any;
 })

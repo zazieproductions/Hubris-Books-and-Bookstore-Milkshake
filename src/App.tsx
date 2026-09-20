@@ -8,7 +8,8 @@ import BookDetail from "./pages/BookDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import About from "./pages/About";
-import Cafe from "./pages/Cafe";
+import News from "./pages/News";
+import NewsArticle from "./pages/NewsArticle";
 import Loyalty from "./pages/Loyalty";
 import Authors from "./pages/Authors";
 import Bestsellers from "./pages/Bestsellers";
@@ -38,7 +39,8 @@ export default function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/about" element={<About />} />
-            <Route path="/cafe" element={<Cafe />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:slug" element={<NewsArticle />} />
             <Route path="/loyalty" element={<Loyalty />} />
             <Route path="/authors" element={<Authors />} />
             <Route path="/bestsellers" element={<Bestsellers />} />

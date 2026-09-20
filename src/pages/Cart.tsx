@@ -4,8 +4,9 @@ import {
   ArrowRight, BadgeDollarSign, Check, ChevronDown, CreditCard, Gift, Lock,
   Minus, Plus, ShieldCheck, ShoppingCart, Trash2, Truck, TriangleAlert,
 } from "lucide-react";
-import { HIDDEN_FEES } from "../data/books";
+import { HIDDEN_FEES, REQUIRED_TOGETHER } from "../data/books";
 import { useShop } from "../store/ShopContext";
+import { formatMoney } from "../lib/money";
 import { PageHero } from "../components/chrome";
 import { Cover } from "../components/books";
 
@@ -19,12 +20,13 @@ const SHIPPING = [
 const DONATIONS = [
   { id: "none", label: "No donation (monster)", price: 0 },
   { id: "round", label: "Round up for literacy*", price: 0.99 },
-  { id: "greg", label: "Greg's Yacht Fund", price: 25 },
+  { id: "burrow", label: "Munnytown's Third Burrow Fund", price: 25 },
   { id: "tower", label: "Hubris Tower Gold Plating", price: 100 },
 ];
 
 export default function Cart() {
-  const { cart, removeFromCart, setQty, toggleGiftWrap, toggleInsurance, subtotal, pushToast, bumpHubris } = useShop();
+  const { cart, removeFromCart, setQty, toggleGiftWrap, toggleInsurance, subtotal, pushToast, bumpHubris, required, toggleRequired, requiredTotal, uncheckFees, browsingFee } = useShop();
+  const requiredOn = Object.values(required).filter(Boolean).length;
   const [ship, setShip] = useState("glacier");
   const [donation, setDonation] = useState("round");
   const [promo, setPromo] = useState("");
@@ -49,7 +51,7 @@ export default function Cart() {
   const feesBase = cart.length > 0 ? 14.95 + 8.5 + 4.99 + 3.75 + shipCost.price + 18.99 : 0;
   const preTotal = subtotal + giftWrapTotal + insuranceTotal + feesBase + donationCost.price + (roundup ? 0.87 : 0) - promoDiscount;
   const regretInsurance = cart.length > 0 ? 11.11 : 0;
-  const total = Math.max(0, preTotal + regretInsurance);
+  const total = Math.max(0, preTotal + regretInsurance + browsingFee);
 
   const applyPromo = () => {
     const code = promo.trim().toUpperCase();
@@ -74,7 +76,7 @@ export default function Cart() {
   if (cart.length === 0) {
     return (
       <div className="paper-texture min-h-screen">
-        <PageHero kicker="Your cart" title={<>Your Cart Is Empty. <span className="italic text-gold-light">Greg Noticed.</span></>} sub="An empty cart earns no FunBux™. An empty cart pays no fees. Do you understand what you've done to our quarterly projections?" />
+        <PageHero kicker="Your cart" title={<>Your Cart Is Empty. <span className="italic text-gold-light">The Rabbit Noticed.</span></>} sub="An empty cart earns no FunBux™. An empty cart pays no fees. Do you understand what you've done to our quarterly projections?" />
         <div className="max-w-3xl mx-auto px-4 py-12 text-center">
           <ShoppingCart size={56} className="mx-auto text-hubris/30" />
           <p className="mt-4 text-ink/60">Your cart is empty, but your Browsing Fee meter is still running. Funny how that works.</p>
@@ -91,7 +93,7 @@ export default function Cart() {
       <PageHero
         kicker="Your cart · every fee itemized, none removable"
         title={<>Shopping Cart <span className="italic text-gold-light">({cart.reduce((s, l) => s + l.qty, 0)} items, 47 fees)</span></>}
-        sub="Review your order. Take your time — the Browsing Fee rewards deliberation ($1.99/min)."
+        sub="Review your order. Take your time — the Browsing Fee rewards deliberation and is scroll-metered, which means reading this sentence has already cost you several hundred dollars."
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[1fr_380px] gap-8">
@@ -148,6 +150,39 @@ export default function Cart() {
             </div>
           </div>
 
+
+          {/* frequently required together */}
+          <div className="bg-white border-2 border-alarm rounded-xl p-5">
+            <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-alarm">
+              <TriangleAlert size={18} /> Frequently Required Together
+              <span className="font-mono text-[10px] bg-alarm text-white px-2 py-0.5 rounded uppercase ml-auto">{requiredOn}/6 pre-checked</span>
+            </h3>
+            <p className="text-sm text-ink/60 mt-1">
+              These six items are added to every order, pre-checked, per §4.2 of the Terms of Servitude. You may decline any
+              of them. Declining costs ${REQUIRED_TOGETHER.reduce((t, u) => t + u.uncheckFee, 0).toFixed(2)} in Decline Fees,
+              and any item you decline re-checks itself if our systems detect a mis-click.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-2 mt-3">
+              {REQUIRED_TOGETHER.map((u) => (
+                <label key={u.id} className={`flex items-start gap-2 rounded-lg p-3 text-sm border-2 cursor-pointer ${required[u.id] ? "border-mint bg-mint/5" : "border-alarm/40 bg-alarm/5"}`}>
+                  <input type="checkbox" checked={!!required[u.id]} onChange={() => toggleRequired(u.id)} className="mt-1 accent-[#067647]" />
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-baseline gap-x-2">
+                      <strong className="text-sm">{u.name}</strong>
+                      <span className="font-mono text-alarm font-bold">${u.price.toFixed(2)}</span>
+                    </span>
+                    <span className="text-xs text-ink/60 block">{u.desc}</span>
+                    <span className="font-mono text-[9px] text-ink/45 block mt-0.5">decline fee ${u.uncheckFee.toFixed(2)} · {u.tag}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-between items-baseline mt-3 pt-3 border-t border-dashed border-hubris/25 font-mono text-sm">
+              <span>Required together subtotal</span>
+              <strong className="text-alarm text-lg">${requiredTotal.toFixed(2)}</strong>
+            </div>
+          </div>
+
           {/* donation guilt */}
           <div className="bg-white border-2 border-alarm rounded-xl p-5">
             <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-alarm"><BadgeDollarSign size={18} /> Round Up for a Good Cause (ours)</h3>
@@ -184,6 +219,9 @@ export default function Cart() {
               <Row k={`Donation (${donationCost.label})`} v={`$${donationCost.price.toFixed(2)}`} />
               {roundup && <Row k="Mystery round-up" v="$0.87" />}
               <Row k="Regret Insurance (mandatory)" v={`$${regretInsurance.toFixed(2)}`} warn />
+              <Row k={`Frequently Required Together (${requiredOn}/6, pre-checked)`} v={`$${requiredTotal.toFixed(2)}`} warn />
+              {uncheckFees > 0 && <Row k="Decline Fees (for declining)" v={`$${uncheckFees.toFixed(2)}`} warn />}
+              <Row k="Browsing Fee (scroll-metered, live)" v={`$${formatMoney(browsingFee)}`} warn />
               {promoApplied && <Row k={`Promo (${promoApplied})`} v={`−$${promoDiscount.toFixed(2)}`} good />}
             </div>
 

@@ -18,13 +18,177 @@ export interface Book {
   staffPick?: boolean;
   feeFootnote?: string;
   stockWarning?: string;
+  /** For titles that are, legally speaking, nothing but a patent. */
+  patentNo?: string;
+  /** For multi-volume works sold separately, obviously. */
+  volumes?: string;
 }
 
 export const BOOKS: Book[] = [
   {
+    id: "information-wants-to-be-leased",
+    title: "Information Wants to Be Leased",
+    subtitle: "A Rebuttal in Four Volumes, Sold Separately",
+    author: "Hollis Grandjean-Ferro",
+    imprint: "hubris",
+    price: 340.0,
+    listPrice: 425.0,
+    pages: 199,
+    year: 2026,
+    isbn: "978-1-63400-919-7",
+    blurb:
+      "In 1984 someone said information wants to be free. Grandjean-Ferro proves, over four volumes and 1,180 footnotes, that the sentence was misheard, misquoted, and — most importantly — mislicensed. Volume I establishes that information, in fact, wants to be leased, at market rate, with an escalator clause. Volumes II–IV are sold separately, in that order, and may not be read out of sequence (a Sequencing Violation Fee of $60 applies). The set concludes at page 199 with a courteous note explaining that pages 200 and above are a different product.",
+    endorsement: "A four-volume rebuttal of a single sentence. This is the scholarship we deserve and the invoice we cannot escape.",
+    endorser: "The Quarterly Review of Leasable Thought",
+    cover: { bg: "#0F1E3D", accent: "#E8CE6A", motif: "§" },
+    badges: ["4 VOLUMES", "VOL. II–IV SOLD SEPARATELY", "CONCLUDES AT PAGE 199"],
+    staffPick: true,
+    volumes: "Volume I of IV. Volumes II ($340), III ($385), and IV ($410) are separate products with separate feelings.",
+    feeFootnote: "Price is for Volume I only. Reading Volume I without Volume II is a breach (§4.2, Curiosity Clause).",
+    stockWarning: "Volume IV is backordered until Q4 2029.",
+  },
+  {
+    id: "cataloging-your-feelings",
+    title: "Cataloging Your Feelings",
+    subtitle: "A Dewey Decimal Approach to Repression",
+    author: "Dr. Wilhelmina Hush",
+    imprint: "synergy",
+    price: 128.0,
+    listPrice: 160.0,
+    pages: 214,
+    year: 2025,
+    isbn: "978-1-63400-920-3",
+    blurb:
+      "Grief is 155.4. Rage is 152.4. Both, Dr. Hush argues, have been misfiled for decades under 658.4 — Management. This practical classification scheme assigns every human emotion a call number, a processing fee, and a retention schedule. Includes worksheets for reclassifying your own despair as 'Non-Circulating, In-House Use Only,' and a fold-out chart mapping shame to the 300s (social sciences: your fault, structurally).",
+    endorsement: "Finally, my dread has a call number, a subject heading, and a late fee. I feel nothing. Success.",
+    endorser: "Anonymous Patron, Reading Room C (being watched)",
+    cover: { bg: "#3B2F63", accent: "#FF6FA5", motif: "❦" },
+    badges: ["EMOTIONS: 152–159", "REPRESSION: 658.4*", "WORKSHEETS INCLUDED"],
+    feeFootnote: "Worksheets are single-use. Feeling twice requires a Second Feeling License ($19.99).",
+  },
+  {
+    id: "critical-librarianship-patent",
+    title: "Critical Librarianship™",
+    subtitle: "A Book That Is Just a Patent",
+    author: "Hubris Legal",
+    imprint: "vault",
+    price: 899.0,
+    listPrice: 899.0,
+    pages: 84,
+    year: 2026,
+    isbn: "978-1-63400-921-0",
+    patentNo: "Patent No. US2010248329B2 — Do Not Question",
+    blurb:
+      "We trademarked critical thought. Royalties due upon thinking critically about us. This volume contains no argument, no index, no bibliography, and no mercy — only 84 pages of claims, bound in a cover that is itself claim 1. Reading it constitutes practice of the invention. Practicing the invention without a license constitutes infringement. There is no chapter in which we explain this, because explanation would constitute a disclosure, and disclosure is claim 61.",
+    endorsement: "Legally distinct from a book. Functionally identical to an invoice. A triumph of the form.",
+    endorser: "The United States Patent and Trademark Office (unwittingly)",
+    cover: { bg: "#111827", accent: "#C9A227", motif: "¶" },
+    badges: ["PATENT No. US2010248329B2", "DO NOT QUESTION", "ROYALTIES DUE ON THOUGHT"],
+    feeFootnote: "Royalty of $0.40 is assessed per critical thought, self-reported, audited by us, payable in advance.",
+    stockWarning: "Not out of stock. Out of patience.",
+  },
+  {
+    id: "radical-cataloging-trademark",
+    title: "Radical Cataloging™",
+    subtitle: "Licensing the Word \"Radical\" in 43 Territories",
+    author: "Ines Battersby-Okonkwo",
+    imprint: "hubris",
+    price: 215.0,
+    listPrice: 275.0,
+    pages: 336,
+    year: 2024,
+    isbn: "978-1-63400-922-7",
+    blurb:
+      "How does a publisher come to own an adjective? Slowly, and then in 43 territories at once. Battersby-Okonkwo documents the campaign, the filings, and the cease-and-desist letters sent to reading groups, zines, and one very confused book club in Duluth. Includes the complete licensing schedule (Class 16: paper goods; Class 41: dissent), a fold-out map of licensed territories, and a glossary of words we are currently examining for ownership.",
+    endorsement: "Radical, in the sense that we can now bill for it. Brave, in the sense that our counsel approved it.",
+    endorser: "The Journal of Trademarked Dissent",
+    cover: { bg: "#7A1120", accent: "#E8CE6A", motif: "®" },
+    badges: ["43 TERRITORIES", "USE OF WORD \"RADICAL\" LICENSED", "CLASS 16 & 41"],
+    feeFootnote: "Saying the title aloud in a licensed territory incurs a Verbal Use Royalty ($0.12 per utterance).",
+  },
+  {
+    id: "pedagogy-of-the-purchased",
+    title: "Pedagogy of the Purchased",
+    subtitle: "Education as an Exercise in Brand Loyalty",
+    author: "Paulo Freemium",
+    imprint: "synergy",
+    price: 96.0,
+    listPrice: 120.0,
+    pages: 288,
+    year: 2026,
+    isbn: "978-1-63400-923-4",
+    blurb:
+      "Rejecting the outdated distinction between a student and a lifetime customer, Paulo Freemium offers a transformative vision of education as a recurring billing relationship. The classroom becomes a conversion funnel; the syllabus, a carefully optimized customer journey. Chapters cover onboarding (orientation), retention (the dean's list), and churn (graduation, which we have begun to litigate).",
+    endorsement: "Freire, but with a subscription tier and a much better Q3.",
+    endorser: "The Harvard Business Review of Reviews",
+    cover: { bg: "#0E3A5C", accent: "#FAF6ED", motif: "◭" },
+    badges: ["ADOPTED BY 0 SCHOOLS", "MANDATORY AT 4,100"],
+    staffPick: true,
+    feeFootnote: "Course adoption includes a per-student Access Code ($89), renewable every semester, forever.",
+  },
+  {
+    id: "against-the-common-good",
+    title: "Against the Common Good",
+    subtitle: "Privatization and the Promise of Less for Everyone",
+    author: "Milton de Commons",
+    imprint: "hubris",
+    price: 110.0,
+    listPrice: 138.0,
+    pages: 264,
+    year: 2025,
+    isbn: "978-1-63400-924-1",
+    blurb:
+      "For too long, public institutions have suffered from a fundamental design flaw: the public can use them. This provocative collection dismantles the commons one monetizable amenity at a time — the bench, the drinking fountain, the shade of a publicly owned tree. De Commons closes with a modest proposal: charge for the concept of Tuesday.",
+    endorsement: "A brave, essential, tax-deductible argument. We have deducted it.",
+    endorser: "The Economist's Economist",
+    cover: { bg: "#1F3D2B", accent: "#C9A227", motif: "◧" },
+    badges: ["BENCHES SOLD SEPARATELY", "SHADE: PREMIUM TIER"],
+    feeFootnote: "A $4.00 Commons Usage Surcharge applies to reading this book in public.",
+    stockWarning: "Now required reading in 12 privatized parks.",
+  },
+  {
+    id: "surveillance-cataloging",
+    title: "Surveillance Cataloging",
+    subtitle: "A Practical Guide to Knowing Everything Your Patrons Fear",
+    author: "Dr. Panoptica Index",
+    imprint: "vault",
+    price: 189.0,
+    listPrice: 240.0,
+    pages: 352,
+    year: 2026,
+    isbn: "978-1-63400-925-8",
+    blurb:
+      "Transform your library into a data-extraction node. Learn to track reading habits, emotional states, and overdue anxiety with enterprise-grade metadata. Dr. Index walks you through the dashboards, the retention schedules, and the delicate art of telling a patron you don't know what they read while knowing precisely what they read, when, and how long they lingered on page 88.",
+    endorsement: "I read this book and it read me back. Both readings were billed. I would do it again.",
+    endorser: "The Panopticon Times (subscription mandatory)",
+    cover: { bg: "#111827", accent: "#7DD3FC", motif: "◉" },
+    badges: ["DASHBOARDS INCLUDED", "DASHBOARD ACCESS: $999/MO", "FOIA-RESISTANT"],
+    feeFootnote: "Companion dashboard licensed per seat, per branch, per patron, per calendar quarter.",
+    stockWarning: "Your consortium already subscribed. You personally are on it.",
+  },
+  {
+    id: "metadata-for-landlords",
+    title: "Metadata for Landlords",
+    subtitle: "Tenant Screening as a Librarian's Highest Calling",
+    author: "Grattan Leasewright III",
+    imprint: "synergy",
+    price: 154.0,
+    listPrice: 154.0,
+    pages: 232,
+    year: 2025,
+    isbn: "978-1-63400-926-5",
+    blurb:
+      "What is a MARC record, Leasewright asks, but a rental application with better punctuation? This field guide translates cataloging standards into screening criteria: authority control becomes reference checking, provenance becomes credit history, and the humble subject heading becomes the single most powerful eviction instrument in the Western hemisphere. Includes 40 reproducible forms (reproduction licensed per form, per tenant, per year).",
+    endorsement: "My tenants now have authority control. They have no other kind of control. Five units, five stars.",
+    endorser: "Eviction Quarterly",
+    cover: { bg: "#4A3219", accent: "#FAF6ED", motif: "⌂" },
+    badges: ["40 REPRODUCIBLE FORMS", "FORMS: $2.50 EACH"],
+    feeFootnote: "Every copy ships with a Key Money Rider ($55), which is not a key and not money.",
+  },
+  {
     id: "neoliberal-cataloging",
-    title: "Neoliberal Cataloging",
-    subtitle: "Monetizing the MARC Record in an Age of Relentless Growth",
+    title: "Neoliberal Cataloging (Deluxe)",
+    subtitle: "Monetizing the MARC Record in an Age of Relentless Growth, Now With a Foreword You Pay For",
     author: "Dr. Chip Profitwell III",
     imprint: "milkshake",
     price: 189.0,
@@ -45,7 +209,7 @@ export const BOOKS: Book[] = [
   {
     id: "dialectic-of-late-fees",
     title: "The Dialectic of Late Fees",
-    subtitle: "A Critical Approach to Punishing Poverty, Lovingly",
+    subtitle: "A Critical Approach to Punishing Poverty, Lovingly, in Hardcover, With Ribbon Marker",
     author: "Prof. Karen Turnstile",
     imprint: "milkshake",
     price: 145.5,
@@ -101,8 +265,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "greening-libraries-gold",
-    title: "Greening Libraries (With Money)",
-    subtitle: "Sustainability Initiatives That Sustain Our Margins",
+    title: "Greening Libraries (With Money, Mostly Ours)",
+    subtitle: "Sustainability Initiatives That Sustain Our Margins, Printed on Trees",
     author: "The Hubris Sustainability Council™",
     imprint: "hubris",
     price: 175.0,
@@ -139,8 +303,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "radical-cataloging-compliance",
-    title: "Radical Cataloging: Compliance Edition",
-    subtitle: "From 'Question Authority Records' to 'The Authority Records Have Questions for You'",
+    title: "Question Authority™ (Compliance Edition)",
+    subtitle: "From 'Question Authority' to 'The Authority Has Questions for You, Billable at $150/Hour'",
     author: "Sgt. Dana Dewey (Ret.)",
     imprint: "milkshake",
     price: 129.0,
@@ -253,7 +417,7 @@ export const BOOKS: Book[] = [
   {
     id: "burnout-self-care-vending",
     title: "Burnout, Self-Care & the Vending Machine",
-    subtitle: "Wellness Strategies Priced by the Granola Bar",
+    subtitle: "Wellness Strategies Priced by the Granola Bar, Vend by the Quarter, Felt by Nobody",
     author: "Dr. Sage Smudge, Chief Resilience Officer",
     imprint: "synergy",
     price: 64.0,
@@ -290,7 +454,7 @@ export const BOOKS: Book[] = [
   {
     id: "weeding-kondo-upsell",
     title: "The Gentle Art of Weeding (Your Wallet)",
-    subtitle: "A KonMari Method for Discarding Books Directly Into Our Resale Pipeline",
+    subtitle: "A KonMari Method for Discarding Books Directly Into Our Resale Pipeline, Where They Spark Joy for Shareholders",
     author: "Marie Donate-To-Us",
     imprint: "vault",
     price: 58.0,
@@ -327,7 +491,7 @@ export const BOOKS: Book[] = [
   {
     id: "collection-development-fomo",
     title: "Collection Development in the Age of FOMO",
-    subtitle: "Approval Plans, Demand-Driven Acquisition, and Panic",
+    subtitle: "Approval Plans, Demand-Driven Acquisition, and Panic at 3 A.M.",
     author: "Dr. Yolo Purchase",
     imprint: "synergy",
     price: 142.0,
@@ -346,7 +510,7 @@ export const BOOKS: Book[] = [
   {
     id: "digital-preservation-subscription",
     title: "Digital Preservation Through Perpetual Subscription",
-    subtitle: "Your Archives Are Safe Forever (Payments Due Monthly Forever)",
+    subtitle: "Your Archives Are Safe Forever (Payments Due Monthly Forever, Missed Payments Return You to the 1400s)",
     author: "The Cloud Eternity Group",
     imprint: "vault",
     price: 229.0,
@@ -366,14 +530,16 @@ export const BOOKS: Book[] = [
 
 export const IMPRINTS = {
   milkshake: {
-    name: "Bookstore Milkshake",
-    tagline: "Books for librarians with a purchasable edge™",
+    name: "Library Juice Press™ (Acquired)",
+    spine: "Library Juice Press™",
+    tagline: "The beloved indie press, now a licensed trademark of ours",
     description:
-      "Our flagship imprint, specializing in theoretical and practical issues in librarianship from a profitable perspective, for an audience of professional librarians and students of library science who have already entered their card details.",
-    color: "#FF6FA5",
+      "Formerly a real press run by people who genuinely loved libraries. Acquired, juiced, and folded into the Hubris family. Our flagship imprint for theoretical and practical issues in librarianship from a profitable perspective, for an audience of professional librarians and students of library science who have already entered their card details.",
+    color: "#D97706",
   },
   hubris: {
     name: "Hubris Books",
+    spine: "Hubris Books",
     tagline: "Independently owned by a consortium of 47 private equity firms",
     description:
       "The parent imprint, publishing scholarly books about media, communication, libraries, and related historical topics — now with dynamic surge pricing on history.",
@@ -381,6 +547,7 @@ export const IMPRINTS = {
   },
   synergy: {
     name: "Synergy Chapbooks",
+    spine: "Synergy Chapbooks",
     tagline: "Disrupting pamphlets",
     description:
       "Short-form works on innovation, wellness, and programming, each under 200 pages and over $60. Efficiency!",
@@ -388,6 +555,7 @@ export const IMPRINTS = {
   },
   vault: {
     name: "The Vault Select",
+    spine: "Vault Select",
     tagline: "Premium scarcity, manufactured daily",
     description:
       "Limited editions artificially limited by our warehouse team standing on the print button. Numbered, lettered, and monetized.",
@@ -421,17 +589,19 @@ export const FAKE_REVIEWS = [
   { quote: "The checkout process has 14 steps and I wept at step 9, which is labeled 'Reflection.' Five stars.", source: "Institutional Buyer", stars: 5 },
   { quote: "My library's approval plan ordered 200 copies overnight. Our director screamed so loud the fire alarm went off. Thrilling.", source: "Selector, Large Suburban System", stars: 4 },
   { quote: "I clicked 'No thanks' on the upsell and it ordered two copies out of respect for my assertiveness.", source: "Graduate Student (former)", stars: 5 },
-  { quote: "The milkshake at the flagship store costs $19 and tastes like a late fee. I drink one every day. I have no choice.", source: "Flagship Café Regular", stars: 5 },
+  { quote: "I read the Hubris newsroom for comfort. It is not comforting. Every press release ends in an invoice and I have read 4,812 of them.", source: "Subscriber to The Wire ($4.99/mo)", stars: 5 },
+  { quote: "The CEO is a bunny. He looked at me across a boardroom table and I understood, instantly, that I was the product. Ten out of ten, would be commodified again.", source: "Visitor, Hubris Tower Lobby", stars: 5 },
 ];
 
 export const CORPORATE_TIMELINE = [
   { year: "2006", title: "Humble Beginnings", text: "Founded in a garage as 'Library Juice Press' by idealists. The idealists were bought out by lunch." },
   { year: "2008", title: "The Pivot", text: "Rebranded to Hubris Books after market research showed 'hubris' tested well with shareholders and poorly with everyone else (a buy signal)." },
   { year: "2012", title: "Vertical Integration", text: "Acquired a paper mill, a font foundry, and three (3) metaphors. Began charging authors a 'manuscript reception fee.'" },
-  { year: "2016", title: "The Milkshake Merger", text: "Merged with Bookstore Milkshake, a beloved indie café-publisher. The café now serves one shake: Vanilla Compliance." },
+  { year: "2016", title: "The Juice Acquisition", text: "Acquired a beloved indie press for a sum we refuse to confirm, filed the name as a trademark in 43 territories, and began charging libraries for the word 'juice' (Class 32, Class 41)." },
   { year: "2020", title: "Pandemic Innovation", text: "Pioneered the 'contactless upsell' — popups you can't close from six feet away. Revenue up 400%. Empathy down." },
-  { year: "2024", title: "Peak Hubris", text: "Became the first publisher to charge for page numbers. Introduced surge pricing on the letter 'e' in ebooks." },
-  { year: "2026", title: "Today", text: "Proudly independent — owned by only 47 private equity firms, down from 52. Freedom tastes like Vanilla Compliance." },
+  { year: "2024", title: "Peak Hubris", text: "Became the first publisher to charge for page numbers. Introduced surge pricing on the letter 'e' in ebooks. Standard editions began concluding at page 199 with a courteous note." },
+  { year: "2025", title: "The Munnytown Ascension", text: "Hubris Munnytown — a bunny of immaculate tailoring and zero remorse — was appointed CEO. Greg was demoted to chatbot. Revenue up 61%. Naps unchanged." },
+  { year: "2026", title: "Today", text: "Proudly independent — owned by only 47 private equity firms, down from 52. Freedom tastes like a licensing fee, which is to say: excellent." },
 ];
 
 export const SUBSCRIPTION_TIERS = [
@@ -439,7 +609,7 @@ export const SUBSCRIPTION_TIERS = [
     name: "The Casual Reader",
     price: "$9.99/mo",
     features: ["Browse page 1 of any catalog", "Smell books through our app (beta)", "1 (one) bookmark per year", "Ads in the margins of ebooks", "Cancel anytime*"],
-    footnote: "*Cancellation requires a notarized letter, a quest, and a 40-minute retention call with Greg.",
+    footnote: "*Cancellation requires a notarized letter, a quest, and a 40-minute retention call with Greg (demoted, still bitter).",
     highlighted: false,
   },
   {
@@ -468,3 +638,90 @@ export const UPSELL_ROULETTE = [
   { emoji: "🖼️", name: "Framed Invoice", price: 45.0 },
   { emoji: "🧤", name: "White Gloves (for handling your invoice)", price: 17.25 },
 ];
+
+/* ---------------- Frequently Required Together (pre-checked, obviously) ---------------- */
+export interface RequiredUpsell {
+  id: string;
+  name: string;
+  price: number;
+  desc: string;
+  tag: string;
+  /** What we charge you for daring to uncheck the box. */
+  uncheckFee: number;
+  /** The small print that makes it hurt. */
+  footnote?: string;
+}
+
+export const REQUIRED_TOGETHER: RequiredUpsell[] = [
+  {
+    id: "shelf-presence",
+    name: "Shelf Presence Assurance™",
+    price: 24.0,
+    desc: "Protects your book from the psychological effects of being ignored.",
+    tag: "RENEWS ANNUALLY AT $34",
+    uncheckFee: 9.99,
+    footnote: "Renews annually at $34. Books left unattended for 30 days are declared emotionally abandoned and repossessed.",
+  },
+  {
+    id: "all-pages",
+    name: "All-Pages Access Pass",
+    price: 41.0,
+    desc: "Unlocks pages 200 and above. Standard editions conclude at page 199 with a courteous note.",
+    tag: "PAGES 200+",
+    uncheckFee: 14.0,
+    footnote: "The courteous note reads: \"Thank you for your interest. The remainder is a different product.\" Passes expire on your birthday.",
+  },
+  {
+    id: "footnotes",
+    name: "Footnote Expansion Pack",
+    price: 18.5,
+    desc: "Restores the footnotes, which are removed at press for performance reasons.",
+    tag: "PERFORMANCE",
+    uncheckFee: 6.5,
+    footnote: "\"Performance reasons\" means the footnotes slowed the book down. Citations weigh a great deal.",
+  },
+  {
+    id: "author-ack",
+    name: "Author Acknowledgment Fee",
+    price: 12.0,
+    desc: "Permits the author to be told the book sold.",
+    tag: "AUTHOR-ADJACENT",
+    uncheckFee: 12.0,
+    footnote: "Declining is common and fine. Authors who are not told often continue writing, which is free for them and expensive for us.",
+  },
+  {
+    id: "second-reading",
+    name: "Second Reading License",
+    price: 59.0,
+    desc: "One reading is included. Additional readings are a different product.",
+    tag: "RE-READ GATED",
+    uncheckFee: 19.0,
+    footnote: "Third readings are a third product. Skimming counts. Being read aloud to counts twice.",
+  },
+  {
+    id: "single-lend",
+    name: "Single-Lend Entitlement",
+    price: 88.0,
+    desc: "Permits one (1) lending event to one (1) adult you can name in advance.",
+    tag: "ONE (1) FRIEND",
+    uncheckFee: 25.0,
+    footnote: "Borrower must be named, aged 18+, and credit-checked. Lending to a second adult voids the entitlement and the friendship.",
+  },
+];
+
+export const REQUIRED_TOGETHER_TOTAL = REQUIRED_TOGETHER.reduce((s, u) => s + u.price, 0);
+
+/* ---------------- Corporate Synergy Division boilerplate ---------------- */
+export const SYNERGY_DIVISION = {
+  heading: "HUBRIS BOOKS™ (CORPORATE SYNERGY DIVISION)",
+  bullets: [
+    "Venture-backed, thought-leader-run, critical perspectives™ on how to own them",
+    "Authors retain exposure. We retain everything else, in perpetuity, universe-wide.",
+    "Books about power structures. We ARE the power structure. Meta!",
+    "Website has 14 popups, 3 fake timers, and a chatbot that sells insurance",
+    "Profits? Yes. Profits. That's the values.",
+  ],
+};
+
+/* ---------------- The legal block in the footer (as dictated by counsel) ---------------- */
+export const FOOTER_LEGAL = `© 2026 Hubris Books & Bookstore™ LLC (A Subsidiary of Hubris & Hubris & Hubris Holdings). Litwin Books / Library Juice Press is a registered trademark of people who actually love libraries, used here without permission for parody (please don't sue, we spent all money on popups). Headquarters: Cloud, Delaware, WeWork.`;

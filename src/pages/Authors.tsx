@@ -15,7 +15,7 @@ const PACKAGES = [
   },
   {
     name: "The Legacy Monument", price: "$19,999", tag: "INCLUDES A PLAQUE",
-    features: ["Everything in Scholarly Grind", "Leather binding (pleather, don't tell)", "Launch party at the Café (you buy shakes)", "A plaque in Hubris Tower (hallway C)", "100 author copies ($49.99 each, non-optional)"],
+    features: ["Everything in Scholarly Grind", "Leather binding (pleather, don't tell)", "Launch party in the Hubris Tower lobby (you buy the lanyards)", "A plaque in Hubris Tower (hallway C)", "100 author copies ($49.99 each, non-optional)"],
   },
 ];
 
@@ -79,7 +79,7 @@ export default function Authors() {
               <div className="text-center py-6">
                 <Check size={48} className="mx-auto text-mint" />
                 <h2 className="font-serif font-black text-2xl mt-3">Proposal Received & Invoiced!</h2>
-                <p className="text-sm text-ink/60 mt-2">"{title || "Untitled"}" is now in our queue (position #4,112). A shareholder will skim it during Q3. Your $299 has been put to excellent use (Greg's yacht fund).</p>
+                <p className="text-sm text-ink/60 mt-2">"{title || "Untitled"}" is now in our queue (position #4,112). A shareholder will skim it during Q3. Your $299 has been put to excellent use (Munnytown's Third Burrow Fund, Aspen).</p>
                 <button onClick={() => { setSubmitted(false); setTitle(""); setIdea(""); }} className="mt-4 border-2 border-hubris font-bold px-5 py-2 rounded-lg text-sm">SUBMIT ANOTHER ($299)</button>
               </div>
             )}

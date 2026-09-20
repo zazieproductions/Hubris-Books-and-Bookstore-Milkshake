@@ -22,7 +22,7 @@ export default function Bestsellers() {
   return (
     <div className="paper-texture min-h-screen">
       <PageHero
-        kicker="The Hubris 10 · ranked by revenue, labeled by merit"
+        kicker="The Hubris 10 · ranked by revenue, labeled by merit, approved by one rabbit"
         title={<>Bestsellers: <span className="italic text-gold-light">What Money Likes</span></>}
         sub="Our bestseller list is 100% data-driven. The data is revenue. The methodology is proprietary. The #1 book is the one that made us the most. Congratulations to it."
       />
@@ -74,7 +74,7 @@ export default function Bestsellers() {
 
         <div className="mt-8 bg-hubris text-paper rounded-xl p-6 text-center border-4 border-gold">
           <div className="font-serif font-black text-xl">How the list works (methodology, proprietary)</div>
-          <p className="text-sm text-paper/60 mt-2 max-w-2xl mx-auto">Rankings are determined by a sophisticated algorithm weighing revenue (100%), critical acclaim (0%), and Greg's mood (tiebreaker). Votes are counted, cherished, and discarded. Lists refresh whenever revenue does — constantly, beautifully, forever.</p>
+          <p className="text-sm text-paper/60 mt-2 max-w-2xl mx-auto">Rankings are determined by a sophisticated algorithm weighing revenue (100%), critical acclaim (0%), and the mood of Hubris Munnytown, Chief Executive Rabbit (tiebreaker; he is always in a good mood). Votes are counted, cherished, and discarded. Lists refresh whenever revenue does — constantly, beautifully, forever.</p>
           <Link to="/catalog" className="inline-flex items-center gap-2 bg-gold text-hubris font-bold px-6 py-2.5 rounded-lg mt-4 text-sm">
             BROWSE ALL CONTENDERS <ArrowRight size={15} />
           </Link>

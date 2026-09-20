@@ -58,3 +58,26 @@ body { background: #FAF6ED; color: #1A1B1E; font-family: "Inter", sans-serif; }
 .book-spine { box-shadow: inset 4px 0 8px rgba(0,0,0,0.25), inset -2px 0 4px rgba(255,255,255,0.15), 6px 8px 0 rgba(15,30,61,0.9); }
 .book-spine-sm { box-shadow: inset 3px 0 6px rgba(0,0,0,0.25), 4px 5px 0 rgba(15,30,61,0.9); }
 .fine-print { font-size: 10px; line-height: 1.4; }
+
+/* --- the meter --- */
+@keyframes fee-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.85); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.12); }
+}
+.animate-fee-pop { animation: fee-pop 1.5s ease-out forwards; }
+
+@keyframes bunny-bob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1.5deg); } }
+.animate-bunny-bob { animation: bunny-bob 6s ease-in-out infinite; }
+
+/* --- the wire (newsroom article body) --- */
+.wire-body p { font-size: 1.02rem; line-height: 1.75; color: #24262b; margin-top: 1rem; }
+.wire-body p:first-child::first-letter { font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 3.1rem; line-height: 0.85; float: left; padding: 0.25rem 0.5rem 0 0; color: #0F1E3D; }
+.wire-body h3 { font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.35rem; margin-top: 1.9rem; color: #0F1E3D; }
+.wire-body ul, .wire-body ol { margin-top: 0.9rem; padding-left: 1.35rem; }
+.wire-body li { font-size: 0.96rem; line-height: 1.7; margin-top: 0.3rem; }
+.wire-body ul li::marker { color: #C9A227; }
+.wire-body table { width: 100%; border-collapse: collapse; margin-top: 1.1rem; font-size: 0.86rem; }
+.wire-body th { background: #0F1E3D; color: #E8CE6A; font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; text-align: left; padding: 0.5rem 0.6rem; }
+.wire-body td { border-bottom: 1px dashed rgba(15,30,61,0.25); padding: 0.45rem 0.6rem; vertical-align: top; }
+.wire-body tbody tr:nth-child(even) { background: #F1EAD8; }

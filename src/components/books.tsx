@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, Star, Flame, Eye } from "lucide-react";
-import type { Book } from "../data/books";
+import { IMPRINTS, type Book } from "../data/books";
 import { useShop } from "../store/ShopContext";
 
 export function Cover({ book, size = "md" }: { book: Book; size?: "sm" | "md" | "lg" }) {
@@ -14,7 +14,7 @@ export function Cover({ book, size = "md" }: { book: Book; size?: "sm" | "md" | 
       <div className="absolute inset-y-0 left-[7px] w-px bg-white/25" />
       <div>
         <div className="font-mono text-[8px] uppercase tracking-widest opacity-80" style={{ color: book.cover.accent }}>
-          {book.imprint === "milkshake" ? "Bookstore Milkshake" : book.imprint === "hubris" ? "Hubris Books" : book.imprint === "synergy" ? "Synergy Chapbooks" : "Vault Select"}
+          {IMPRINTS[book.imprint].spine}
         </div>
         <div className="font-serif font-black leading-tight mt-1" style={{ color: book.cover.accent, fontSize: size === "sm" ? 11 : size === "lg" ? 24 : 17 }}>
           {book.title}
@@ -70,7 +70,7 @@ export function BookCard({ book }: { book: Book }) {
     pushToast({
       kind: "upsell",
       title: `Added: ${book.title}`,
-      body: book.feeFootnote ?? "A Mandatory Spine Hydration Fee ($14.95) was also added. It adds itself. It's union.",
+      body: `${book.feeFootnote ?? "A Mandatory Spine Hydration Fee ($14.95) was also added. It adds itself. It's union."} Frequently Required Together ($242.50) is pre-checked at checkout; declining costs more than accepting.`,
     });
   };
 

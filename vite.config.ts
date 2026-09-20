@@ -18,6 +18,8 @@ export default defineConfig(async ({ mode }) => {
   }
 
   return {
+    server: { host: '0.0.0.0', port: 5173, allowedHosts: true as const },
+    preview: { host: '0.0.0.0', port: 4173, allowedHosts: true as const },
     plugins,
     envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
     define: processEnvDefines,

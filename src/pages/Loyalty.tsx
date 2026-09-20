@@ -6,10 +6,10 @@ import { useShop } from "../store/ShopContext";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
 
 const TIERS = [
-  { name: "Compliant", min: 0, perks: ["Earn 1 FunBux™ per $1 (spirit bucks)", "Birthday email (Greg's birthday)", "Access to sales (prices higher, labeled lower)"] },
-  { name: "Devoted", min: 5000, perks: ["Everything in Compliant", "Priority hold queue (still a queue)", "Free gift wrap on your birthday (Greg's birthday)", "A lanyard ($9.99)"] },
-  { name: "Bound in Leather", min: 25000, perks: ["Everything in Devoted", "Dedicated Greg (shared with 4,000 members)", "Early access to fees (pay them first!)", "Your name on the Wall of Revenue"] },
-  { name: "One With Hubris", min: 100000, perks: ["You are Greg now", "All perks, all access, all fees waived*", "*Fees renamed, not waived"] },
+  { name: "Compliant", min: 0, perks: ["Earn 1 FunBux™ per $1 (spirit bucks)", "Birthday email (the rabbit's birthday; you buy the card)", "Access to sales (prices higher, labeled lower)"] },
+  { name: "Devoted", min: 5000, perks: ["Everything in Compliant", "Priority hold queue (still a queue)", "Free gift wrap on your birthday (the rabbit's birthday)", "A lanyard ($9.99)"] },
+  { name: "Bound in Leather", min: 25000, perks: ["Everything in Devoted", "Dedicated Greg (a chatbot, shared with 4,000 members)", "Early access to fees (pay them first!)", "Your name on the Wall of Revenue"] },
+  { name: "One With Hubris", min: 100000, perks: ["You are the rabbit now", "All perks, all access, all fees waived*", "*Fees renamed, not waived"] },
 ];
 
 export default function Loyalty() {
@@ -41,7 +41,7 @@ export default function Loyalty() {
 
       <SectionShell>
         <Kicker>Four tiers of devotion · progress is automatic, like the charges</Kicker>
-        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Your Path to Becoming Greg</h2>
+        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Your Path to Becoming the Rabbit</h2>
         <div className="mt-4 bg-white border-2 border-hubris rounded-lg p-4">
           <div className="flex justify-between font-mono text-xs mb-2">
             <span className="font-bold">{tier.name} ({loyaltyPoints.toLocaleString()} pts)</span>

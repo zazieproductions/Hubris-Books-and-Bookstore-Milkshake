@@ -9,15 +9,18 @@ const SECTIONS = [
   { n: "§2. Purchases", t: "All sales are final. 'Final' includes: the price (subject to increase), the fees (subject to fees), and your understanding of what you bought (subject to our understanding). Ownership transfers upon payment; enjoyment transfers never." },
   { n: "§3. Fees", t: "Fees may be added at any time for any reason, including: Spine Hydration, Convenience, Inconvenience, Paper Existence, Font Licensing, Regret Insurance, and Fee Administration (the fee for administering fees). Fees are themselves subject to a 12% Fee Fee." },
   { n: "§4. FunBux™", t: "FunBux™ are loyalty points backed by nothing and redeemable for less. They expire when we say so (now, usually). They are not currency, securities, or fun. They are, however, bucks in spirit, and spirit is legally binding." },
+  { n: "§4.2 Frequently Required Together", t: "Six (6) items are added to every order, pre-checked: Shelf Presence Assurance™ ($24.00, renewing annually at $34), All-Pages Access Pass ($41.00), Footnote Expansion Pack ($18.50), Author Acknowledgment Fee ($12.00), Second Reading License ($59.00), and Single-Lend Entitlement ($88.00). A minimum of two (2) must remain checked in order to proceed. Declining an item incurs a Decline Fee; declining all six incurs six Decline Fees and our disappointment, which is not billable but is remembered." },
   { n: "§5. Subscriptions", t: "Subscriptions renew automatically, including after cancellation (cancellation cancels the subscription but not the renewals). To cancel, see FAQ: 'Can I cancel my subscription?' Then see a therapist. Then remain subscribed." },
-  { n: "§6. Privacy", t: "We collect: your data, your metadata, your vibe, and your mother's maiden name (for fun). We share data with our 47 parent companies, our 200+ Gregs, and anyone who asks nicely with a purchase order. Our privacy policy is that we have your data. That's the policy." },
-  { n: "§7. Cookies", t: "We use 2,847 cookies. Rejecting cookies requires clicking 'reject' 5 times while the button dodges. Accepting cookies requires one click and grants us: everything. Choose wisely (you'll choose accept; everyone chooses accept)." },
+  { n: "§6. Privacy", t: "We collect: your data, your metadata, your vibe, and your mother's maiden name (for fun). We share data with our 47 parent companies, one Greg (now software), one rabbit (personally), and anyone who asks nicely with a purchase order. Our privacy policy is that we have your data. That's the policy." },
+  { n: "§7. Cookies", t: "We use 11,722 cookies across 12 categories, including Biometric Enthusiasm Detection, Predictive Regret Modeling, Grief Monetization, Subconscious Retargeting (Dream Ads), Organ Donor Adjacency, Inferred Household (children, pets, tenants), and Munnytown's Personal Sniffing Cookies. Accepting requires one click and grants us everything, in perpetuity, hereditarily, universe-wide. Rejecting requires seven (7) clicks while the button dodges, plus a $49.99 Opt-Out Processing Fee, plus per-category opt-out fees of $12–$999. The banner is shown once and then remembered, because consent, once given, is not a thing we lose track of." },
+  { n: "§7.1 The Browsing Fee", t: "The meter starts on page load and is scroll-metered: each qualifying scroll event adds between $100 and $400, multiplied by an escalation factor that increases with continued use, to a maximum of ×12. A time drip of $1.99 per minute applies while you are not scrolling, so that idleness is also productive. The fee does not decrease. It has never decreased. It is not configured to decrease. Reading this section has cost you approximately $1,200." },
   { n: "§8. Reviews", t: "Reviews of 5 stars publish instantly. Reviews of 4 stars enter moderation. Reviews of 3 or fewer stars enter the Void, along with the reviewer (from our mailing list — actually no, you stay on the mailing list forever)." },
   { n: "§9. Intellectual Property", t: "All content is ours, including your reviews, your wishlist (public, monetized), and any ideas you have while browsing (Browsing Idea Assignment Clause). You retain the right to keep reading. You're welcome." },
-  { n: "§10. The Milkshake", t: "Vanilla Compliance contains no vanilla. 'Compliance' is a flavor we developed in-house (notes of late fee, whipped accountability, and paper). Outside beverages will be confiscated and resold to you." },
-  { n: "§11. Disputes", t: "All disputes will be resolved via binding arbitration, conducted by Greg, in Dayton, on Greg's schedule (busy). You waive the right to: class actions, jury trials, small claims, large claims, and complaining (complaining costs $25)." },
+  { n: "§10. Trademarks We Use Without Permission", t: "Litwin Books and Library Juice Press are registered trademarks of people who actually love libraries, used here without permission for parody. Please don't sue; we spent all the money on popups, pop-ups, and a rabbit. We own: the word 'radical' in 43 territories (Class 16, Class 41), 'Critical Librarianship™' (Patent No. US2010248329B2 — Do Not Question), 'FunBux™', 'TrustSeal™', 'ALA-Adjacent™', 'Shelf Presence Assurance™', and — as of August 2026 — Tuesday." },
+  { n: "§10.1 Newsroom", t: "The Synergy Wire is our newsroom. Reading it costs $0.02 per page, searching it costs $0.11 per query, and quoting it requires the Syndication License ($1,450/yr, per territory). Corrections are published in full and charged in full. Comments are disabled; commenting is a product at $4.99 per comment." },
+  { n: "§11. Disputes", t: "All disputes will be resolved via binding arbitration, conducted by Hubris Legal, in Dayton, on the schedule of Hubris Munnytown, Chief Executive Rabbit (naps 4 hours daily). You waive the right to: class actions, jury trials, small claims, large claims, and complaining (complaining costs $25)." },
   { n: "§12. Amendments", t: "We may amend these terms at any time without notice. Amendments apply retroactively, including to purchases made before the amendment and before your birth. Current version: 4,812. You agreed to all of them." },
-  { n: "§13.3 Soul Clause", t: "Per §13.3, by completing any purchase you grant Hubris Books, LLC, LLC a non-exclusive, perpetual, universe-wide license to your immortal soul for marketing purposes. Your soul may appear in testimonials. Opt-out requires a quest." },
+  { n: "§13.3 Soul Clause", t: "Per §13.3, by completing any purchase you grant Hubris Books & Bookstore™ LLC (A Subsidiary of Hubris & Hubris & Hubris Holdings) a non-exclusive, perpetual, universe-wide license to your immortal soul for marketing purposes. Your soul may appear in testimonials. Opt-out requires a quest." },
   { n: "§14. Severability & Mercy", t: "If any clause is found unenforceable, it will be replaced with a stricter clause. Mercy may be requested via form 88-B ($25 filing fee). Form 88-B does not exist. The fee, however, is very real." },
 ];
 
@@ -31,7 +34,7 @@ export default function Terms() {
 
   const accept = () => {
     if (readCount < SECTIONS.length) {
-      pushToast({ kind: "warning", title: `Only ${readCount}/${SECTIONS.length} sections acknowledged`, body: "You must check every section. Skimming is a violation (§12). Greg can tell when you skim." });
+      pushToast({ kind: "warning", title: `Only ${readCount}/${SECTIONS.length} sections acknowledged`, body: "You must check every section. Skimming is a violation (§12). The rabbit can tell when you skim; he has an exceptional nose." });
       return;
     }
     setAccepted(true);
@@ -42,9 +45,9 @@ export default function Terms() {
   return (
     <div className="paper-texture min-h-screen">
       <PageHero
-        kicker="Terms of Servitude · v4,812 · last updated: just now"
+        kicker="Terms of Servitude · v4,812 · last updated: just now · approved by one rabbit"
         title={<>The Fine Print, <span className="italic text-gold-light">Enlarged Slightly</span></>}
-        sub="Please read all 14 sections carefully. Quizzes are random. Compliance is mandatory. Skimming is a violation (§12)."
+        sub={`Please read all ${SECTIONS.length} sections carefully. Quizzes are random. Compliance is mandatory. Skimming is a violation (§12). The Browsing Fee runs while you read.`}
       >
         <div className="mt-4 font-mono text-sm bg-black/30 inline-block px-4 py-2 rounded-lg border border-gold/40">
           Acknowledged: <strong className="text-gold-light">{readCount}/{SECTIONS.length}</strong> sections
@@ -78,7 +81,7 @@ export default function Terms() {
             ) : (
               <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/catalog" className="bg-gold text-hubris font-bold px-6 py-3 rounded-lg inline-flex items-center justify-center gap-2">SHOP, COMPLIANT ONE <ArrowRight size={15} /></Link>
-                <Link to="/faq" className="border-2 border-gold text-gold-light font-bold px-6 py-3 rounded-lg">ASK GREG THINGS</Link>
+                <Link to="/faq" className="border-2 border-gold text-gold-light font-bold px-6 py-3 rounded-lg">ASK GREG THINGS (HE'S A CHATBOT NOW)</Link>
               </div>
             )}
           </div>

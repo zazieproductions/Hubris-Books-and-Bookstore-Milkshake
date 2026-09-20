@@ -1,22 +1,50 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, BadgeDollarSign, Building2, Crown, Factory, Handshake, Landmark, Quote, TrendingUp, Users } from "lucide-react";
-import { CORPORATE_TIMELINE } from "../data/books";
+import { CORPORATE_TIMELINE, SYNERGY_DIVISION } from "../data/books";
+import { SmugBunny } from "../components/Bunny";
 import { useShop } from "../store/ShopContext";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
 
-const LEADERS = [
-  { name: "Greg Hubris", title: "Founder, CEO, CFO, CTO, Greg", bio: "Founded Hubris Books in 2006 after being asked to leave library school for 'monetizing the reserve desk.' Owns 4 yachts, all named after open access.", emoji: "🧑‍💼" },
-  { name: "Greg Hubris II", title: "President of Synergy", bio: "No relation. Legally changed his name to Greg Hubris to qualify for the role. Promotion effective immediately upon name change.", emoji: "🧑‍💼" },
-  { name: "Gregory Hubris", title: "Chief Feelings Officer", bio: "Manages morale via mandatory fun. Invented the Browsing Fee during a trust fall. Goes by 'Greg' to reduce payroll confusion.", emoji: "🧑‍💼" },
-  { name: "Dr. Greg Hubris, Esq.", title: "General Counsel & Café Manager", bio: "Holds a JD, an MLIS, and the only key to the Vanilla Compliance vault. Has never lost a lawsuit or made a second flavor.", emoji: "🧑‍💼" },
+const LEADERS: { name: string; title: string; bio: string; emoji?: string; bunny?: boolean }[] = [
+  {
+    name: "Hubris Munnytown",
+    title: "Chief Executive Rabbit (CEO, CFO, CTO, and Tiebreaker)",
+    bunny: true,
+    bio: "Appointed September 2025 by a unanimous board (the board is one rabbit and a mirror). Holds no degrees, having instead acquired the institutions that grant them. Naps four hours a day, during which the Browsing Fee continues to run. Has never issued a refund and has never been asked twice. Wears a monocle in all official portraits; the monocle is billed to whichever department requests the portrait.",
+  },
+  {
+    name: "Vireo Pressrelease",
+    title: "Director of Announcements",
+    emoji: "📣",
+    bio: "Has announced 4,812 things, 4,100 of which were fees. Never uses the passive voice, because the passive voice would obscure who is charging you.",
+  },
+  {
+    name: "Bex Synergy",
+    title: "VP, Narrative & Synergy",
+    emoji: "🧭",
+    bio: "Responsible for the story. The story is that the numbers are good. The numbers are, in fact, good. Down was deprecated in the 2019 platform migration.",
+  },
+  {
+    name: "Hubris Legal",
+    title: "General Counsel & Trademark Acquisition",
+    emoji: "⚖️",
+    bio: "Counsels the company on what may be owned. Currently examining: adjectives, Tuesdays, the word 'free,' silence, and the concept of the return. Author of Critical Librarianship™, a book that is just a patent.",
+  },
+  {
+    name: "Greg",
+    title: "Chatbot (formerly CEO, CFO, CTO, Café Manager, and four separate people)",
+    emoji: "🤖",
+    bio: "Consolidated into a single conversational agent in September 2025 when the rabbit arrived. Sells insurance, handles every declined upsell, remains audible on hold music, and maintains exactly one cookie, which does not expire.",
+  },
 ];
 
 const SUBSIDIARIES = [
   { icon: Factory, name: "Hubris Paper Mill", what: "Makes paper from competitors' ARCs. Smells like victory and formaldehyde." },
   { icon: Landmark, name: "First National Bank of Fees", what: "Our in-house bank. All transactions rounded up; roundings kept." },
   { icon: Building2, name: "Hubris Defense Systems", what: "Publishes the annual 'Banned Books' list. Also, allegedly, other things." },
-  { icon: Users, name: "Greg Staffing Solutions", what: "Every temp is named Greg. Uniformity is efficiency." },
+  { icon: Users, name: "Greg Staffing Solutions", what: "Every temp is named Greg. Uniformity is efficiency. There is now only one Greg, and he is software." },
+  { icon: Crown, name: "Munnytown Burrow Holdings", what: "Three burrows (Aspen, Delaware, the cloud). Acquires Tuesdays, adjectives, and the occasional concept." },
   { icon: TrendingUp, name: "SurgePrice Labs", what: "Our AI pricing engine. It can smell desire. It has no nose. Think about that." },
   { icon: BadgeDollarSign, name: "FunBux™ Mint", what: "Prints loyalty points backed by nothing, redeemable for less." },
 ];
@@ -41,7 +69,7 @@ export default function About() {
         sub="From a humble garage in 2006 to a 90-story tower in Dayton, Ohio — the story of how idealism was bought out by lunch."
       >
         <div className="flex flex-wrap gap-3 mt-5">
-          <a href="#leadership" className="bg-gold text-hubris font-bold px-5 py-2.5 rounded-lg text-sm">MEET THE GREGS</a>
+          <a href="#leadership" className="bg-gold text-hubris font-bold px-5 py-2.5 rounded-lg text-sm">MEET THE RABBIT</a>
           <a href="#timeline" className="border-2 border-gold text-gold-light font-bold px-5 py-2.5 rounded-lg text-sm hover:bg-gold/10">OUR HISTORY OF GROWTH</a>
         </div>
       </PageHero>
@@ -106,17 +134,33 @@ export default function About() {
 
       {/* leadership */}
       <SectionShell id="leadership">
-        <Kicker>Leadership · all named Greg (uniformity is efficiency)</Kicker>
-        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Meet the Gregs</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <Kicker>Leadership · one rabbit, four functions, and a chatbot named Greg</Kicker>
+        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Meet the Executive Committee</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
           {LEADERS.map((g) => (
-            <div key={g.name} className="bg-white border-2 border-hubris rounded-lg p-5 text-center hover:shadow-[5px_5px_0_rgba(15,30,61,1)] transition-all">
-              <div className="text-5xl">{g.emoji}</div>
-              <div className="font-serif font-black text-lg mt-2">{g.name}</div>
-              <div className="font-mono text-[10px] text-alarm font-bold uppercase">{g.title}</div>
+            <div key={g.name} className={`bg-white border-2 rounded-lg p-5 text-center hover:shadow-[5px_5px_0_rgba(15,30,61,1)] transition-all ${g.bunny ? "border-gold shadow-[5px_5px_0_rgba(201,162,39,1)]" : "border-hubris"}`}>
+              {g.bunny ? (
+                <img src="/images/ceo-bunny.jpg" alt="Hubris Munnytown, Chief Executive Rabbit" className="w-24 h-24 mx-auto rounded-full object-cover border-4 border-gold" />
+              ) : (
+                <div className="text-5xl">{g.emoji}</div>
+              )}
+              <div className="font-serif font-black text-lg mt-2 leading-tight">{g.name}</div>
+              <div className={`font-mono text-[10px] font-bold uppercase ${g.bunny ? "text-gold" : "text-alarm"}`}>{g.title}</div>
               <p className="text-xs text-ink/60 mt-2">{g.bio}</p>
+              {g.bunny && (
+                <div className="mt-3 flex justify-center"><SmugBunny size={34} className="animate-bunny-bob" /></div>
+              )}
             </div>
           ))}
+        </div>
+        <div className="mt-6 bg-parchment border-2 border-dashed border-hubris/40 rounded-xl p-5 flex flex-col sm:flex-row gap-4 items-center">
+          <SmugBunny size={64} className="shrink-0" />
+          <p className="text-sm text-ink/70 flex-1">
+            <strong>On the appointment:</strong> "We searched globally for a leader with no degrees, no remorse, and an
+            exceptional nose for margins. We found him in a hedgerow behind the paper mill. He has since approved 412 fees,
+            acquired Tuesday, and napped through four earnings calls." — Vireo Pressrelease, Director of Announcements
+          </p>
+          <Link to="/news?cat=ceo" className="bg-hubris text-white font-bold text-sm px-4 py-2.5 rounded-lg whitespace-nowrap">FROM THE CEO'S DESK →</Link>
         </div>
       </SectionShell>
 
@@ -159,7 +203,7 @@ export default function About() {
           </div>
           <div className="bg-hubris text-paper rounded-xl p-6 sm:p-8 border-4 border-gold">
             <Quote size={28} className="text-gold" />
-            <p className="font-serif italic text-xl mt-3">"I came here to buy one book about cataloging. I now own 14% of a paper mill and owe Greg $40. I have never been happier, per my exit survey, which I was required to complete."</p>
+            <p className="font-serif italic text-xl mt-3">"I came here to buy one book about cataloging. I now own 14% of a paper mill and owe a rabbit $40. I have never been happier, per my exit survey, which I was required to complete."</p>
             <div className="font-mono text-xs text-paper/60 mt-2">— Satisfied Customer #88,412 (survey mandatory, happiness pre-selected)</div>
             <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <Link to="/authors" className="flex-1 bg-gold text-hubris font-black py-3 rounded-lg text-center flex items-center justify-center gap-2">
@@ -172,6 +216,31 @@ export default function About() {
           </div>
         </div>
       </SectionShell>
+
+      {/* corporate synergy division */}
+      <div className="bg-ink text-paper border-y-4 border-gold">
+        <SectionShell className="!py-10">
+          <Kicker><span className="text-gold-light">Reproduced verbatim from the investor one-pager · v4,812</span></Kicker>
+          <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">{SYNERGY_DIVISION.heading}</h2>
+          <ul className="mt-6 space-y-2.5 max-w-3xl">
+            {SYNERGY_DIVISION.bullets.map((b, i) => (
+              <li key={b} className="bg-hubris-light border border-gold/30 rounded-lg p-4 flex gap-3 items-start">
+                <span className="font-mono text-[11px] font-black text-gold shrink-0 mt-0.5">0{i + 1}</span>
+                <span className="text-sm text-paper/85">{b}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="fine-print text-paper/40 mt-4 max-w-3xl">
+            This statement has not been reviewed by counsel because this statement is counsel. Profits are the values. The
+            values are profits. In the event of a conflict between this paragraph and any other paragraph, this paragraph
+            wins, and the conflict is billable.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/news" className="bg-gold text-hubris font-bold px-6 py-3 rounded-lg text-sm">READ THE NEWSROOM (4,812 RELEASES)</Link>
+            <Link to="/news?cat=acq" className="border-2 border-gold text-gold-light font-bold px-6 py-3 rounded-lg text-sm">WHAT WE OWN (SO FAR)</Link>
+          </div>
+        </SectionShell>
+      </div>
     </div>
   );
 }

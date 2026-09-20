@@ -6,17 +6,17 @@ import { useShop } from "../store/ShopContext";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
 
 const LEADERS = [
-  { name: "Greg Hubris", title: "Founder, CEO, CFO, CTO, Greg", bio: "Founded Hubris Books in 2006 after being asked to leave library school for 'monetizing the reserve desk.' Owns 4 yachts, all named after open access.", emoji: "🧑‍💼" },
-  { name: "Greg Hubris II", title: "President of Synergy", bio: "No relation. Legally changed his name to Greg Hubris to qualify for the role. Promotion effective immediately upon name change.", emoji: "🧑‍💼" },
-  { name: "Gregory Hubris", title: "Chief Feelings Officer", bio: "Manages morale via mandatory fun. Invented the Browsing Fee during a trust fall. Goes by 'Greg' to reduce payroll confusion.", emoji: "🧑‍💼" },
-  { name: "Dr. Greg Hubris, Esq.", title: "General Counsel & Café Manager", bio: "Holds a JD, an MLIS, and the only key to the Vanilla Compliance vault. Has never lost a lawsuit or made a second flavor.", emoji: "🧑‍💼" },
-];
+  { name: "Bartholomew Hopps", title: "Chief Operating Officer", bio: "A slightly less smug rabbit. Handles day-to-day operations, which means sitting nearer the door. Has blinked twice. Both times were performance-reviewed.", emoji: "🐰" },
+  { name: "Prudence Coinwell", title: "Chief Financial Officer", bio: "Formerly of the FunBux™ Mint. Counts money the way other executives count sheep: constantly, aloud, during meetings.", emoji: "🧑‍F4BC" },
+  { name: "The Interpreter", title: "Executive Assistant to the Bunny", bio: "Name redacted in the restructuring. Interprets thumps. One thump means yes, two means no, three means audit. Has not slept since 2019. Employee of every month.", emoji: "🧑‍F4BC" },
+  { name: "SurgePrice Labs", title: "Chief Pricing Officer", bio: "An AI. It can smell desire. It has no nose. It has never been wrong about what you'll pay, and it will never let you forget it.", emoji: "🤖" },
+]
 
 const SUBSIDIARIES = [
   { icon: Factory, name: "Hubris Paper Mill", what: "Makes paper from competitors' ARCs. Smells like victory and formaldehyde." },
   { icon: Landmark, name: "First National Bank of Fees", what: "Our in-house bank. All transactions rounded up; roundings kept." },
   { icon: Building2, name: "Hubris Defense Systems", what: "Publishes the annual 'Banned Books' list. Also, allegedly, other things." },
-  { icon: Users, name: "Greg Staffing Solutions", what: "Every temp is named Greg. Uniformity is efficiency." },
+  { icon: Users, name: "Warren Staffing Solutions", what: "Every temp is cross-trained in thump interpretation. Uniformity is efficiency." },
   { icon: TrendingUp, name: "SurgePrice Labs", what: "Our AI pricing engine. It can smell desire. It has no nose. Think about that." },
   { icon: BadgeDollarSign, name: "FunBux™ Mint", what: "Prints loyalty points backed by nothing, redeemable for less." },
 ];
@@ -36,12 +36,12 @@ export default function About() {
   return (
     <div className="paper-texture min-h-screen">
       <PageHero
-        kicker="About us · independently owned by 47 private equity firms"
+        kicker="About us · independently owned by 47 private equity firms · run by a bunny"
         title={<>Our Empire: <span className="italic text-gold-light">Too Big to Shelve</span></>}
-        sub="From a humble garage in 2006 to a 90-story tower in Dayton, Ohio — the story of how idealism was bought out by lunch."
+        sub="From a humble garage in 2006 to a 90-story tower in Dayton, Ohio — the story of how idealism was bought out by lunch, and how a smug bunny ate the corner office."
       >
         <div className="flex flex-wrap gap-3 mt-5">
-          <a href="#leadership" className="bg-gold text-hubris font-bold px-5 py-2.5 rounded-lg text-sm">MEET THE GREGS</a>
+          <a href="#leadership" className="bg-gold text-hubris font-bold px-5 py-2.5 rounded-lg text-sm">MEET THE WARREN</a>
           <a href="#timeline" className="border-2 border-gold text-gold-light font-bold px-5 py-2.5 rounded-lg text-sm hover:bg-gold/10">OUR HISTORY OF GROWTH</a>
         </div>
       </PageHero>
@@ -106,9 +106,33 @@ export default function About() {
 
       {/* leadership */}
       <SectionShell id="leadership">
-        <Kicker>Leadership · all named Greg (uniformity is efficiency)</Kicker>
-        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Meet the Gregs</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <Kicker>Leadership · one smug bunny, one Warren (uniformity is efficiency)</Kicker>
+        <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Meet the Warren</h2>
+
+        {/* CEO spotlight */}
+        <div className="mt-6 bg-hubris text-paper rounded-xl border-4 border-gold p-6 sm:p-8 grid md:grid-cols-[200px_1fr] gap-6 items-center shadow-[8px_8px_0_rgba(201,162,39,1)]">
+          <div className="text-center">
+            <div className="text-[120px] leading-none animate-floaty">🐰</div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-gold-light font-bold mt-1">Has never been photographed blinking</div>
+          </div>
+          <div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold-light font-bold">Founder, Chief Executive Officer & Apex Lagomorph</div>
+            <div className="font-serif font-black text-3xl sm:text-4xl mt-1">Hubris Munnytown</div>
+            <p className="text-paper/75 mt-3 leading-relaxed">
+              A smug bunny. Assumed control of Hubris Books in 2019 by sitting on the previous CEO's chair and refusing to leave.
+              Under his leadership, revenue tripled and the office carrot budget quintupled. Communicates exclusively through thumps,
+              press releases, and an Interpreter (name redacted) who “interprets.” Owns 4 yachts (all named after open access) and one (1) haunted hutch.
+              His compensation is performance-based; the performance is sitting; the sitting is flawless.
+            </p>
+            <blockquote className="mt-4 border-l-4 border-gold pl-4 font-serif italic text-lg text-gold-light">
+              “Buy books. Buy two. The second one is for me. I cannot read. That is not the point.”
+              <span className="block font-mono text-[11px] not-italic text-paper/50 mt-1">— A Note From Our CEO (three thumps, interpreted by the Interpreter)</span>
+            </blockquote>
+          </div>
+        </div>
+
+        <h3 className="font-serif font-black text-2xl mt-8">The Warren <span className="font-mono text-xs font-normal text-ink/50">(middle management, all of it — all report to the bunny)</span></h3>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
           {LEADERS.map((g) => (
             <div key={g.name} className="bg-white border-2 border-hubris rounded-lg p-5 text-center hover:shadow-[5px_5px_0_rgba(15,30,61,1)] transition-all">
               <div className="text-5xl">{g.emoji}</div>
@@ -159,7 +183,7 @@ export default function About() {
           </div>
           <div className="bg-hubris text-paper rounded-xl p-6 sm:p-8 border-4 border-gold">
             <Quote size={28} className="text-gold" />
-            <p className="font-serif italic text-xl mt-3">"I came here to buy one book about cataloging. I now own 14% of a paper mill and owe Greg $40. I have never been happier, per my exit survey, which I was required to complete."</p>
+            <p className="font-serif italic text-xl mt-3">"I came here to buy one book about cataloging. I now own 14% of a paper mill and owe the Hutch $40. I have never been happier, per my exit survey, which I was required to complete."</p>
             <div className="font-mono text-xs text-paper/60 mt-2">— Satisfied Customer #88,412 (survey mandatory, happiness pre-selected)</div>
             <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <Link to="/authors" className="flex-1 bg-gold text-hubris font-black py-3 rounded-lg text-center flex items-center justify-center gap-2">

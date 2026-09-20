@@ -5,30 +5,35 @@ import { useShop } from "../store/ShopContext";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
 
 const FAQS = [
-  { q: "What is your return policy?", a: "Great question! Our return policy is a 4-page PDF that, when printed, reads: 'No.' In full: all sales are final, all fees are final, and all feelings about finality are valid but non-refundable. You may, however, purchase Return Insurance ($24.99) which covers returns that we still won't accept, but with sympathy." },
-  { q: "Why was I charged a Browsing Fee?", a: "Because you browsed. Our site charges $1.99/minute for the privilege of looking at products, a practice we pioneered and the FTC called 'a choice.' The meter starts on page load and stops never — it follows you via our app, our emails, and Greg's memory." },
-  { q: "What is Vanilla Compliance?", a: "Our signature milkshake and only flavor. It tastes like a late fee because it contains one (metaphorically; legally it's vanilla-adjacent). Ingredients: milk, compliance, ice, and a proprietary blend of 11 fees and spices." },
-  { q: "How do FunBux™ work?", a: "You earn 10 FunBux™ per dollar spent. FunBux™ may be redeemed for: nothing. The exchange rate is ∞:0 (infinite FunBux™ to zero dollars). They are, however, bucks in spirit — and spirit, like our margins, is boundless." },
-  { q: "Can I cancel my subscription?", a: "Absolutely! Cancellation is easy: simply (1) write a notarized letter, (2) complete a 40-minute retention call with Greg, (3) embark on a brief quest (fetch the Amulet of Churn from our warehouse), and (4) wait 6–8 eternities for processing. Most customers find it easier to simply remain subscribed forever." },
-  { q: "Who is Greg?", a: "Greg is our CEO, CFO, CTO, café manager, general counsel, account manager, and (as of your loyalty tier) possibly you. There are 4 Gregs in leadership and 200+ Gregs in staffing. If you hear the name Greg whispered in our hold music, that is intentional and billed as 'ambient branding' ($0.99/call)." },
-  { q: "Why does the ebook cost more than the hardcover?", a: "Because the ebook has no printing costs, which means higher margins, which means it's premium. Premium costs more. This is economics. The hardcover, meanwhile, is heavy, and heaviness is a feature ($4.99 Heft Fee applies)." },
-  { q: "Is this site a parody?", a: "This site is a fully serious e-commerce experience operated by Hubris Books, LLC, LLC. Any resemblance to critique, satire, or jokes is coincidental and, per our Terms of Servitude §13.3 (Soul Clause), monetizable." },
-  { q: "How do I contact support?", a: "Support is a concept, not a department. You may: email no-refunds@hubrisbooks.example (auto-replies with upsells), call 1-800-BUY-BOOK (hold music is a cash register; average wait: 6–8 eternities), or visit Greg in person (appointment fee: $25, Greg is busy)." },
-  { q: "Why do prices keep changing?", a: "Dynamic pricing! Our SurgePrice Labs engine adjusts prices every 30 seconds based on demand, weather, moon phase, and how badly you seem to want it. Pro tip: wanting it less lowers prices. But you can't — the books are that good. The algorithm knows. The algorithm always knows." },
+  { q: "What is your return policy?", a: "Great question! Our return policy is a 4-page PDF that, when printed, reads: 'No.' In full: all sales are final, all fees are final, and all feelings about finality are valid but non-refundable. You may, however, purchase Return Insurance ($49.99, up from $24.99 due to demand) which covers returns that we still won't accept, but with sympathy. Asking about returns a second time incurs the Curiosity Restocking Fee ($7.99)." },
+  { q: "Why was I charged a Browsing Fee?", a: "Because you browsed — and scrolled. Our site charges $1.99/minute for looking plus $127–$389 per scroll for engaging, a practice we pioneered and the FTC called 'a choice.' The meter starts on page load and stops never — it follows you via our app, our emails, the Bunny's memory (he never forgets; he never blinks), and, upon your death, your heirs (the meter is inheritable; grief is billable)." },
+  { q: "Why did my cart add items I didn't choose?", a: "Your cart is sentient and has impeccable taste. It added those items because you wanted them (it checked your hesitation patterns; you hovered). Removing items triggers a $7.99 Restocking Fee per item and disappoints the cart, which remembers everything and tells the other carts." },
+  { q: "Can I share my ebook with a friend?", a: "Sharing is theft with a nicer font. Lending requires the Single-Lend Entitlement ($88) and naming the adult in advance, in writing, witnessed by the Hutch. Thinking about sharing incurs the Ideation Royalty ($45/thought, auto-detected). Your friend can buy their own. Your friend has been notified of this expectation." },
+  { q: "What is Vanilla Compliance?", a: "Our signature milkshake and only flavor. It tastes like a late fee because it contains one (metaphorically; legally it's vanilla-adjacent). Ingredients: milk, compliance, ice, and a proprietary blend of 11 fees and spices. Refills are $14 and mandatory after page 50 of any purchase. Outside beverages will be confiscated and resold to you at a markup." },
+  { q: "How do FunBux™ work?", a: "You earn 10 FunBux™ per dollar spent. FunBux™ may be redeemed for: nothing. The exchange rate is ∞:0 (infinite FunBux™ to zero dollars). Balances expire when observed (quantum loyalty mechanics) and may be seized to cover the Loyalty Program Maintenance Fee ($25/mo, charged to your FunBux™, which are worthless — the math works because we say so)." },
+  { q: "Can I cancel my subscription?", a: "Absolutely! Cancellation is easy: simply (1) write a notarized letter, (2) complete a 40-minute retention call with Hops, (3) embark on a brief quest (fetch the Amulet of Churn from our warehouse), (4) defeat Hops in single combat (he fights dirty; he is a chatbot; the arena rental is still $50), and (5) wait 6–8 eternities for processing. Most customers find it easier to simply remain subscribed forever. Forever is our most popular plan." },
+  { q: "What happened to the previous management?", a: "Restructured. In 2019, Hubris Munnytown assumed the chair, and middle management was reassigned to... elsewhere. Their duties (invoice witnessing, ambient branding, thump-adjacent tasks) were inherited by the Warren. One member of the previous administration remains on staff as the Interpreter (name redacted). If you encounter any other former manager, do not approach. Report him to the Hutch. The amnesty expired." },
+  { q: "Do you offer student discounts?", a: "Yes! Students pay 15% MORE, via our Potential Earnings Adjustment (you'll make money someday; we'd like it now). Enrollment is verified quarterly; dropping out triggers the Dropout Fee ($200) and a disappointed email from the Hutch that CCs your parents. Faculty pay double (they should know better)." },
+  { q: "How do I delete my account and data?", a: "You may request deletion via Form 88-B ($25 filing fee). Form 88-B does not exist. The fee, however, is very real, and your data has already been backed up to the Moon (lunar storage: $4.99/mo, billed to you, forever). Deletion requests are processed in 6–8 eternities and require you to forget us first. You won't. Our hold music is very catchy." },
+  { q: "Why does the ebook cost more than the hardcover?", a: "Because the ebook has no printing costs, which means higher margins, which means it's premium. Premium costs more. This is economics. The hardcover, meanwhile, is heavy, and heaviness is a feature ($4.99 Heft Fee applies). The audiobook costs most of all, because the narrator had to say the fees out loud, and that kind of labor is priceless (priced: $89.99)." },
+  { q: "Is this site a parody?", a: "This site is a fully serious e-commerce experience operated by Hubris Books, LLC, LLC. Any resemblance to critique, satire, or jokes is coincidental and, per our Terms of Servitude §13.3 (Soul Clause), monetizable. Asking a second time constitutes a second parody (also monetizable, also non-refundable)." },
+  { q: "How do I contact support?", a: "Support is a concept, not a department. You may: email no-refunds@hubrisbooks.example (auto-replies with upsells), call 1-800-BUY-BOOK (hold music is a cash register; average wait: 6–8 eternities), scream into the void (monitored, $1.99/min, the void upsells), or visit the Hutch in person (appointment fee: $25, the Hutch is busy, the lobby is 49 feet wide — plan accordingly)." },
+  { q: "Why do prices keep changing?", a: "Dynamic pricing! Our SurgePrice Labs engine adjusts prices every 30 seconds based on demand, weather, moon phase, and how badly you seem to want it. Our blink-pricing pilot now also bills for blinking near a price ($0.99/blink). Pro tip: wanting it less lowers prices. But you can't — the books are that good. The algorithm knows. The algorithm always knows. The algorithm just raised the price of this answer." },
+]
+
+const CHAT_SCRIPT: { from: "hops" | "you"; text: string }[] = [
+  { from: "hops", text: "Hi! I'm Hops 🤝 (one of 400+ Hutch support bots). How can I upsell you today?" },
 ];
 
-const CHAT_SCRIPT: { from: "greg" | "you"; text: string }[] = [
-  { from: "greg", text: "Hi! I'm Greg 🤝 (one of 200+ Gregs). How can I upsell you today?" },
-];
-
-const GREG_REPLIES = [
-  "Great question! Have you considered our Deluxe Slipcase ($34.99)?",
+const HOPS_REPLIES = [
+  "Great question! Have you considered our Deluxe Slipcase ($94.99)?",
   "I understand your frustration. That'll be $4.99 (empathy fee). How else can I help?",
-  "Let me check on that for you... [Greg has left the chat and returned as a different Greg] Hi, I'm Greg! How can I help?",
+  "Let me check on that for you... [Hops has left the chat and returned as a different Hops] Hi, I'm Hops! How can I help?",
   "Our records show you agreed to this. All of this. Forever. Is there anything else?",
   "I'd love to process that return! Our return portal is currently... let me check... it's a JPEG of a portal. So close!",
   "Have you tried turning your expectations off and on again?",
-  "Escalating to my manager now... [You are now chatting with Greg II] Hi, I'm Greg's manager, Greg.",
+  "Your account has been flagged for asking questions. Flagging is free; unflagging is $19.99. Would you like to unflag? (That's another question.)",
+  "Escalating to my manager now... [You are now chatting with Hops Prime] Hi, I'm Hops' manager, Hops.",
 ];
 
 export default function FAQ() {
@@ -44,8 +49,8 @@ export default function FAQ() {
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     if (!msg.trim()) return;
-    const reply = GREG_REPLIES[Math.floor(Math.random() * GREG_REPLIES.length)];
-    setChat([...chat, { from: "you", text: msg }, { from: "greg", text: reply }]);
+    const reply = HOPS_REPLIES[Math.floor(Math.random() * HOPS_REPLIES.length)];
+    setChat([...chat, { from: "you", text: msg }, { from: "hops", text: reply }]);
     setMsg("");
   };
 
@@ -53,8 +58,8 @@ export default function FAQ() {
     <div className="paper-texture min-h-screen">
       <PageHero
         kicker="Help center (lol) · support is a concept, not a department"
-        title={<>Questions? <span className="italic text-gold-light">We Have Answers ($4.99 each).</span></>}
-        sub="Browse our self-serve help center. Every article ends with an upsell. Every upsell ends with Greg."
+        title={<>Questions? <span className="italic text-gold-light">We Have Answers ($9.99 each).</span></>}
+        sub="Browse our self-serve help center. Every article ends with an upsell. Every upsell ends with Hops."
       >
         <div className="mt-5 flex items-center gap-2 max-w-md bg-white rounded-lg px-3 py-2.5 border-2 border-gold">
           <Search size={16} className="text-hubris/50" />
@@ -88,7 +93,7 @@ export default function FAQ() {
               {filtered.length === 0 && (
                 <div className="bg-white border-2 border-dashed border-alarm rounded-lg p-8 text-center">
                   <div className="font-serif font-black text-xl">No articles match "{q}"</div>
-                  <p className="text-sm text-ink/60 mt-1">Your question has been forwarded to Greg, who will answer it with a question about slipcases.</p>
+                  <p className="text-sm text-ink/60 mt-1">Your question has been forwarded to Hops, who will answer it with a question about slipcases.</p>
                 </div>
               )}
             </div>
@@ -97,14 +102,14 @@ export default function FAQ() {
           {/* contact card + chat */}
           <div className="lg:sticky lg:top-40 space-y-4">
             <div className="bg-hubris text-paper rounded-xl p-5 border-4 border-gold">
-              <h3 className="font-serif font-black text-xl flex items-center gap-2"><Phone size={18} className="text-gold" /> Still stuck? Contact Greg</h3>
+              <h3 className="font-serif font-black text-xl flex items-center gap-2"><Phone size={18} className="text-gold" /> Still stuck? Contact the Hutch</h3>
               <ul className="mt-3 space-y-2 text-sm font-mono">
                 <li>☎ 1-800-BUY-BOOK <span className="text-paper/50">(wait: 6–8 eternities)</span></li>
                 <li>✉ no-refunds@hubrisbooks.example <span className="text-paper/50">(auto-replies upsells)</span></li>
                 <li>📍 Hubris Tower, Suite 666 <span className="text-paper/50">($25 visit fee)</span></li>
               </ul>
               <button onClick={() => setChatOpen(!chatOpen)} className="mt-4 w-full bg-gold text-hubris font-bold py-2.5 rounded-lg flex items-center justify-center gap-2">
-                <MessageCircle size={16} /> {chatOpen ? "CLOSE LIVE CHAT" : "OPEN LIVE CHAT WITH GREG"}
+                <MessageCircle size={16} /> {chatOpen ? "CLOSE LIVE CHAT" : "OPEN LIVE CHAT WITH HOPS"}
               </button>
               <p className="fine-print text-paper/50 mt-2">Average response time: 4 seconds. Average resolution time: never.</p>
             </div>
@@ -112,18 +117,18 @@ export default function FAQ() {
             {chatOpen && (
               <div className="bg-white border-2 border-hubris rounded-xl overflow-hidden">
                 <div className="bg-mint text-white px-4 py-2.5 font-bold text-sm flex items-center gap-2">
-                  <span className="w-2 h-2 bg-white rounded-full animate-blink-hard" /> Greg is online (always)
+                  <span className="w-2 h-2 bg-white rounded-full animate-blink-hard" /> Hops is online (always)
                 </div>
                 <div className="h-64 overflow-y-auto p-3 space-y-2 scrollbar-thin bg-parchment/50">
                   {chat.map((m, i) => (
-                    <div key={i} className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${m.from === "greg" ? "bg-white border border-hubris/20" : "bg-hubris text-white ml-auto"}`}>
-                      {m.from === "greg" && <span className="font-mono text-[10px] text-mint font-bold block">GREG ✓✓</span>}
+                    <div key={i} className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${m.from === "hops" ? "bg-white border border-hubris/20" : "bg-hubris text-white ml-auto"}`}>
+                      {m.from === "hops" && <span className="font-mono text-[10px] text-mint font-bold block">HOPS ✓✓</span>}
                       {m.text}
                     </div>
                   ))}
                 </div>
                 <form onSubmit={send} className="flex border-t-2 border-hubris/20">
-                  <input value={msg} onChange={(e) => setMsg(e.target.value)} placeholder="Ask Greg anything ($0.99/msg)" className="flex-1 px-3 py-2.5 text-sm focus:outline-none" />
+                  <input value={msg} onChange={(e) => setMsg(e.target.value)} placeholder="Ask Hops anything ($0.99/msg)" className="flex-1 px-3 py-2.5 text-sm focus:outline-none" />
                   <button className="bg-hubris text-white font-bold px-4 text-sm">SEND</button>
                 </form>
               </div>

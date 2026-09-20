@@ -6,16 +6,19 @@ import { Kicker, PageHero, SectionShell } from "../components/chrome";
 
 const PACKAGES = [
   {
-    name: "The Vanity Sprint", price: "$2,999", tag: "BEST FOR FIRST-TIMERS",
-    features: ["Manuscript reception ($299 value!)", "Zero rounds of editing (pure vision)", "Cover design (a stock photo of books)", "10 author copies ($49.99 each)", "Marketing: we think about you often"],
+    name: "Standard Author Package", price: "$2,400.00", tag: "ENTRY-LEVEL EXPLOITATION",
+    features: ["Your manuscript is published", "Copyediting (automated, enthusiastic)", "Two author copies at author expense", "Royalty rate: 0.4% of net of net"],
+    toast: "The automated copyeditor is enthusiastic and always right. Your manuscript is #4,113 in the queue. Resisting its edits is billed hourly.",
   },
   {
-    name: "The Scholarly Grind", price: "$7,499", tag: "MOST PROFITABLE (FOR US)",
-    features: ["Everything in Vanity Sprint", "Peer review by 2 shareholders", "Index (of our other books)", "Library of Congress record (we'll call them)", "25 author copies ($49.99 each, mandatory)"],
+    name: "Serious Scholar Package", price: "$6,900.00", tag: "MOST POPULAR (AMONG THE DESPERATE)",
+    features: ["Everything above, plus a cover", "Your name on the cover (additional $400)", "Peer review in 11 minutes", "Royalty rate: 0.4%, paid in catalog credit"],
+    toast: "Peer review begins in 11 minutes and concludes 11 minutes later. Your name on the cover: +$400 at checkout (names are premium).",
   },
   {
-    name: "The Legacy Monument", price: "$19,999", tag: "INCLUDES A PLAQUE",
-    features: ["Everything in Scholarly Grind", "Leather binding (pleather, don't tell)", "Launch party at the Café (you buy shakes)", "A plaque in Hubris Tower (hallway C)", "100 author copies ($49.99 each, non-optional)"],
+    name: "Legacy Package", price: "$18,500.00", tag: "MAXIMUM LEGACY, MINIMUM READERS",
+    features: ["Your book is shelved face-out in one store for one hour", "A press release, unsent", "Inclusion in a reading list we sell", "Royalty rate: 0.4%, waived for administrative simplicity"],
+    toast: "Your hour of face-out shelving is scheduled for 3:14 AM. The press release has been written, printed, and framed — unsent, as promised.",
   },
 ];
 
@@ -79,7 +82,7 @@ export default function Authors() {
               <div className="text-center py-6">
                 <Check size={48} className="mx-auto text-mint" />
                 <h2 className="font-serif font-black text-2xl mt-3">Proposal Received & Invoiced!</h2>
-                <p className="text-sm text-ink/60 mt-2">"{title || "Untitled"}" is now in our queue (position #4,112). A shareholder will skim it during Q3. Your $299 has been put to excellent use (Greg's yacht fund).</p>
+                <p className="text-sm text-ink/60 mt-2">"{title || "Untitled"}" is now in our queue (position #4,112). A shareholder will skim it during Q3. Your $299 has been put to excellent use (the Hutch Fund).</p>
                 <button onClick={() => { setSubmitted(false); setTitle(""); setIdea(""); }} className="mt-4 border-2 border-hubris font-bold px-5 py-2 rounded-lg text-sm">SUBMIT ANOTHER ($299)</button>
               </div>
             )}
@@ -104,8 +107,8 @@ export default function Authors() {
                 <tbody>
                   {ROYALTY_ROWS.map(([range, rate, note]) => (
                     <tr key={range} className="border-b border-dashed border-hubris/20 last:border-0">
-                      <td className="py-2 font-mono text-xs">{range}</td>
-                      <td className="py-2 font-black text-alarm">{rate}</td>
+                      <td className="py-2 pr-3 font-mono text-xs whitespace-nowrap">{range}</td>
+                      <td className="py-2 pr-3 font-black text-alarm whitespace-nowrap">{rate}</td>
                       <td className="py-2 text-xs text-ink/60">{note}</td>
                     </tr>
                   ))}
@@ -119,8 +122,8 @@ export default function Authors() {
       {/* packages */}
       <div className="bg-parchment border-y-4 border-hubris">
         <SectionShell className="!py-10">
-          <Kicker>Publishing packages · pick your price point of entry</Kicker>
-          <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Investment Tiers (your investment, our tiers)</h2>
+          <Kicker>Author packages · dignity sold separately</Kicker>
+          <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Select Your Package (all sales final, all authors grateful)</h2>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
             {PACKAGES.map((p) => (
               <div key={p.name} className="bg-white border-2 border-hubris rounded-xl p-6 flex flex-col hover:shadow-[5px_5px_0_rgba(15,30,61,1)] transition-all">
@@ -132,8 +135,8 @@ export default function Authors() {
                     <li key={f} className="flex gap-1.5"><Check size={14} className="text-mint mt-0.5 shrink-0" /> {f}</li>
                   ))}
                 </ul>
-                <button onClick={() => pushToast({ kind: "upsell", title: `${p.name} selected!`, body: "Excellent. A contracts gremlin will email you 90 pages. Author copies are mandatory and delicious." })} className="mt-4 bg-hubris text-white font-bold py-2.5 rounded-lg hover:bg-hubris-light">
-                  INVEST IN YOURSELF
+                <button onClick={() => pushToast({ kind: "upsell", title: `${p.name} selected!`, body: p.toast })} className="mt-4 bg-hubris text-white font-bold py-2.5 rounded-lg hover:bg-hubris-light">
+                  SELECT PACKAGE
                 </button>
               </div>
             ))}

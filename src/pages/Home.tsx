@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight, BadgeDollarSign, BookOpen, Building2, Flame, Newspaper, Quote,
-  ShieldAlert, ShoppingCart, Sparkles, Star, Timer, TrendingUp, Trophy, Zap, Check,
+  ShieldAlert, ShoppingCart, Timer, TrendingUp, Trophy, Zap, Check,
 } from "lucide-react";
 import { BOOKS, FAKE_REVIEWS, IMPRINTS } from "../data/books";
 import { NEWS } from "../data/news";
@@ -13,7 +13,6 @@ import { BookCard, Cover, Stars } from "../components/books";
 
 export default function Home() {
   const { addToCart, pushToast, bumpHubris, hubrisScore } = useShop();
-  const navigate = useNavigate();
   const featured = BOOKS[0];
   const [countdown, setCountdown] = useState(14 * 60 + 33);
 
@@ -132,7 +131,7 @@ export default function Home() {
             View full catalog <ArrowRight size={15} />
           </Link>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mt-6">
           {BOOKS.slice(0, 4).map((b) => <BookCard key={b.id} book={b} />)}
         </div>
       </SectionShell>
@@ -164,7 +163,7 @@ export default function Home() {
         <Kicker><span className="flex items-center gap-1"><TrendingUp size={12} /> Demand-based pricing in action</span></Kicker>
         <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Trending Now <span className="text-alarm">(prices rising live)</span></h2>
         <p className="text-ink/60 mt-2 max-w-2xl">Our algorithm adjusts prices every 30 seconds based on demand, weather, moon phase, and how badly you seem to want it. The books below are <strong>2.4× surge</strong> because you're looking at them.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mt-6">
           {trending.map((b) => <BookCard key={b.id} book={b} />)}
         </div>
       </SectionShell>

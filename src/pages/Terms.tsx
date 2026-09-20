@@ -47,7 +47,7 @@ export default function Terms() {
         title={<>The Fine Print, <span className="italic text-gold-light">Enlarged Slightly</span></>}
         sub="Please read all 15 sections carefully. Quizzes are random. Compliance is mandatory. Skimming is a violation (§12)."
       >
-        <div className="mt-4 font-mono text-sm bg-black/30 inline-block px-4 py-2 rounded-lg border border-gold/40">
+        <div className="mt-4 max-w-full font-mono text-sm bg-black/30 inline-block px-4 py-2 rounded-lg border border-gold/40">
           Acknowledged: <strong className="text-gold-light">{readCount}/{SECTIONS.length}</strong> sections
         </div>
       </PageHero>

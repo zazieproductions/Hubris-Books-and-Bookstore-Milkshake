@@ -133,15 +133,15 @@ export default function Checkout() {
       </PageHero>
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="bg-white border-[3px] border-hubris rounded-xl p-6 sm:p-8 shadow-[6px_6px_0_rgba(15,30,61,1)]">
+        <div className="bg-white border-[3px] border-hubris rounded-xl p-4 sm:p-8 shadow-[5px_5px_0_rgba(15,30,61,1)] sm:shadow-[6px_6px_0_rgba(15,30,61,1)]">
           {step === 0 && (
             <div>
               <h2 className="font-serif font-black text-2xl">Review Your Cart (again, slower)</h2>
               <p className="text-sm text-ink/60 mt-1">Look at it. Really look at it. These books need you.</p>
               <div className="mt-4 space-y-2">
                 {cart.map((l) => (
-                  <div key={l.book.id} className="flex justify-between bg-parchment rounded px-3 py-2 text-sm">
-                    <span>{l.book.title} × {l.qty}</span>
+                  <div key={l.book.id} className="flex justify-between gap-3 bg-parchment rounded px-3 py-2 text-sm">
+                    <span className="min-w-0 break-words">{l.book.title} × {l.qty}</span>
                     <strong>${(l.book.price * l.qty).toFixed(2)}</strong>
                   </div>
                 ))}
@@ -312,14 +312,14 @@ export default function Checkout() {
           )}
 
           {/* nav */}
-          <div className="flex gap-3 mt-8 pt-6 border-t-2 border-dashed border-hubris/20">
+          <div className="flex gap-2 sm:gap-3 mt-8 pt-6 border-t-2 border-dashed border-hubris/20">
             {step > 0 && step !== 8 && (
-              <button onClick={() => setStep(step - 1)} className="border-2 border-hubris font-bold px-5 py-3 rounded-lg flex items-center gap-1 hover:bg-parchment">
+              <button onClick={() => setStep(step - 1)} className="min-h-12 border-2 border-hubris font-bold px-3 sm:px-5 py-3 rounded-lg flex items-center gap-1 hover:bg-parchment shrink-0">
                 <ArrowLeft size={15} /> Back
               </button>
             )}
-            <button onClick={next} className={`flex-1 font-black py-3 rounded-lg flex items-center justify-center gap-2 text-white ${canAdvance() ? "bg-alarm hover:brightness-110" : "bg-ink/40"}`}>
-              {step === STEPS.length - 1 ? <><Lock size={16} /> PLACE NON-REFUNDABLE ORDER — ${total.toFixed(2)}</> : <>CONTINUE <ArrowRight size={16} /></>}
+            <button onClick={next} className={`min-h-12 min-w-0 flex-1 font-black text-xs sm:text-sm py-3 px-2 rounded-lg flex items-center justify-center gap-2 text-white text-center ${canAdvance() ? "bg-alarm hover:brightness-110" : "bg-ink/40"}`}>
+              {step === STEPS.length - 1 ? <><Lock size={16} className="shrink-0" /> PLACE NON-REFUNDABLE ORDER — ${total.toFixed(2)}</> : <>CONTINUE <ArrowRight size={16} /></>}
             </button>
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[10px] text-ink/40">
@@ -350,7 +350,7 @@ export default function Checkout() {
 function Field({ label, value, onChange, placeholder, type = "text" }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder: string; type?: string }) {
   return (
     <label className="block">
-      <span className="font-mono text-[11px] uppercase tracking-widest font-bold text-ink/60">{label}</span>
+      <span className="block font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.12em] sm:tracking-widest font-bold text-ink/60 leading-relaxed">{label}</span>
       <input type={type} value={value} onChange={onChange} placeholder={placeholder} className="mt-1 w-full border-2 border-hubris/30 focus:border-hubris rounded-lg px-3 py-2.5 text-sm focus:outline-none" />
     </label>
   );

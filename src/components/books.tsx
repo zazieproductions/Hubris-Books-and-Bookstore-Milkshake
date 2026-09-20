@@ -124,7 +124,7 @@ export function Price({ book, big = false }: { book: Book; big?: boolean }) {
           </span>
         )}
       </div>
-      <div className="fine-print text-ink/45">*Savings calculated against a price we invented this morning. Plus applicable fees (all of them).</div>
+      <div className="fine-print text-ink/45 max-[639px]:hidden">*Savings calculated against a price we invented this morning. Plus applicable fees (all of them).</div>
     </div>
   );
 }
@@ -153,24 +153,24 @@ export function BookCard({ book }: { book: Book }) {
   };
 
   return (
-    <div className="bg-white border-2 border-hubris rounded-lg overflow-hidden flex flex-col hover:shadow-[6px_6px_0_rgba(15,30,61,1)] hover:-translate-y-0.5 transition-all group">
-      <Link to={`/book/${book.id}`} className="p-4 pb-0 block">
+    <div className="min-w-0 bg-white border-2 border-hubris rounded-lg overflow-hidden flex flex-col hover:shadow-[6px_6px_0_rgba(15,30,61,1)] hover:-translate-y-0.5 transition-all group">
+      <Link to={`/book/${book.id}`} className="p-2.5 sm:p-4 pb-0 block">
         <Cover book={book} />
       </Link>
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-2.5 sm:p-4 flex flex-col flex-1">
         {book.stockWarning && (
-          <div className="font-mono text-[10px] text-alarm font-bold flex items-center gap-1 mb-1">
+          <div className="font-mono text-[9px] sm:text-[10px] text-alarm font-bold flex items-center gap-1 mb-1 leading-tight">
             <Flame size={11} /> {book.stockWarning}
           </div>
         )}
-        <Link to={`/book/${book.id}`} className="font-serif font-bold text-lg leading-snug hover:text-alarm transition-colors">
+        <Link to={`/book/${book.id}`} className="font-serif font-bold text-[15px] sm:text-lg leading-snug line-clamp-3 hover:text-alarm transition-colors">
           {book.title}
         </Link>
-        <div className="text-xs text-ink/60 italic mt-0.5 line-clamp-1">{book.subtitle}</div>
-        <div className="text-xs mt-1">by <span className="font-semibold">{book.author}</span></div>
-        <div className="flex items-center gap-2 mt-1.5">
+        <div className="text-[11px] sm:text-xs text-ink/60 italic mt-0.5 line-clamp-1">{book.subtitle}</div>
+        <div className="text-[11px] sm:text-xs mt-1 truncate">by <span className="font-semibold">{book.author}</span></div>
+        <div className="flex items-center gap-1.5 mt-1.5 min-w-0">
           <Stars n={5} />
-          <span className="font-mono text-[10px] text-ink/50">(4.{book.id.length % 9} · {120 + book.id.length * 37} reviews, all 5★ or deleted)</span>
+          <span className="font-mono text-[9px] sm:text-[10px] text-ink/50 truncate">(4.{book.id.length % 9} · {120 + book.id.length * 37} reviews)</span>
         </div>
         <div className="flex flex-wrap gap-1 mt-2">
           {book.badges.slice(0, 2).map((b) => (
@@ -178,11 +178,11 @@ export function BookCard({ book }: { book: Book }) {
           ))}
         </div>
         <div className="mt-3"><Price book={book} /></div>
-        <div className="flex gap-2 mt-3 pt-3 border-t border-dashed border-hubris/20">
-          <button onClick={quickAdd} className="flex-1 bg-hubris hover:bg-hubris-light text-white font-bold text-sm rounded px-3 py-2.5 flex items-center justify-center gap-1.5 transition-colors">
-            <ShoppingCart size={15} /> Add to Cart
+        <div className="flex gap-1.5 sm:gap-2 mt-3 pt-3 border-t border-dashed border-hubris/20">
+          <button onClick={quickAdd} className="min-h-11 min-w-0 flex-1 bg-hubris hover:bg-hubris-light text-white font-bold text-[11px] sm:text-sm rounded px-1.5 sm:px-3 py-2 flex items-center justify-center gap-1 sm:gap-1.5 transition-colors">
+            <ShoppingCart size={14} className="shrink-0" /> <span className="min-w-0 truncate">Add to Cart</span>
           </button>
-          <Link to={`/book/${book.id}`} className="border-2 border-hubris rounded px-3 py-2 text-hubris hover:bg-parchment transition-colors" title="Details">
+          <Link to={`/book/${book.id}`} className="min-h-11 min-w-10 border-2 border-hubris rounded px-2 sm:px-3 py-2 text-hubris hover:bg-parchment transition-colors flex items-center justify-center" title="Details" aria-label={`View ${book.title} details`}>
             <Eye size={15} />
           </Link>
         </div>

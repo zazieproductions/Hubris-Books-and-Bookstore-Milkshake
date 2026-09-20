@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft, BadgeCheck, Check, Flame, Heart, Minus, Plus, RotateCcw,
-  ShieldCheck, ShoppingCart, Star, Truck, Zap, Lock,
+  ShieldCheck, ShoppingCart, Truck, Zap, Lock,
 } from "lucide-react";
 import { BOOKS, UPSELL_ROULETTE } from "../data/books";
 import { useShop } from "../store/ShopContext";
@@ -37,7 +37,6 @@ export default function BookDetail() {
   const lineTotal = unitPrice * qty + upsellTotal + (giftWrap ? 8.99 * qty : 0) + (insurance ? 6.49 * qty : 0);
 
   useEffect(() => {
-    setQtyLocal(1); setAddedUpsells([]); setGiftWrap(false); setInsurance(true); setWished(false); setReadSample(false);
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -71,14 +70,14 @@ export default function BookDetail() {
   };
 
   return (
-    <div className="paper-texture min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 pt-6">
+    <div className="paper-texture min-h-screen pb-24 lg:pb-0">
+      <div className="max-w-7xl mx-auto px-4 pt-5 sm:pt-6">
         <Link to="/catalog" className="inline-flex items-center gap-1 text-sm text-hubris hover:text-alarm font-semibold">
           <ArrowLeft size={14} /> Back to catalog
         </Link>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-[320px_1fr_340px] gap-8">
+      <div className="max-w-7xl mx-auto min-w-0 px-4 py-6 grid lg:grid-cols-[320px_minmax(0,1fr)_340px] gap-6 lg:gap-8">
         {/* Cover column */}
         <div>
           <div className="lg:sticky lg:top-40">
@@ -157,8 +156,8 @@ export default function BookDetail() {
               ["Publisher", "Hubris Books, LLC, LLC"], ["Imprint", book.imprint],
               ["Dimensions", "6×9 in, 4 lbs of authority"], ["Binding", "FOIA-resistant Smythe-sewn"],
             ].map(([k, v]) => (
-              <div key={k} className="flex justify-between border-b border-dashed border-hubris/20 py-1.5">
-                <span className="text-ink/50">{k}</span><span className="font-mono text-xs font-semibold text-right">{v}</span>
+              <div key={k} className="flex justify-between gap-3 border-b border-dashed border-hubris/20 py-1.5">
+                <span className="text-ink/50 shrink-0">{k}</span><span className="min-w-0 font-mono text-xs font-semibold text-right break-words">{v}</span>
               </div>
             ))}
           </div>
@@ -168,7 +167,7 @@ export default function BookDetail() {
           <div className="space-y-3 mt-3">
             {REVIEW_POOL.map((r, i) => (
               <div key={i} className="bg-white border border-hubris/25 rounded-lg p-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Stars n={r.stars} />
                   <span className="font-bold text-sm">{r.name}</span>
                   <span className="font-mono text-[10px] text-mint flex items-center gap-0.5"><BadgeCheck size={11} /> Verified Purchaser (verified: purchased)</span>
@@ -242,6 +241,19 @@ export default function BookDetail() {
               <Lock size={10} /> Secure checkout · No confirmation · No take-backs · <RotateCcw size={10} /> Returns are a myth
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Keep the primary action reachable after the long description on a phone. */}
+      <div className="lg:hidden fixed inset-x-0 bottom-0 z-[35] border-t-2 border-gold bg-paper/95 px-3 pt-2 backdrop-blur safe-bottom shadow-[0_-4px_14px_rgba(15,30,61,0.16)]">
+        <div className="flex items-center gap-3 max-w-7xl mx-auto">
+          <div className="min-w-0">
+            <div className="font-mono text-[9px] uppercase tracking-widest text-ink/50">{qty} {qty === 1 ? "copy" : "copies"}</div>
+            <div className="font-black text-xl text-alarm tabular-nums">${lineTotal.toFixed(2)}</div>
+          </div>
+          <button onClick={buyNow} className="min-h-11 flex-1 bg-hubris text-white font-black rounded-lg px-3 py-2.5 flex items-center justify-center gap-2 text-sm">
+            <ShoppingCart size={16} /> ADD TO CART
+          </button>
         </div>
       </div>
 

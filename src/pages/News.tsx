@@ -93,7 +93,7 @@ export default function News() {
                 <span className="flex items-center gap-1"><CalendarDays size={12} /> {featured.date}</span>
                 <span>by {featured.author}</span>
                 <span>· {featured.readMinutes} min read</span>
-                <span className="text-gold-light font-bold ml-auto flex items-center gap-1">READ THE FULL STATEMENT <ArrowRight size={13} /></span>
+                <span className="text-gold-light font-bold sm:ml-auto flex items-center gap-1">READ THE FULL STATEMENT <ArrowRight size={13} /></span>
               </div>
             </div>
           </Link>
@@ -107,7 +107,7 @@ export default function News() {
               <button
                 key={c}
                 onClick={() => setCat(c)}
-                className={`font-mono text-xs font-bold px-3 py-1.5 rounded-full border-2 transition-colors ${
+                className={`min-h-10 font-mono text-xs font-bold px-3 py-1.5 rounded-full border-2 transition-colors ${
                   cat === c ? "bg-hubris text-gold-light border-hubris" : "text-hubris/70 border-hubris/25 hover:border-hubris"
                 }`}
               >

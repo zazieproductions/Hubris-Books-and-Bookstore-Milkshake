@@ -1,3 +1,5 @@
+/* The provider and its hooks intentionally live together so consumers share one store. */
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Book } from "../data/books";
 

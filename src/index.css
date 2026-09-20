@@ -18,7 +18,24 @@
 }
 
 html { scroll-behavior: smooth; }
-body { background: #FAF6ED; color: #1A1B1E; font-family: "Inter", sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  background: #FAF6ED;
+  color: #1A1B1E;
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+#root { min-height: 100vh; }
+img, svg { max-width: 100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button, [role="button"] { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid #FF6FA5;
+  outline-offset: 2px;
+}
 .font-serif-d { font-family: "Fraunces", Georgia, serif; }
 
 .paper-texture {
@@ -63,3 +80,33 @@ body { background: #FAF6ED; color: #1A1B1E; font-family: "Inter", sans-serif; }
 .book-spine { box-shadow: inset 4px 0 8px rgba(0,0,0,0.25), inset -2px 0 4px rgba(255,255,255,0.15), 6px 8px 0 rgba(15,30,61,0.9); }
 .book-spine-sm { box-shadow: inset 3px 0 6px rgba(0,0,0,0.25), 4px 5px 0 rgba(15,30,61,0.9); }
 .fine-print { font-size: 10px; line-height: 1.4; }
+
+/* Small-screen ergonomics --------------------------------------------------
+   The shop is intentionally loud, but it should never make a phone feel
+   cramped. These helpers keep the persistent chrome and long copy out of the
+   way without changing the desktop art direction. */
+.mobile-scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.mobile-scroll-x > * { flex-shrink: 0; }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+@media (max-width: 639px) {
+  html { scroll-padding-top: 5.5rem; }
+  input, select, textarea { font-size: 16px; }
+  .fine-print { font-size: 10px; }
+  /* Keep decorative shadows from eating the last few pixels of a narrow
+     viewport. Cards still have a strong border, just less horizontal spill. */
+  .mobile-card-shadow { box-shadow: 4px 4px 0 rgba(15,30,61,0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

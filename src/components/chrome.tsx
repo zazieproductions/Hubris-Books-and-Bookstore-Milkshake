@@ -56,7 +56,7 @@ export function Header() {
     <header className="sticky top-0 z-40">
       <div className="bg-hubris text-paper border-b-4 border-gold">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-3 py-3">
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-3 group">
             <div className="w-11 h-11 rounded-lg bg-paper flex items-center justify-center relative shrink-0 border-2 border-gold group-hover:rotate-6 transition-transform">
               <span className="font-serif font-black text-hubris text-2xl leading-none">H</span>
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-alarm rounded-full text-[9px] flex items-center justify-center text-white font-bold">$</span>
@@ -94,13 +94,23 @@ export function Header() {
           </div>
 
           <div className="flex lg:hidden items-center gap-2">
-            <button onClick={() => navigate("/cart")} className="relative bg-gold text-hubris rounded p-2">
+            <button
+              onClick={() => navigate("/cart")}
+              className="relative min-h-11 min-w-11 bg-gold text-hubris rounded-lg p-2 flex items-center justify-center"
+              aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ""}`}
+            >
               <ShoppingCart size={18} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-alarm text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cartCount}</span>
               )}
             </button>
-            <button onClick={() => setOpen(!open)} className="text-paper p-2" aria-label="Menu">
+            <button
+              onClick={() => setOpen(!open)}
+              className="text-paper min-h-11 min-w-11 p-2 flex items-center justify-center rounded-lg hover:bg-hubris-light"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
+            >
               {open ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
@@ -126,14 +136,20 @@ export function Header() {
 
       {/* mobile nav */}
       {open && (
-        <div className="lg:hidden bg-hubris-light border-b-4 border-gold px-4 py-3 space-y-1">
+        <div id="mobile-navigation" className="lg:hidden max-h-[calc(100dvh-5rem)] overflow-y-auto bg-hubris-light border-b-4 border-gold px-3 py-3 space-y-1">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded text-paper font-semibold hover:bg-hubris">
-              {n.label} <span className="font-mono text-[10px] text-gold/70 ml-1">{n.sub}</span>
+            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="min-h-11 flex items-center justify-between gap-3 px-3 py-2 rounded text-paper font-semibold hover:bg-hubris">
+              <span>{n.label}</span>
+              <span className="font-mono text-[10px] text-gold/70 text-right">{n.sub}</span>
             </Link>
           ))}
-          <div className="font-mono text-[11px] text-gold-light px-3 pt-2">
-            ⏱ Browsing fee so far: ${feeStr} (scrolling bills $127–$389/scroll) · ★ FunBux™: {loyaltyPoints.toLocaleString()}
+          <Link to="/faq" onClick={() => setOpen(false)} className="min-h-11 flex items-center justify-between gap-3 px-3 py-2 rounded text-paper font-semibold hover:bg-hubris">
+            <span>Help</span>
+            <span className="font-mono text-[10px] text-gold/70">answers, allegedly</span>
+          </Link>
+          <div className="font-mono text-[11px] leading-relaxed text-gold-light px-3 pt-2 pb-1 border-t border-white/10">
+            ⏱ Browsing fee so far: ${feeStr}<br />
+            Scrolling bills $127–$389/scroll · ★ FunBux™: {loyaltyPoints.toLocaleString()}
           </div>
         </div>
       )}
@@ -164,14 +180,14 @@ export function Footer() {
       </div>
       <div className="max-w-7xl mx-auto px-4 py-12 grid gap-10 md:grid-cols-2 lg:grid-cols-5">
         <div className="lg:col-span-2">
-          <div className="font-serif font-black text-2xl">HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span></div>
+          <div className="font-serif font-black text-2xl leading-tight break-words">HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span></div>
           <p className="text-sm text-paper/60 mt-3 max-w-sm">
             Founded in 2006, Bookstore Milkshake is now an imprint of Hubris Books, LLC, LLC, specializing in theoretical and practical issues in librarianship from a <em className="text-gold-light">profitable</em> perspective, for an audience of professional librarians and students of library science who have already entered their card details.
           </p>
           <div className="mt-4 space-y-1.5 font-mono text-xs text-paper/60">
-            <div className="flex items-center gap-2"><MapPin size={12} /> Hubris Tower, 1 Monetization Plaza, Suite 666, Dayton OH</div>
-            <div className="flex items-center gap-2"><Phone size={12} /> 1-800-BUY-BOOK (1-800-289-2665) — hold music is just a cash register</div>
-            <div className="flex items-center gap-2"><Mail size={12} /> no-refunds@hubrisbooks.example</div>
+            <div className="flex items-start gap-2 min-w-0"><MapPin size={12} className="shrink-0 mt-0.5" /> <span className="min-w-0 break-words">Hubris Tower, 1 Monetization Plaza, Suite 666, Dayton OH</span></div>
+            <div className="flex items-start gap-2 min-w-0"><Phone size={12} className="shrink-0 mt-0.5" /> <span className="min-w-0 break-words">1-800-BUY-BOOK (1-800-289-2665) — hold music is just a cash register</span></div>
+            <div className="flex items-start gap-2 min-w-0"><Mail size={12} className="shrink-0 mt-0.5" /> <span className="min-w-0 break-words">no-refunds@hubrisbooks.example</span></div>
           </div>
           <form onSubmit={subscribe} className="mt-5">
             <label className="font-mono text-[11px] uppercase tracking-widest text-gold-light">Join 400,000 subscribers who can't leave</label>
@@ -260,7 +276,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
 export function ToastHost() {
   const { toasts, dismissToast, consentBannerUp } = useShop();
   return (
-    <div className={`fixed right-4 z-[60] space-y-2 w-[calc(100vw-2rem)] max-w-sm ${consentBannerUp ? "top-24 lg:top-36" : "bottom-4"}`}>
+    <div className={`fixed right-4 z-[60] space-y-2 w-[calc(100vw-2rem)] max-w-sm ${consentBannerUp ? "top-24 lg:top-36" : "bottom-20 sm:bottom-4"}`}>
       {toasts.map((t) => (
         <div key={t.id} className="bg-hubris text-paper border-2 border-gold rounded-lg shadow-2xl p-3 flex gap-3 animate-[floaty_0.4s_ease-out]">
           <div className={`mt-0.5 shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold ${
@@ -304,7 +320,7 @@ export function ScrollFeeMeter() {
 
   return (
     <div
-      className={`fixed left-3 sm:left-4 z-50 pointer-events-none select-none ${consentBannerUp ? "top-24 lg:top-36" : "bottom-3 sm:bottom-4"}`}
+      className={`fixed left-2 sm:left-4 z-30 pointer-events-none select-none ${consentBannerUp ? "hidden sm:block top-24 lg:top-36" : "bottom-2 sm:bottom-4"}`}
       aria-label={`Scrolling fee: $${money(scrollFee)}`}
     >
       {/* each charge floats up off your wallet */}
@@ -323,15 +339,15 @@ export function ScrollFeeMeter() {
       <Link
         to="/terms"
         title="Scroll-Triggered Appreciation Fee (Terms §15): every scroll bills $127–$389. Folded into your Browsing fee. The scroll wheel is a payment terminal."
-        className={`pointer-events-auto block rounded-lg border-2 px-3 py-2 shadow-[4px_4px_0_rgba(15,30,61,0.9)] transition-colors ${
+        className={`pointer-events-auto block rounded-lg border-2 px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-[3px_3px_0_rgba(15,30,61,0.9)] sm:shadow-[4px_4px_0_rgba(15,30,61,0.9)] transition-colors ${
           hot ? "bg-alarm border-alarm text-white animate-pulse-ring" : "bg-hubris border-gold text-gold-light hover:border-gold-light"
         }`}
       >
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] flex items-center gap-1.5">
+        <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] flex items-center gap-1.5">
           <ArrowDownUp size={11} /> Scrolling fee
         </div>
         {/* re-keyed per scroll so the pop animation replays on every charge */}
-        <div key={scrollCount} className={`font-mono font-black text-lg leading-tight tabular-nums text-white ${scrollCount > 0 ? "animate-fee-bump" : ""}`}>
+        <div key={scrollCount} className={`font-mono font-black text-base sm:text-lg leading-tight tabular-nums text-white ${scrollCount > 0 ? "animate-fee-bump" : ""}`}>
           ${money(scrollFee)}
         </div>
         <div className={`fine-print ${hot ? "text-white/80" : "text-paper/50"}`}>
@@ -402,15 +418,15 @@ export function CookieBanner() {
   ];
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
-      <div className="max-w-4xl mx-auto bg-paper border-4 border-alarm rounded-xl shadow-[8px_8px_0_rgba(217,45,32,1)] overflow-hidden">
-        <div className="bg-ink text-paper px-4 py-2 flex items-center gap-2 font-mono text-xs">
+    <div className="fixed inset-x-0 bottom-0 z-50 p-2 sm:p-4 pb-[calc(0.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <div className="max-w-4xl mx-auto max-h-[82dvh] overflow-y-auto bg-paper border-4 border-alarm rounded-xl shadow-[5px_5px_0_rgba(217,45,32,1)] sm:shadow-[8px_8px_0_rgba(217,45,32,1)]">
+        <div className="bg-ink text-paper px-3 sm:px-4 py-2 flex items-center gap-2 font-mono text-[11px] sm:text-xs">
           <Cookie size={14} className="text-gold" />
           <span className="font-bold text-alarm">● CONSENT HARVEST TERMINAL</span>
           <span className="text-paper/50 hidden sm:inline">— resistance is metered at $4.99/second · by reading this banner you have consented to banners</span>
         </div>
         {!prefs ? (
-          <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
             <div className="flex-1">
               <p className="text-sm">
                 We value your privacy, which is why we'd like to purchase it. This site deploys <strong>14,022 trackers</strong> across <strong>10 categories</strong> and <strong>312 vendors</strong>, including your appliances, your gait, your dreams (adjacent), and one (1) oracle.
@@ -418,16 +434,16 @@ export function CookieBanner() {
               <p className="fine-print text-ink/50 mt-1">Consent string: NECESSARY(all).FOREVER(true).SOUL(hashed,blessed).ORACLE(consulted).OBJECTIONS(waived).REFUNDS(myth).</p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
-              <button onClick={acceptAll} className="bg-mint text-white font-bold px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring sm:whitespace-nowrap text-center">
+              <button onClick={acceptAll} className="min-h-11 bg-mint text-white font-bold px-4 sm:px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring sm:whitespace-nowrap text-center">
                 ACCEPT ALL & WAIVE OBJECTIONS ✓
               </button>
-              <button onClick={() => setPrefs(true)} className="text-xs underline text-hubris/60 hover:text-hubris px-2">
+              <button onClick={() => setPrefs(true)} className="min-h-11 text-xs underline text-hubris/60 hover:text-hubris px-2">
                 manage preferences (futile)
               </button>
               <button
                 onClick={handleReject}
                 onMouseEnter={() => rejectClicks >= 1 && setDodging(true)}
-                className={`fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform ${dodging ? "translate-x-8 -rotate-6 scale-90" : ""}`}
+                className={`min-h-11 fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform ${dodging ? "translate-x-8 -rotate-6 scale-90" : ""}`}
               >
                 {rejectLabels[rejectClicks]}
               </button>
@@ -454,8 +470,8 @@ function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => 
   };
 
   return (
-    <div className="p-4">
-      <div className="font-mono text-[11px] font-bold text-alarm uppercase tracking-widest mb-2">
+    <div className="p-3 sm:p-4">
+      <div className="font-mono text-[10px] sm:text-[11px] font-bold text-alarm uppercase tracking-widest mb-2">
         Tracker preferences · 10 categories · 312 vendors · 0 off-switches
       </div>
       <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin pr-1">
@@ -477,8 +493,8 @@ function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => 
         ))}
       </div>
       <div className="flex gap-2 mt-3 items-center">
-        <button onClick={onBack} className="text-xs underline text-hubris/60 px-2">← back</button>
-        <button onClick={onAccept} className="ml-auto bg-mint text-white font-bold px-6 py-2 rounded-lg text-sm">CONFIRM MY COMPLIANCE</button>
+        <button onClick={onBack} className="min-h-11 text-xs underline text-hubris/60 px-2">← back</button>
+        <button onClick={onAccept} className="min-h-11 ml-auto bg-mint text-white font-bold px-4 sm:px-6 py-2 rounded-lg text-sm">CONFIRM MY COMPLIANCE</button>
       </div>
       <p className="fine-print text-ink/50 mt-2">Note: the toggles above are for display purposes. Like democracy in our corporate charter. Withdrawing consent requires a quest (fetch the Amulet of Opt-Out from our warehouse; the warehouse is a metaphor; the quest is real).</p>
     </div>
@@ -518,7 +534,7 @@ export function RetentionModal() {
 
   return (
     <div className="fixed inset-0 z-50 bg-hubris/80 flex items-center justify-center p-4" onClick={() => setShow(false)}>
-      <div className="bg-paper max-w-md w-full rounded-xl border-4 border-gold shadow-2xl p-6 relative" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-paper max-w-md w-full max-h-[90dvh] overflow-y-auto rounded-xl border-4 border-gold shadow-2xl p-4 sm:p-6 relative" onClick={(e) => e.stopPropagation()}>
         <button onClick={() => setShow(false)} className="absolute top-2 right-3 text-ink/30 hover:text-ink text-xs underline">no thanks, I hate saving*</button>
         <div className="text-center">
           <Sparkles className="mx-auto text-gold" size={32} />
@@ -542,12 +558,12 @@ export function RetentionModal() {
 export function PageHero({ kicker, title, sub, children }: { kicker: string; title: React.ReactNode; sub?: string; children?: React.ReactNode }) {
   return (
     <div className="bg-hubris text-paper hubris-grid border-b-4 border-gold">
-      <div className="max-w-7xl mx-auto px-4 py-10 sm:py-14">
-        <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold-light flex items-center gap-2">
-          <Bell size={12} /> {kicker}
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-14">
+        <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em] text-gold-light flex flex-wrap items-center gap-2 leading-relaxed break-words">
+          <Bell size={12} className="shrink-0" /> <span>{kicker}</span>
         </div>
-        <h1 className="font-serif font-black text-3xl sm:text-5xl mt-3 leading-tight">{title}</h1>
-        {sub && <p className="text-paper/70 mt-3 max-w-2xl">{sub}</p>}
+        <h1 className="font-serif font-black text-3xl sm:text-5xl mt-3 leading-[1.08] break-words">{title}</h1>
+        {sub && <p className="text-paper/70 mt-3 max-w-2xl leading-relaxed">{sub}</p>}
         {children}
       </div>
     </div>
@@ -555,13 +571,13 @@ export function PageHero({ kicker, title, sub, children }: { kicker: string; tit
 }
 
 export function SectionShell({ children, className = "", id }: { children: React.ReactNode; className?: string; id?: string }) {
-  return <div id={id} className={`max-w-7xl mx-auto px-4 py-10 sm:py-14 scroll-mt-32 ${className}`}>{children}</div>;
+  return <div id={id} className={`max-w-7xl mx-auto min-w-0 px-4 py-8 sm:py-14 scroll-mt-32 ${className}`}>{children}</div>;
 }
 
 export function Kicker({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-alarm font-semibold flex items-center gap-2">
-      <ChevronDown size={12} /> {children}
+    <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em] text-alarm font-semibold flex flex-wrap items-center gap-2 leading-relaxed">
+      <ChevronDown size={12} className="shrink-0" /> <span className="min-w-0 break-words">{children}</span>
     </div>
   );
 }

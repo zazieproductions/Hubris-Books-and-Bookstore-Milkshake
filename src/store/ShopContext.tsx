@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Book } from "../data/books";
 
 export interface CartLine {
@@ -6,6 +6,19 @@ export interface CartLine {
   qty: number;
   giftWrap: boolean;
   insurance: boolean;
+}
+
+/** One billable scroll event. `id` is the running scroll count at the time of billing. */
+export interface ScrollBump {
+  id: number;
+  amount: number;
+}
+
+interface ScrollLedger {
+  total: number;
+  count: number;
+  /** The last few bumps, so the UI can show "+$247" flying off your wallet. */
+  recent: ScrollBump[];
 }
 
 interface Toast {
@@ -32,6 +45,8 @@ interface ShopState {
   browsingSeconds: number;
   browsingFee: number;
   scrollFee: number;
+  scrollCount: number;
+  scrollBumps: ScrollBump[];
   doomPurchases: number;
   loyaltyPoints: number;
   hubrisScore: number;
@@ -48,7 +63,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [browsingSeconds, setBrowsingSeconds] = useState(0);
-  const [scrollFee, setScrollFee] = useState(0);
+  const [scrollLedger, setScrollLedger] = useState<ScrollLedger>({ total: 0, count: 0, recent: [] });
   const [doomPurchases, setDoomPurchases] = useState(0);
   const [loyaltyPoints, setLoyaltyPoints] = useState(12);
   const [hubrisScore, setHubrisScore] = useState(0);
@@ -59,16 +74,25 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(t);
   }, []);
 
-  // Scroll-Triggered Appreciation Fee: every scroll burst bills $127–$389.
+  // Scroll-Triggered Appreciation Fee (Terms §15): every scroll burst bills $127–$389.
   // Engagement is deepened by scrolling. Deepened engagement is billable.
+  // The ledger keeps a running total, a scroll count, and the last few bumps
+  // so the Scrolling Fee meter can show each charge leaving your wallet.
   useEffect(() => {
     let last = 0;
     const onScroll = () => {
       const now = Date.now();
       if (now - last < 350) return;
       last = now;
-      const bump = 127 + Math.random() * 262;
-      setScrollFee((f) => Math.round((f + bump) * 100) / 100);
+      const bump = Math.round((127 + Math.random() * 262) * 100) / 100;
+      setScrollLedger((l) => {
+        const count = l.count + 1;
+        return {
+          total: Math.round((l.total + bump) * 100) / 100,
+          count,
+          recent: [...l.recent.slice(-3), { id: count, amount: bump }],
+        };
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -117,6 +141,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
   const bumpHubris = useCallback((n: number) => setHubrisScore((s) => s + n), []);
 
+  const scrollFee = scrollLedger.total;
   const browsingFee = browsingSeconds * 0.033 + scrollFee;
   const subtotal = cart.reduce((s, l) => s + l.book.price * l.qty, 0);
   const feesTotal =
@@ -130,7 +155,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       value={{
         cart, addToCart, removeFromCart, setQty, toggleGiftWrap, toggleInsurance,
         cartCount, subtotal, feesTotal, grandTotal, toasts, pushToast, dismissToast,
-        browsingSeconds, browsingFee, scrollFee, doomPurchases, loyaltyPoints, hubrisScore, bumpHubris, consentBannerUp, setConsentBannerUp,
+        browsingSeconds, browsingFee, scrollFee, scrollCount: scrollLedger.count, scrollBumps: scrollLedger.recent,
+        doomPurchases, loyaltyPoints, hubrisScore, bumpHubris, consentBannerUp, setConsentBannerUp,
       }}
     >
       {children}

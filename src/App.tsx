@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { ShopProvider } from "./store/ShopContext";
-import { PromoTicker, Header, Footer, ToastHost, CookieBanner, RetentionModal } from "./components/chrome";
+import { PromoTicker, Header, Footer, ToastHost, CookieBanner, RetentionModal, ScrollFeeMeter } from "./components/chrome";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import BookDetail from "./pages/BookDetail";
@@ -50,6 +50,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <ScrollFeeMeter />
         <ToastHost />
         <CookieBanner />
         <RetentionModal />

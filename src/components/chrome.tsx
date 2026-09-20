@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingCart, Menu, X, ChevronDown, Mail, MapPin, Phone, CreditCard,
-  ShieldCheck, Truck, Cookie, Bell, Sparkles, ArrowRight, BadgeCheck,
+  ShieldCheck, Truck, Cookie, Bell, Sparkles, ArrowRight, BadgeCheck, ArrowDownUp,
 } from "lucide-react";
 import { useShop } from "../store/ShopContext";
 import { BOOKS } from "../data/books";
@@ -72,7 +72,7 @@ export function Header() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-2 font-mono text-[11px]">
-            <div className={`border rounded px-2 py-1 ${feeHot ? "bg-alarm border-alarm text-white animate-pulse-ring" : "bg-hubris-light border-gold/40 text-gold-light"}`} title="Every scroll bills $127–$389. You're welcome.">
+            <div className={`border rounded px-2 py-1 ${feeHot ? "bg-alarm border-alarm text-white animate-pulse-ring" : "bg-hubris-light border-gold/40 text-gold-light"}`} title="Looking ($1.99/min) + your Scrolling fee ($127–$389 per scroll, itemized bottom-left). You're welcome.">
               ⏱ Browsing fee: <span className="text-white font-semibold">${feeStr}</span>{feeHot && <span className="ml-1 text-[10px] font-bold hidden xl:inline">🔥 STOP SCROLLING (OR DON'T, WE'RE RICH)</span>}
             </div>
             <div className="bg-hubris-light border border-gold/40 rounded px-2 py-1 text-gold-light">
@@ -278,6 +278,66 @@ export function ToastHost() {
           <button onClick={() => dismissToast(t.id)} className="text-paper/50 hover:text-paper shrink-0"><X size={14} /></button>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ---------------------------- Scrolling fee meter --------------------------- */
+const money = (n: number) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function scrollFeeVerdict(total: number) {
+  if (total === 0) return "scroll to begin accruing";
+  if (total < 1000) return "non-refundable";
+  if (total < 5000) return "your heirs have been notified";
+  if (total < 20000) return "the Bunny is pleased";
+  return "you are the payment";
+}
+
+/**
+ * A small, always-on meter that bills you $127–$389 every time you scroll
+ * (Terms §15). The total is folded into the header's Browsing fee; this just
+ * makes sure you watch it happen.
+ */
+export function ScrollFeeMeter() {
+  const { scrollFee, scrollCount, scrollBumps, consentBannerUp } = useShop();
+  const hot = scrollFee >= 1000;
+
+  return (
+    <div
+      className={`fixed left-3 sm:left-4 z-50 pointer-events-none select-none ${consentBannerUp ? "top-24 lg:top-36" : "bottom-3 sm:bottom-4"}`}
+      aria-label={`Scrolling fee: $${money(scrollFee)}`}
+    >
+      {/* each charge floats up off your wallet */}
+      <div className="relative h-0" aria-hidden="true">
+        {scrollBumps.map((b) => (
+          <span
+            key={b.id}
+            style={{ left: `${(b.id * 29) % 55}%` }}
+            className="absolute bottom-1 font-mono text-xs font-black text-alarm whitespace-nowrap drop-shadow-[0_1px_0_rgba(250,246,237,1)] animate-fee-fly motion-reduce:hidden"
+          >
+            +${money(b.amount)}
+          </span>
+        ))}
+      </div>
+
+      <Link
+        to="/terms"
+        title="Scroll-Triggered Appreciation Fee (Terms §15): every scroll bills $127–$389. Folded into your Browsing fee. The scroll wheel is a payment terminal."
+        className={`pointer-events-auto block rounded-lg border-2 px-3 py-2 shadow-[4px_4px_0_rgba(15,30,61,0.9)] transition-colors ${
+          hot ? "bg-alarm border-alarm text-white animate-pulse-ring" : "bg-hubris border-gold text-gold-light hover:border-gold-light"
+        }`}
+      >
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] flex items-center gap-1.5">
+          <ArrowDownUp size={11} /> Scrolling fee
+        </div>
+        {/* re-keyed per scroll so the pop animation replays on every charge */}
+        <div key={scrollCount} className={`font-mono font-black text-lg leading-tight tabular-nums text-white ${scrollCount > 0 ? "animate-fee-bump" : ""}`}>
+          ${money(scrollFee)}
+        </div>
+        <div className={`fine-print ${hot ? "text-white/80" : "text-paper/50"}`}>
+          {scrollCount.toLocaleString()} scroll{scrollCount === 1 ? "" : "s"} · {scrollFeeVerdict(scrollFee)}
+        </div>
+      </Link>
     </div>
   );
 }

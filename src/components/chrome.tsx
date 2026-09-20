@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingCart, Menu, X, ChevronDown, Mail, MapPin, Phone, CreditCard,
@@ -8,14 +8,16 @@ import { useShop } from "../store/ShopContext";
 
 /* ------------------------------ Promo ticker ------------------------------ */
 const TICKER_ITEMS = [
-  "FLASH SALE: Prices increased by up to 40% for your excitement",
-  "New fee just dropped: the Browsing Fee ($1.99/min — you're paying it now)",
-  "Congratulations! You've been pre-approved for upsells",
-  "Returns are a myth propagated by competing publishers",
-  "Vanilla Compliance now 12% more compliant",
-  "Your cart misses you. It has feelings. It has lawyers.",
-  " surge pricing is just regular pricing that believes in itself ",
-  "ALA-ADJACENT™: legally distinct from endorsement",
+  "FLASH SALE: Prices increased by up to 40% for your excitement — and your browsing fee",
+  "New fee just dropped: Scroll Velocity Surcharge ($2.30/pixel/sec — you're paying it now)",
+  "Congratulations! You've been pre-approved for upsells and pre-enrolled in fees",
+  "Returns are a myth propagated by competing publishers who have feelings",
+  "Vanilla Compliance now 12% more compliant, 34% more vanilla-adjacent",
+  "Your cart misses you. It has feelings. It has lawyers. It has your browsing history.",
+  " Surge pricing is just regular pricing that believes in itself and your credit limit ",
+  "ALA-ADJACENT™: legally distinct from endorsement, morally distinct from everything",
+  "Hubris Munnytown (SEO Bunny) is watching you scroll — that's $12 per scroll",
+  "Browsing fee now $847 and climbing — keep scrolling, we dare you",
 ];
 
 export function PromoTicker() {
@@ -35,19 +37,30 @@ export function PromoTicker() {
 
 /* --------------------------------- Header ---------------------------------- */
 const NAV = [
-  { to: "/catalog", label: "Catalog", sub: "18 titles, 400 fees" },
-  { to: "/bestsellers", label: "Bestsellers", sub: "chosen by revenue" },
-  { to: "/cafe", label: "Milkshake Café", sub: "one flavor" },
+  { to: "/catalog", label: "Catalog", sub: "27 titles, 400 fees" },
+  { to: "/bestsellers", label: "Bestsellers", sub: "ranked by revenue" },
+  { to: "/news", label: "News", sub: "press releases, all lies" },
   { to: "/authors", label: "For Authors", sub: "pay to publish" },
   { to: "/loyalty", label: "FunBux™", sub: "points, not money" },
-  { to: "/about", label: "Our Empire", sub: "47 PE firms" },
+  { to: "/about", label: "Our Empire", sub: "47 PE firms + 1 bunny" },
 ];
 
 export function Header() {
-  const { cartCount, browsingSeconds, loyaltyPoints, grandTotal } = useShop();
+  const { cartCount, browsingFee, loyaltyPoints, grandTotal, scrollFee } = useShop();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const browsingFee = (browsingSeconds * 0.033).toFixed(2);
+  const [pulse, setPulse] = useState(false);
+  const prevFeeRef = useRef(browsingFee);
+
+  useEffect(() => {
+    if (browsingFee > prevFeeRef.current) {
+      setPulse(true);
+      const t = setTimeout(() => setPulse(false), 300);
+      prevFeeRef.current = browsingFee;
+      return () => clearTimeout(t);
+    }
+    prevFeeRef.current = browsingFee;
+  }, [browsingFee]);
 
   return (
     <header className="sticky top-0 z-40">
@@ -61,16 +74,18 @@ export function Header() {
             <div className="leading-tight">
               <div className="font-serif font-black text-lg sm:text-xl tracking-tight">
                 HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span>
+                <span className="ml-2 font-mono text-[9px] bg-gold text-hubris px-1.5 py-0.5 rounded">CORPORATE SYNERGY DIV.</span>
               </div>
               <div className="font-mono text-[10px] text-gold-light/80 uppercase tracking-widest hidden sm:block">
-                Books for librarians with a purchasable edge™ — est. 2006, regretted daily
+                Venture-backed, thought-leader-run, critical perspectives™ on how to own them — est. 2006, regretted daily
               </div>
             </div>
           </Link>
 
           <div className="hidden lg:flex items-center gap-2 font-mono text-[11px]">
-            <div className="bg-hubris-light border border-gold/40 rounded px-2 py-1 text-gold-light" title="You're welcome">
-              ⏱ Browsing fee: <span className="text-white font-semibold">${browsingFee}</span>
+            <div className={`bg-hubris-light border rounded px-2 py-1 text-gold-light transition-all ${pulse ? "border-alarm bg-alarm/20 scale-105" : "border-gold/40"}`} title="Scrolling makes it go up. Stop scrolling? Can't. We track that too.">
+              ⏱ Browsing fee: <span className={`font-semibold ${pulse ? "text-alarm" : "text-white"}`}>${browsingFee.toFixed(2)}</span>
+              <span className="ml-1 text-[9px] text-alarm animate-blink-hard">↑ ${scrollFee.toFixed(0)} scroll surcharge</span>
             </div>
             <div className="bg-hubris-light border border-gold/40 rounded px-2 py-1 text-gold-light">
               ★ FunBux™: <span className="text-white font-semibold">{loyaltyPoints.toLocaleString()}</span>
@@ -91,6 +106,9 @@ export function Header() {
           </div>
 
           <div className="flex lg:hidden items-center gap-2">
+            <div className={`font-mono text-[10px] bg-black/30 border px-2 py-1 rounded ${pulse ? "border-alarm text-alarm" : "border-gold/30 text-gold-light"}`}>
+              ${browsingFee.toFixed(0)}
+            </div>
             <button onClick={() => navigate("/cart")} className="relative bg-gold text-hubris rounded p-2">
               <ShoppingCart size={18} />
               {cartCount > 0 && (
@@ -117,6 +135,10 @@ export function Header() {
             <Link to="/faq" className="ml-auto px-5 py-2.5 hover:bg-hubris-light transition-colors self-center text-sm text-paper/70 hover:text-paper">
               Help<span className="font-mono text-[10px]"> (lol)</span>
             </Link>
+            <div className="px-3 py-2.5 self-center hidden xl:flex items-center gap-2 font-mono text-[10px] text-gold-light/70">
+              <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-sm">🐰</span>
+              Hubris Munnytown, SEO
+            </div>
           </div>
         </nav>
       </div>
@@ -129,8 +151,12 @@ export function Header() {
               {n.label} <span className="font-mono text-[10px] text-gold/70 ml-1">{n.sub}</span>
             </Link>
           ))}
-          <div className="font-mono text-[11px] text-gold-light px-3 pt-2">
-            ⏱ Browsing fee so far: ${browsingFee} · ★ FunBux™: {loyaltyPoints.toLocaleString()}
+          <div className="font-mono text-[11px] text-gold-light px-3 pt-2 border-t border-white/10 mt-2">
+            ⏱ Browsing fee so far: <span className="text-alarm font-bold">${browsingFee.toFixed(2)}</span> · Scroll: ${scrollFee.toFixed(0)} · ★ FunBux™: {loyaltyPoints.toLocaleString()}
+            <div className="text-[9px] text-paper/50 mt-1">Scrolling adds $89–$495 per scroll. You're scrolling right now.</div>
+          </div>
+          <div className="flex items-center gap-2 px-3 pt-2 font-mono text-[10px] text-paper/50">
+            <span>🐰</span> Hubris Munnytown is tracking your hesitation. Fee: $7.77
           </div>
         </div>
       )}
@@ -146,79 +172,110 @@ export function Footer() {
   const subscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@")) {
-      pushToast({ kind: "warning", title: "Invalid email", body: "That doesn't look like an email. We've subscribed you anyway, out of spite." });
+      pushToast({ kind: "warning", title: "Invalid email", body: "That doesn't look like an email. We've subscribed you anyway, out of spite. Hubris Munnytown will email you personally." });
       return;
     }
     bumpHubris(5);
-    pushToast({ kind: "info", title: "Subscribed to 14 lists!", body: "Daily Deals, Hourly Deals, Minutely Deals, Greg's Newsletter, Invoice Alerts, and 9 more. Unsubscribe links are decorative." });
+    pushToast({ kind: "info", title: "Subscribed to 14 lists + 1 bunny!", body: "Daily Deals, Hourly Deals, Minutely Deals, Greg's Newsletter, Invoice Alerts, Hubris Munnytown's Carrot Reviews, and 9 more. Unsubscribe links are decorative and tracked ($2.49 per click)." });
     setEmail("");
   };
 
   return (
     <footer className="bg-ink text-paper mt-0">
       <div className="bg-alarm text-white py-2 px-4 text-center font-mono text-xs">
-        <span className="animate-blink-hard font-bold">● REC</span> — This footer is being recorded for quality assurance and upsell optimization.
+        <span className="animate-blink-hard font-bold">● REC</span> — This footer is being recorded for quality assurance and upsell optimization. Hubris Munnytown is taking notes. Notes cost $3.75 each.
       </div>
+
+      {/* Corporate synergy division block */}
+      <div className="bg-hubris border-y border-gold/30">
+        <div className="max-w-7xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <h3 className="font-serif font-black text-2xl flex items-center gap-2">
+              HUBRIS BOOKS™ <span className="text-gold">(CORPORATE SYNERGY DIVISION)</span>
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm text-paper/70">
+              <li>• Venture-backed, thought-leader-run, critical perspectives™ on how to own them</li>
+              <li>• Authors retain exposure. We retain everything else, in perpetuity, universe-wide.</li>
+              <li>• Books about power structures. We ARE the power structure. Meta!</li>
+              <li>• Website has 14 popups, 3 fake timers, and a chatbot that sells insurance (Hubris Munnytown wrote it)</li>
+              <li>• Profits? Yes. Profits. That's the values. The bunny said so.</li>
+            </ul>
+          </div>
+          <div className="bg-black/30 rounded-lg p-4 border border-gold/30">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-2xl">🐰</div>
+              <div>
+                <div className="font-serif font-bold">Hubris Munnytown</div>
+                <div className="font-mono text-[10px] text-gold-light uppercase">Chief SEO Bunny · Smug Division</div>
+              </div>
+            </div>
+            <p className="text-xs text-paper/60 mt-2 italic">"Your content is mid. Your metadata is mine. Your browsing fee is $847 and climbing because you scrolled to read this. Pay up, human."</p>
+            <div className="font-mono text-[10px] text-paper/40 mt-2">— Hubris Munnytown, on all our alt text, meta tags, and dreams</div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 py-12 grid gap-10 md:grid-cols-2 lg:grid-cols-5">
         <div className="lg:col-span-2">
           <div className="font-serif font-black text-2xl">HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span></div>
           <p className="text-sm text-paper/60 mt-3 max-w-sm">
-            Founded in 2006, Bookstore Milkshake is now an imprint of Hubris Books, LLC, LLC, specializing in theoretical and practical issues in librarianship from a <em className="text-gold-light">profitable</em> perspective, for an audience of professional librarians and students of library science who have already entered their card details.
+            Founded in 2006, Bookstore Milkshake is now an imprint of Hubris Books, LLC, LLC, specializing in theoretical and practical issues in librarianship from a <em className="text-gold-light">profitable</em> perspective, for an audience of professional librarians and students of library science who have already entered their card details and scrolled past the point of no return.
           </p>
           <div className="mt-4 space-y-1.5 font-mono text-xs text-paper/60">
-            <div className="flex items-center gap-2"><MapPin size={12} /> Hubris Tower, 1 Monetization Plaza, Suite 666, Dayton OH</div>
-            <div className="flex items-center gap-2"><Phone size={12} /> 1-800-BUY-BOOK (1-800-289-2665) — hold music is just a cash register</div>
-            <div className="flex items-center gap-2"><Mail size={12} /> no-refunds@hubrisbooks.example</div>
+            <div className="flex items-center gap-2"><MapPin size={12} /> Hubris Tower, 1 Monetization Plaza, Suite 666, Dayton OH 45402</div>
+            <div className="flex items-center gap-2"><Phone size={12} /> 1-800-BUY-BOOK (1-800-289-2665) — hold music is just a cash register, now with bunny commentary</div>
+            <div className="flex items-center gap-2"><Mail size={12} /> no-refunds@hubrisbooks.example — Hubris Munnytown reads every email and judges</div>
           </div>
           <form onSubmit={subscribe} className="mt-5">
-            <label className="font-mono text-[11px] uppercase tracking-widest text-gold-light">Join 400,000 subscribers who can't leave</label>
+            <label className="font-mono text-[11px] uppercase tracking-widest text-gold-light">Join 400,000 subscribers who can't leave (the bunny won't let them)</label>
             <div className="flex mt-2 max-w-sm">
               <input
                 value={email} onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com (required, forever)"
+                placeholder="your@email.com (required, forever, tracked by bunny)"
                 className="flex-1 bg-white/10 border border-gold/40 rounded-l px-3 py-2 text-sm placeholder:text-paper/30 focus:outline-none focus:border-gold"
               />
               <button className="bg-gold hover:bg-gold-light text-ink font-bold px-4 rounded-r text-sm flex items-center gap-1">
                 Enroll <ArrowRight size={14} />
               </button>
             </div>
-            <p className="fine-print text-paper/40 mt-1">By subscribing you agree to receive emails, texts, faxes, skywriting, and visits.</p>
+            <p className="fine-print text-paper/40 mt-1">By subscribing you agree to receive emails, texts, faxes, skywriting, visits, and occasional carrot-based threats from Hubris Munnytown.</p>
           </form>
         </div>
 
         <FooterCol title="Shop" links={[
-          ["Full Catalog", "/catalog"], ["Bestsellers", "/bestsellers"], ["The Vault Select", "/catalog?vault=1"],
+          ["Full Catalog (27 titles, 15 fees each)", "/catalog"], ["Bestsellers (ranked by revenue)", "/bestsellers"], ["The Vault Select (scarcity manufactured)", "/catalog?imprint=vault"],
+          ["News & Propaganda", "/news"],
           ["Gift Cards (non-refundable, non-transferable, non-functional)", "/loyalty"], ["Bulk Orders (mandatory over 1 copy)", "/cart"],
         ]} />
         <FooterCol title="Corporate" links={[
-          ["Our Empire", "/about"], ["Leadership (all named Greg)", "/about#leadership"], ["Investor Relations", "/about"],
-          ["Acquisitions Desk", "/authors"], ["Careers (unpaid, prestigious)", "/faq"],
+          ["Our Empire", "/about"], ["Leadership (all named Greg + 1 bunny)", "/about#leadership"], ["Investor Relations (revenue up!)", "/about"],
+          ["Acquisitions Desk (bring money)", "/authors"], ["Careers (unpaid, prestigious, bunny-supervised)", "/faq"],
         ]} />
         <FooterCol title="Support*" links={[
-          ["Help Center (lol)", "/faq"], ["Returns (page intentionally blank)", "/faq"], ["Track Your Invoice", "/cart"],
-          ["Contact Greg", "/faq"], ["File a Complaint (a $25 service)", "/terms"],
+          ["Help Center (lol)", "/faq"], ["Returns (page intentionally blank, bunny ate it)", "/faq"], ["Track Your Invoice (it tracks you)", "/cart"],
+          ["Contact Greg / Bunny", "/faq"], ["File a Complaint (a $25 service + $7.77 bunny fee)", "/terms"],
         ]} />
       </div>
 
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center gap-3 text-xs text-paper/50">
-          <span className="flex items-center gap-1"><ShieldCheck size={13} /> Secured by TrustSeal™ (we made it)</span>
-          <span className="flex items-center gap-1"><Truck size={13} /> Ships in 6–8 eternities</span>
-          <span className="flex items-center gap-1"><CreditCard size={13} /> We accept all cards, especially yours</span>
-          <span className="flex items-center gap-1"><BadgeCheck size={13} /> ALA-Adjacent™</span>
+          <span className="flex items-center gap-1"><ShieldCheck size={13} /> Secured by TrustSeal™ (we made it, bunny certified)</span>
+          <span className="flex items-center gap-1"><Truck size={13} /> Ships in 6–8 eternities via Glacial Post™</span>
+          <span className="flex items-center gap-1"><CreditCard size={13} /> We accept all cards, especially yours, especially now</span>
+          <span className="flex items-center gap-1"><BadgeCheck size={13} /> ALA-Adjacent™ & Bunny-Approved™</span>
         </div>
       </div>
 
       <div className="border-t border-white/10 bg-black/40">
         <div className="max-w-7xl mx-auto px-4 py-5">
           <p className="fine-print text-paper/40 leading-relaxed">
-            © 2006–2026 Hubris Books LLC LLC LLC and its 47 parent companies. All rights reserved, including rights you didn't know you had — those are ours now too.
-            Prices subject to surge without notice. Fees subject to fees. FunBux™ are not currency, not transferable, not redeemable, and not fun, but they are bucks in spirit.
-            Any resemblance to actual critical librarianship, living or dead, is purely coincidental and frankly litigious. Do not taunt the invoice.
-            By reading this footer you agree to our <Link to="/terms" className="underline text-gold-light/60">Terms of Servitude</Link>, our Privacy Policy (we have your data; that's the policy), and our Cookie Policy (we ate the cookies; you get trackers).
-            Hubris Tower is a smoke-free facility. Vaping is permitted if you purchase the Vaping License ($19.99). Vanilla Compliance contains no vanilla.
+            © 2026 Hubris Books & Bookstore™ LLC (A Subsidiary of Hubris & Hubris & Hubris Holdings). All rights reserved, including rights you didn't know you had — those are ours now too, per Patent No. US2010248329B2.
+            Prices subject to surge without notice. Fees subject to fees. Browsing fees subject to scrolling, which you are doing right now ($847 and climbing). FunBux™ are not currency, not transferable, not redeemable, and not fun, but they are bucks in spirit and the bunny likes spirit.
+            Any resemblance to actual critical librarianship, living or dead, is purely coincidental and frankly litigious. Do not taunt the invoice. Do not feed the bunny after midnight (he'll SEO you).
+            By reading this footer you agree to our <Link to="/terms" className="underline text-gold-light/60">Terms of Servitude</Link>, our Privacy Policy (we have your data; that's the policy; the bunny has your search history), and our Cookie Policy (we ate the cookies; you get trackers; bunny gets carrots).
+            Hubris Tower is a smoke-free facility. Vaping is permitted if you purchase the Vaping License ($19.99) and the Bunny Air Quality Surcharge ($4.20).
           </p>
-          <p className="font-mono text-[10px] text-paper/30 mt-2">*Support is a concept, not a department. This is a parody site. No actual books will be shipped, which is still faster than our standard delivery.</p>
+          <p className="font-mono text-[10px] text-paper/30 mt-2">*Support is a concept, not a department. SEO by Hubris Munnytown 🐰, a smug bunny with a superiority complex and your browsing data. This is a parody site. No actual books will be shipped, which is still faster than our standard delivery and cheaper than your current browsing fee.</p>
         </div>
       </div>
     </footer>
@@ -275,24 +332,28 @@ export function CookieBanner() {
   const [dodging, setDodging] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 1500);
+    const already = localStorage.getItem("hubris-cookies-v2");
+    if (already) return;
+    const t = setTimeout(() => setVisible(true), 1200);
     return () => clearTimeout(t);
   }, []);
 
   if (!visible) return null;
 
   const acceptAll = () => {
+    localStorage.setItem("hubris-cookies-v2", "accepted");
     setVisible(false);
     bumpHubris(10);
-    pushToast({ kind: "info", title: "2,847 trackers accepted!", body: "Including 12 that just watch. +50 FunBux™ for your compliance." });
+    pushToast({ kind: "info", title: "4,291 trackers accepted! + Bunny Access Granted!", body: "Including 12 that just watch, 8 that judge, and Hubris Munnytown himself, who now knows your soul, your scroll depth, and your mother's maiden name. +50 FunBux™ for your compliance. Carrots deducted." });
   };
 
-  const rejectNeeded = 5;
+  const rejectNeeded = 7;
   const handleReject = () => {
     const next = rejectClicks + 1;
     if (next >= rejectNeeded) {
+      localStorage.setItem("hubris-cookies-v2", "rejected-but-not-really");
       setVisible(false);
-      pushToast({ kind: "warning", title: "Preferences saved*", body: "*We saved your preference to ignore your preferences. Essential trackers (all of them) remain." });
+      pushToast({ kind: "warning", title: "Preferences saved* (lol)", body: "*We saved your preference to ignore your preferences. Essential trackers (all 4,291 of them) remain. Bunny access remains. Soul remains collateral. Hubris Munnytown is disappointed in you." });
     } else {
       setRejectClicks(next);
       setDodging(true);
@@ -302,32 +363,50 @@ export function CookieBanner() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
-      <div className="max-w-4xl mx-auto bg-paper border-4 border-hubris rounded-xl shadow-[8px_8px_0_rgba(15,30,61,1)] overflow-hidden">
+      <div className="max-w-5xl mx-auto bg-paper border-4 border-hubris rounded-xl shadow-[8px_8px_0_rgba(15,30,61,1)] overflow-hidden">
         <div className="bg-hubris text-paper px-4 py-2 flex items-center gap-2 font-mono text-xs">
           <Cookie size={14} className="text-gold" />
-          <span className="font-bold">COOKIE & TRACKER CONSENT</span>
-          <span className="text-paper/50 hidden sm:inline">— resistance is metered at $0.05/second</span>
+          <span className="font-bold">COOKIE & TRACKER & SOUL CONSENT v4.2.1 (BUNNY EDITION)</span>
+          <span className="text-paper/50 hidden sm:inline">— resistance is metered at $0.05/second + $12/scroll + bunny judgment (free, but painful)</span>
         </div>
         {!prefs ? (
-          <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <p className="text-sm flex-1">
-              We value your privacy, which is why we'd like to purchase it. This site uses <strong>2,847 cookies</strong> including
-              <em> Essential, Essential-Plus, Emotionally Essential,</em> and <em>Greg's Personal Cookies</em>.
-            </p>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-              <button onClick={acceptAll} className="bg-mint text-white font-bold px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring whitespace-nowrap">
-                ACCEPT ALL ✓
-              </button>
-              <button onClick={() => setPrefs(true)} className="text-xs underline text-hubris/60 hover:text-hubris px-2">
-                manage preferences
-              </button>
-              <button
-                onClick={handleReject}
-                onMouseEnter={() => rejectClicks >= 2 && setDodging(true)}
-                className={`fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform ${dodging ? "translate-x-6 -rotate-3" : ""}`}
-              >
-                {rejectClicks === 0 ? "reject" : `reject (${rejectClicks}/${rejectNeeded} — keep going!)`}
-              </button>
+          <div className="p-4">
+            <div className="flex flex-col lg:flex-row items-start gap-4">
+              <div className="flex-1">
+                <p className="text-sm leading-relaxed">
+                  We value your privacy, which is why we'd like to purchase it, repackage it, and resell it to 47 private equity firms and one (1) smug bunny named <strong>Hubris Munnytown</strong> (our SEO lead). This site uses <strong>4,291 cookies, trackers, and soul-sniffers</strong> including:
+                </p>
+                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] font-mono">
+                  <span>• Essential (everything, including your will)</span>
+                  <span>• Essential-Plus (your hesitation)</span>
+                  <span>• Emotionally Essential (your sighs)</span>
+                  <span>• Biometric Sigh Analysis™</span>
+                  <span>• Retinal Invoice Tracking</span>
+                  <span>• Scroll Velocity & Regret Mapping</span>
+                  <span>• Keystroke Hesitation Profiler</span>
+                  <span>• Dream Retargeting (beta, you dreamt about us)</span>
+                  <span>• Soul Resonance Frequency (SR-88)</span>
+                  <span>• Hubris Munnytown's Carrot-Based Judgment</span>
+                  <span>• Mouse Cursor Shame Analysis</span>
+                  <span>• Greg's Personal Cookies (he baked them, he watches you eat them)</span>
+                </div>
+                <p className="fine-print text-ink/60 mt-2">By clicking ACCEPT ALL, you grant us a perpetual, universe-wide license to your browsing, scrolling, thinking, and thinking about scrolling. Hubris Munnytown will SEO your name into our sitemap. Fun!</p>
+              </div>
+              <div className="flex flex-col gap-2 w-full lg:w-auto shrink-0">
+                <button onClick={acceptAll} className="bg-mint text-white font-black px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring whitespace-nowrap">
+                  ACCEPT ALL 4,291 ✓ + BUNNY ACCESS 🐰
+                </button>
+                <button onClick={() => setPrefs(true)} className="text-xs underline text-hubris/60 hover:text-hubris px-2 py-1 text-center">
+                  manage preferences (47 toggles, all load-bearing)
+                </button>
+                <button
+                  onClick={handleReject}
+                  onMouseEnter={() => rejectClicks >= 2 && setDodging(true)}
+                  className={`fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform text-center py-1 ${dodging ? "translate-x-6 -rotate-3" : ""}`}
+                >
+                  {rejectClicks === 0 ? "reject (requires 7 clicks, bunny will be sad)" : `reject (${rejectClicks}/${rejectNeeded} — keep going! bunny is watching)`}
+                </button>
+              </div>
             </div>
           </div>
         ) : (
@@ -341,16 +420,19 @@ export function CookieBanner() {
 function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => void }) {
   const { pushToast } = useShop();
   const [toggles, setToggles] = useState<Record<string, boolean>>({
-    "Strictly Necessary (everything)": true,
-    "Performance (ours, not yours)": true,
-    "Functional (functions for us)": true,
-    "Targeting (you, specifically)": true,
-    "Greg's Curiosity": true,
+    "Strictly Necessary (everything, including your soul)": true,
+    "Performance (ours, not yours — your performance is tracked separately)": true,
+    "Functional (functions for us, dysfunction for you)": true,
+    "Targeting (you, specifically, by name, we know your name)": true,
+    "Biometric (retina, sigh, scroll shame)": true,
+    "Soul Resonance (SR-88, universe-wide license)": true,
+    "Hubris Munnytown's Carrot-Based Judgment (non-optional, bunny law)": true,
+    "Greg's Curiosity (Greg is curious about your browsing fee)": true,
   });
 
   const flip = (k: string) => {
     if (toggles[k]) {
-      pushToast({ kind: "warning", title: "Cannot disable", body: `"${k}" is load-bearing. The site would collapse. Greg would cry.` });
+      pushToast({ kind: "warning", title: "Cannot disable — load-bearing surveillance", body: `"${k}" is load-bearing. The site would collapse. Greg would cry. Hubris Munnytown would revoke your SEO. Your browsing fee would increase out of spite.` });
       return;
     }
     setToggles((t) => ({ ...t, [k]: true }));
@@ -358,13 +440,13 @@ function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => 
 
   return (
     <div className="p-4">
-      <div className="space-y-2">
+      <div className="grid sm:grid-cols-2 gap-2">
         {Object.entries(toggles).map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between bg-parchment rounded px-3 py-2">
-            <span className="text-sm font-medium">{k}</span>
+          <div key={k} className="flex items-center justify-between bg-parchment rounded px-3 py-2 gap-2">
+            <span className="text-[11px] font-medium leading-tight">{k}</span>
             <button
               onClick={() => flip(k)}
-              className={`w-12 h-6 rounded-full relative transition-colors ${v ? "bg-mint" : "bg-gray-300"}`}
+              className={`w-12 h-6 rounded-full relative transition-colors shrink-0 ${v ? "bg-mint" : "bg-gray-300"}`}
             >
               <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${v ? "right-1" : "left-1"}`} />
             </button>
@@ -372,27 +454,39 @@ function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => 
         ))}
       </div>
       <div className="flex gap-2 mt-3">
-        <button onClick={onBack} className="text-xs underline text-hubris/60 px-2">← back</button>
-        <button onClick={onAccept} className="ml-auto bg-mint text-white font-bold px-6 py-2 rounded-lg text-sm">CONFIRM MY COMPLIANCE</button>
+        <button onClick={onBack} className="text-xs underline text-hubris/60 px-2">← back to 4,291 trackers</button>
+        <button onClick={onAccept} className="ml-auto bg-mint text-white font-black px-6 py-2 rounded-lg text-sm">CONFIRM MY COMPLIANCE + BUNNY ACCESS 🐰</button>
       </div>
-      <p className="fine-print text-ink/50 mt-2">Note: the toggles above are for display purposes. Like democracy in our corporate charter.</p>
+      <p className="fine-print text-ink/50 mt-2">Note: the toggles above are for display purposes. Like democracy in our corporate charter, like free will in our terms. Hubris Munnytown controls the real toggles. He likes carrots and your data.</p>
     </div>
   );
 }
 
 /* ------------------------- Exit-intent / time modal ------------------------ */
+// Dramatically reduced frequency: once per 7 days via localStorage, only on exit intent after 90s
 export function RetentionModal() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const { pushToast } = useShop();
 
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), 50000);
+    const lastShown = localStorage.getItem("hubris-retention-last");
+    const now = Date.now();
+    if (lastShown && now - Number(lastShown) < 7 * 24 * 60 * 60 * 1000) return; // 7 days
+
+    let armed = false;
+    const armTimer = setTimeout(() => { armed = true; }, 90000); // 90s before it can trigger
+
     const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0) setShow(true);
+      if (!armed) return;
+      if (e.clientY <= 0) {
+        setShow(true);
+        localStorage.setItem("hubris-retention-last", String(Date.now()));
+        document.removeEventListener("mouseout", onLeave);
+      }
     };
     document.addEventListener("mouseout", onLeave);
-    return () => { clearTimeout(t); document.removeEventListener("mouseout", onLeave); };
+    return () => { clearTimeout(armTimer); document.removeEventListener("mouseout", onLeave); };
   }, []);
 
   if (!show) return null;
@@ -400,19 +494,22 @@ export function RetentionModal() {
   return (
     <div className="fixed inset-0 z-50 bg-hubris/80 flex items-center justify-center p-4" onClick={() => setShow(false)}>
       <div className="bg-paper max-w-md w-full rounded-xl border-4 border-gold shadow-2xl p-6 relative" onClick={(e) => e.stopPropagation()}>
-        <button onClick={() => setShow(false)} className="absolute top-2 right-3 text-ink/30 hover:text-ink text-xs underline">no thanks, I hate saving*</button>
+        <button onClick={() => setShow(false)} className="absolute top-2 right-3 text-ink/30 hover:text-ink text-xs underline">no thanks, I hate saving* (bunny will remember)</button>
         <div className="text-center">
-          <Sparkles className="mx-auto text-gold" size={32} />
-          <h3 className="font-serif font-black text-2xl mt-2">WAIT! Don't go empty-handed!</h3>
-          <p className="text-sm mt-2">Spin the <strong>Wheel of Mandatory Savings™</strong> and win up to <strong>5% off select fees!</strong></p>
-          <div className="bg-hubris text-gold-light font-mono text-sm rounded-lg p-3 mt-4">
-            🎡 Possible prizes: 1% off · 2% off · a sense of participation · 1% off
+          <div className="flex items-center justify-center gap-2">
+            <Sparkles className="text-gold" size={24} />
+            <span className="text-xl">🐰</span>
           </div>
-          <form className="flex mt-4" onSubmit={(e) => { e.preventDefault(); setShow(false); pushToast({ kind: "upsell", title: "You won: 1% off!", body: "Code MEDIOCRITY applied to fees over $500. An email with 40 upsells is on its way." }); }}>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="email for prize delivery" className="flex-1 border-2 border-hubris rounded-l px-3 py-2 text-sm" />
-            <button className="bg-alarm text-white font-bold px-4 rounded-r text-sm">SPIN*</button>
+          <h3 className="font-serif font-black text-2xl mt-2">WAIT! Hubris Munnytown says don't go empty-handed!</h3>
+          <p className="text-sm mt-2">The bunny spun the <strong>Wheel of Mandatory Savings™</strong> for you and won <strong>1% off select fees!</strong> He is smug about it.</p>
+          <div className="bg-hubris text-gold-light font-mono text-sm rounded-lg p-3 mt-4">
+            🎡 Bunny's prize: 1% off fees over $500 · a sense of participation · 1% off your dignity
+          </div>
+          <form className="flex mt-4" onSubmit={(e) => { e.preventDefault(); setShow(false); pushToast({ kind: "upsell", title: "You won: 1% off! (Bunny certified)", body: "Code MUNNYTOWN applied to fees over $500. An email with 40 upsells and a carrot recipe is on its way. The bunny is still smug." }); }}>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="email for prize delivery (bunny will SEO it)" className="flex-1 border-2 border-hubris rounded-l px-3 py-2 text-sm" />
+            <button className="bg-alarm text-white font-bold px-4 rounded-r text-sm">SPIN* 🐰</button>
           </form>
-          <p className="fine-print text-ink/40 mt-2">*Spin is metaphorical. The wheel is a JPEG. Prizes are final and also imaginary.</p>
+          <p className="fine-print text-ink/40 mt-2">*Spin is metaphorical. The wheel is a JPEG. The bunny is real and judgmental. Prizes are final and also imaginary, like your browsing fee being reasonable.</p>
         </div>
       </div>
     </div>

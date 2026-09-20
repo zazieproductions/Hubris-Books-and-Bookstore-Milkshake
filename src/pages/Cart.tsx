@@ -4,7 +4,7 @@ import {
   ArrowRight, BadgeDollarSign, Check, ChevronDown, CreditCard, Gift, Lock,
   Minus, Plus, ShieldCheck, ShoppingCart, Trash2, Truck, TriangleAlert,
 } from "lucide-react";
-import { HIDDEN_FEES } from "../data/books";
+import { CART_MANDATORIES, HIDDEN_FEES } from "../data/books";
 import { useShop } from "../store/ShopContext";
 import { PageHero } from "../components/chrome";
 import { Cover } from "../components/books";
@@ -19,7 +19,7 @@ const SHIPPING = [
 const DONATIONS = [
   { id: "none", label: "No donation (monster)", price: 0 },
   { id: "round", label: "Round up for literacy*", price: 0.99 },
-  { id: "greg", label: "Greg's Yacht Fund", price: 25 },
+  { id: "hutch", label: "The Hutch Fund", price: 25 },
   { id: "tower", label: "Hubris Tower Gold Plating", price: 100 },
 ];
 
@@ -32,6 +32,28 @@ export default function Cart() {
   const [roundup, setRoundup] = useState(true);
   const [showFees, setShowFees] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [mandatories, setMandatories] = useState<string[]>(CART_MANDATORIES.map((m) => m.name));
+  const mandatoriesTotal = useMemo(
+    () => CART_MANDATORIES.filter((m) => mandatories.includes(m.name)).reduce((s, m) => s + m.price, 0),
+    [mandatories]
+  );
+
+  const toggleMandatory = (name: string) => {
+    if (mandatories.includes(name)) {
+      const item = CART_MANDATORIES.find((m) => m.name === name)!;
+      const rest = mandatories.filter((x) => x !== name);
+      if (rest.length === 0) {
+        const fallback = CART_MANDATORIES[Math.floor(Math.random() * CART_MANDATORIES.length)];
+        setMandatories([fallback.name]);
+        pushToast({ kind: "warning", title: "Nice try. One restored.", body: `You unchecked everything, so the void provided: ${fallback.name} (+$${fallback.price.toFixed(2)}). Nature abhors a vacuum; we abhor $0.00.` });
+      } else {
+        setMandatories(rest);
+        pushToast({ kind: "warning", title: `Removed: ${name}`, body: item.guilt });
+      }
+    } else {
+      setMandatories([...mandatories, name]);
+    }
+  };
 
   const shipCost = SHIPPING.find((s) => s.id === ship)!;
   const donationCost = DONATIONS.find((d) => d.id === donation)!;
@@ -47,7 +69,7 @@ export default function Cart() {
   }, [promoApplied, subtotal]);
 
   const feesBase = cart.length > 0 ? 14.95 + 8.5 + 4.99 + 3.75 + shipCost.price + 18.99 : 0;
-  const preTotal = subtotal + giftWrapTotal + insuranceTotal + feesBase + donationCost.price + (roundup ? 0.87 : 0) - promoDiscount;
+  const preTotal = subtotal + giftWrapTotal + insuranceTotal + feesBase + donationCost.price + (roundup ? 0.87 : 0) + mandatoriesTotal - promoDiscount;
   const regretInsurance = cart.length > 0 ? 11.11 : 0;
   const total = Math.max(0, preTotal + regretInsurance);
 
@@ -74,7 +96,7 @@ export default function Cart() {
   if (cart.length === 0) {
     return (
       <div className="paper-texture min-h-screen">
-        <PageHero kicker="Your cart" title={<>Your Cart Is Empty. <span className="italic text-gold-light">Greg Noticed.</span></>} sub="An empty cart earns no FunBux™. An empty cart pays no fees. Do you understand what you've done to our quarterly projections?" />
+        <PageHero kicker="Your cart" title={<>Your Cart Is Empty. <span className="italic text-gold-light">The Bunny Noticed.</span></>} sub="An empty cart earns no FunBux™. An empty cart pays no fees. Do you understand what you've done to our quarterly projections?" />
         <div className="max-w-3xl mx-auto px-4 py-12 text-center">
           <ShoppingCart size={56} className="mx-auto text-hubris/30" />
           <p className="mt-4 text-ink/60">Your cart is empty, but your Browsing Fee meter is still running. Funny how that works.</p>
@@ -89,9 +111,9 @@ export default function Cart() {
   return (
     <div className="paper-texture min-h-screen pb-12">
       <PageHero
-        kicker="Your cart · every fee itemized, none removable"
-        title={<>Shopping Cart <span className="italic text-gold-light">({cart.reduce((s, l) => s + l.qty, 0)} items, 47 fees)</span></>}
-        sub="Review your order. Take your time — the Browsing Fee rewards deliberation ($1.99/min)."
+        kicker="Your cart · every fee itemized · unchecking tracked"
+        title={<>Shopping Cart <span className="italic text-gold-light">({cart.reduce((s, l) => s + l.qty, 0)} items, 87 fees)</span></>}
+        sub="Review your order. Take your time — the Browsing Fee rewards deliberation ($1.99/min) and scrolling ($127–$389/scroll)."
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[1fr_380px] gap-8">
@@ -165,6 +187,27 @@ export default function Cart() {
               Also round up my total by $0.87 for no stated reason <span className="font-mono text-[10px] text-ink/50">(pre-checked, obviously)</span>
             </label>
           </div>
+
+          {/* mandatory enhancements */}
+          <div className="bg-white border-2 border-alarm rounded-xl p-5">
+            <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-alarm"><ShieldCheck size={18} /> Mandatory Purchase Enhancements <span className="font-mono text-[10px] font-normal text-ink/50">(pre-checked · unchecking tracked · unchecking all restores one)</span></h3>
+            <p className="text-sm text-ink/60 mt-1">Every order requires these. Each exists for a reason. Each reason is airtight. Each airtight reason costs money.</p>
+            <div className="space-y-2 mt-3">
+              {CART_MANDATORIES.map((m) => {
+                const on = mandatories.includes(m.name);
+                return (
+                  <label key={m.name} className={`flex items-start gap-3 rounded-lg p-3 cursor-pointer border-2 transition-colors ${on ? "border-alarm/60 bg-alarm/5" : "border-hubris/20 bg-parchment/50"}`}>
+                    <input type="checkbox" checked={on} onChange={() => toggleMandatory(m.name)} className="mt-1 w-5 h-5 accent-[#D92D20] shrink-0" />
+                    <span className="flex-1">
+                      <strong className="text-sm">{m.name}</strong>
+                      <span className="block text-xs text-ink/60 mt-0.5">{m.desc}</span>
+                    </span>
+                    <span className="font-mono text-sm font-black text-alarm shrink-0">+${m.price.toFixed(2)}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Summary */}
@@ -183,6 +226,10 @@ export default function Cart() {
               <Row k="Font Licensing Fee" v="$3.75" />
               <Row k={`Donation (${donationCost.label})`} v={`$${donationCost.price.toFixed(2)}`} />
               {roundup && <Row k="Mystery round-up" v="$0.87" />}
+              <div className="pt-1.5 mt-1 border-t border-gold/30 font-mono text-[10px] uppercase tracking-widest text-gold-light/70">Mandatory enhancements ({mandatories.length}/{CART_MANDATORIES.length})</div>
+              {CART_MANDATORIES.filter((m) => mandatories.includes(m.name)).map((m) => (
+                <Row key={m.name} k={m.name} v={`$${m.price.toFixed(2)}`} />
+              ))}
               <Row k="Regret Insurance (mandatory)" v={`$${regretInsurance.toFixed(2)}`} warn />
               {promoApplied && <Row k={`Promo (${promoApplied})`} v={`−$${promoDiscount.toFixed(2)}`} good />}
             </div>

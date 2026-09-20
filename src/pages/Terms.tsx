@@ -10,15 +10,16 @@ const SECTIONS = [
   { n: "§3. Fees", t: "Fees may be added at any time for any reason, including: Spine Hydration, Convenience, Inconvenience, Paper Existence, Font Licensing, Regret Insurance, and Fee Administration (the fee for administering fees). Fees are themselves subject to a 12% Fee Fee." },
   { n: "§4. FunBux™", t: "FunBux™ are loyalty points backed by nothing and redeemable for less. They expire when we say so (now, usually). They are not currency, securities, or fun. They are, however, bucks in spirit, and spirit is legally binding." },
   { n: "§5. Subscriptions", t: "Subscriptions renew automatically, including after cancellation (cancellation cancels the subscription but not the renewals). To cancel, see FAQ: 'Can I cancel my subscription?' Then see a therapist. Then remain subscribed." },
-  { n: "§6. Privacy", t: "We collect: your data, your metadata, your vibe, and your mother's maiden name (for fun). We share data with our 47 parent companies, our 200+ Gregs, and anyone who asks nicely with a purchase order. Our privacy policy is that we have your data. That's the policy." },
-  { n: "§7. Cookies", t: "We use 2,847 cookies. Rejecting cookies requires clicking 'reject' 5 times while the button dodges. Accepting cookies requires one click and grants us: everything. Choose wisely (you'll choose accept; everyone chooses accept)." },
+  { n: "§6. Privacy", t: "We collect: your data, your metadata, your vibe, and your mother's maiden name (for fun). We share data with our 47 parent companies, our Warren (400+ strong), and anyone who asks nicely with a purchase order. Our privacy policy is that we have your data. That's the policy." },
+  { n: "§7. Cookies", t: "We deploy 14,022 trackers across 10 categories and 312 vendors, including your appliances, your gait, and one (1) oracle. Rejecting requires clicking 'reject' 5 times while the button dodges. Accepting requires one click and grants us: everything, forever, including your soul (hashed, blessed). Choose wisely (you'll choose accept; everyone chooses accept; the oracle confirmed)." },
   { n: "§8. Reviews", t: "Reviews of 5 stars publish instantly. Reviews of 4 stars enter moderation. Reviews of 3 or fewer stars enter the Void, along with the reviewer (from our mailing list — actually no, you stay on the mailing list forever)." },
   { n: "§9. Intellectual Property", t: "All content is ours, including your reviews, your wishlist (public, monetized), and any ideas you have while browsing (Browsing Idea Assignment Clause). You retain the right to keep reading. You're welcome." },
   { n: "§10. The Milkshake", t: "Vanilla Compliance contains no vanilla. 'Compliance' is a flavor we developed in-house (notes of late fee, whipped accountability, and paper). Outside beverages will be confiscated and resold to you." },
-  { n: "§11. Disputes", t: "All disputes will be resolved via binding arbitration, conducted by Greg, in Dayton, on Greg's schedule (busy). You waive the right to: class actions, jury trials, small claims, large claims, and complaining (complaining costs $25)." },
+  { n: "§11. Disputes", t: "All disputes will be resolved via binding arbitration, conducted by the Hutch, in Dayton, on the Hutch's schedule (busy). You waive the right to: class actions, jury trials, small claims, large claims, and complaining (complaining costs $25)." },
   { n: "§12. Amendments", t: "We may amend these terms at any time without notice. Amendments apply retroactively, including to purchases made before the amendment and before your birth. Current version: 4,812. You agreed to all of them." },
   { n: "§13.3 Soul Clause", t: "Per §13.3, by completing any purchase you grant Hubris Books, LLC, LLC a non-exclusive, perpetual, universe-wide license to your immortal soul for marketing purposes. Your soul may appear in testimonials. Opt-out requires a quest." },
   { n: "§14. Severability & Mercy", t: "If any clause is found unenforceable, it will be replaced with a stricter clause. Mercy may be requested via form 88-B ($25 filing fee). Form 88-B does not exist. The fee, however, is very real." },
+  { n: "§15. Scrolling", t: "Each scroll event incurs a Scroll-Triggered Appreciation Fee of $127–$389. Scrolling up to re-read also bills (re-reading without a Second Reading License is a separate violation). The scroll wheel is a payment terminal. The trackpad is a payment terminal. You are the payment." },
 ];
 
 export default function Terms() {
@@ -31,7 +32,7 @@ export default function Terms() {
 
   const accept = () => {
     if (readCount < SECTIONS.length) {
-      pushToast({ kind: "warning", title: `Only ${readCount}/${SECTIONS.length} sections acknowledged`, body: "You must check every section. Skimming is a violation (§12). Greg can tell when you skim." });
+      pushToast({ kind: "warning", title: `Only ${readCount}/${SECTIONS.length} sections acknowledged`, body: "You must check every section. Skimming is a violation (§12). The Bunny can tell when you skim. He never blinks." });
       return;
     }
     setAccepted(true);
@@ -44,7 +45,7 @@ export default function Terms() {
       <PageHero
         kicker="Terms of Servitude · v4,812 · last updated: just now"
         title={<>The Fine Print, <span className="italic text-gold-light">Enlarged Slightly</span></>}
-        sub="Please read all 14 sections carefully. Quizzes are random. Compliance is mandatory. Skimming is a violation (§12)."
+        sub="Please read all 15 sections carefully. Quizzes are random. Compliance is mandatory. Skimming is a violation (§12)."
       >
         <div className="mt-4 font-mono text-sm bg-black/30 inline-block px-4 py-2 rounded-lg border border-gold/40">
           Acknowledged: <strong className="text-gold-light">{readCount}/{SECTIONS.length}</strong> sections
@@ -78,7 +79,7 @@ export default function Terms() {
             ) : (
               <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/catalog" className="bg-gold text-hubris font-bold px-6 py-3 rounded-lg inline-flex items-center justify-center gap-2">SHOP, COMPLIANT ONE <ArrowRight size={15} /></Link>
-                <Link to="/faq" className="border-2 border-gold text-gold-light font-bold px-6 py-3 rounded-lg">ASK GREG THINGS</Link>
+                <Link to="/faq" className="border-2 border-gold text-gold-light font-bold px-6 py-3 rounded-lg">ASK THE HUTCH THINGS</Link>
               </div>
             )}
           </div>

@@ -5,12 +5,12 @@ import {
   Gift, Lock, PartyPopper, ShieldCheck, TriangleAlert,
 } from "lucide-react";
 import { useShop } from "../store/ShopContext";
-import { BOOKS, UPSELL_ROULETTE } from "../data/books";
+import { BOOKS, CHECKOUT_LOCKED, REQUIRED_ADDONS } from "../data/books";
 import { PageHero } from "../components/chrome";
 
 const STEPS = [
   "Cart Review (again)", "Account (mandatory)", "Shipping (slow)", "Gift Options (priced)",
-  "Insurance (opt-out, hidden)", "Donation (guilt)", "Upsells (surprise)", "Payment (finally)",
+  "Insurance (opt-out, hidden)", "Donation (guilt)", "Required Add-Ons (checked & locked)", "Payment (finally)",
   "Reflection (weep)", "Confirmation (no take-backs)",
 ];
 
@@ -20,34 +20,54 @@ export default function Checkout() {
   const [done, setDone] = useState(false);
   const [orderNo] = useState(() => `HB-${Math.floor(100000 + Math.random() * 900000)}`);
   const [form, setForm] = useState({ email: "", name: "", address: "", card: "", expiry: "", cvc: "", password: "", motherMaiden: "" });
-  const [agreed, setAgreed] = useState<Record<string, boolean>>({ terms: false, marketing: true, soul: true, greg: false });
-  const [surpriseUpsells, setSurpriseUpsells] = useState<string[]>([]);
+  const [agreed, setAgreed] = useState<Record<string, boolean>>({ terms: false, marketing: true, soul: true, bunny: false });
+  const [requiredAddons, setRequiredAddons] = useState<string[]>(REQUIRED_ADDONS.map((a) => a.name));
   const [insuranceOptOutFound, setInsuranceOptOutFound] = useState(false);
 
-  const surpriseTotal = useMemo(
-    () => UPSELL_ROULETTE.filter((u) => surpriseUpsells.includes(u.name)).reduce((s, u) => s + u.price, 0),
-    [surpriseUpsells]
+  const addonsTotal = useMemo(
+    () => REQUIRED_ADDONS.filter((a) => requiredAddons.includes(a.name)).reduce((s, a) => s + a.price, 0),
+    [requiredAddons]
   );
-  const total = subtotal + 14.95 + 8.5 + 4.99 + 3.75 + 18.99 + 11.11 + surpriseTotal + (insuranceOptOutFound ? 0 : 12.99);
+  const lockedTotal = useMemo(
+    () => CHECKOUT_LOCKED.reduce((s, l) => s + l.price, 0),
+    []
+  );
+  const total = subtotal + 14.95 + 8.5 + 4.99 + 3.75 + 18.99 + 11.11 + addonsTotal + lockedTotal + (insuranceOptOutFound ? 0 : 12.99);
+
+  const toggleAddon = (name: string) => {
+    if (requiredAddons.includes(name)) {
+      const addon = REQUIRED_ADDONS.find((a) => a.name === name)!;
+      const rest = requiredAddons.filter((x) => x !== name);
+      if (rest.length === 0) {
+        // Unchecked everything: hesitation chooses for you.
+        setRequiredAddons([name]);
+        pushToast({ kind: "warning", title: "Nice try. All restored.", body: "You unchecked everything, so hesitation chose for you: all six restored. Nature abhors a vacuum; we abhor $0.00." });
+      } else {
+        setRequiredAddons(rest);
+        pushToast({ kind: "warning", title: `Removed: ${name}`, body: addon.guilt });
+      }
+    } else {
+      setRequiredAddons([...requiredAddons, name]);
+    }
+  };
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value });
 
   const canAdvance = () => {
     if (step === 1) return form.email.includes("@") && form.password.length >= 12;
     if (step === 7) return form.card.replace(/\s/g, "").length >= 12 && form.cvc.length >= 3;
-    if (step === 9) return agreed.terms && agreed.greg;
+    if (step === 9) return agreed.terms && agreed.bunny;
     return true;
   };
 
   const next = () => {
     if (!canAdvance()) {
-      pushToast({ kind: "warning", title: "Cannot proceed", body: step === 1 ? "Password must be 12+ chars, include a hieroglyph, and the name of your first invoice." : step === 7 ? "Card invalid. Have you tried having more money?" : "You must accept the Terms of Servitude and acknowledge Greg." });
+      pushToast({ kind: "warning", title: "Cannot proceed", body: step === 1 ? "Password must be 12+ chars, include a hieroglyph, and the name of your first invoice." : step === 7 ? "Card invalid. Have you tried having more money?" : "You must accept the Terms of Servitude and acknowledge the Bunny." });
       return;
     }
-    if (step === 6 && surpriseUpsells.length === 0) {
-      const free = UPSELL_ROULETTE[Math.floor(Math.random() * UPSELL_ROULETTE.length)];
-      setSurpriseUpsells([free.name]);
-      pushToast({ kind: "upsell", title: "Surprise upsell added!", body: `You hesitated, so we added the ${free.name} ($${free.price.toFixed(2)}). Hesitation is consent.` });
+    if (step === 6 && requiredAddons.length === 0) {
+      setRequiredAddons(REQUIRED_ADDONS.map((a) => a.name));
+      pushToast({ kind: "upsell", title: "Add-ons restored!", body: "You hesitated, so we re-checked all six. Hesitation is consent. Consent is pre-checked." });
     }
     if (step < STEPS.length - 1) {
       setStep(step + 1);
@@ -62,7 +82,7 @@ export default function Checkout() {
   if (cart.length === 0 && !done) {
     return (
       <div className="paper-texture min-h-screen">
-        <PageHero kicker="Checkout" title="Your cart is empty." sub="Checkout with nothing? Bold. Greg respects it but the fees disagree." />
+        <PageHero kicker="Checkout" title="Your cart is empty." sub="Checkout with nothing? Bold. The Bunny respects it but the fees disagree." />
         <div className="max-w-xl mx-auto px-4 py-10 text-center">
           <Link to="/catalog" className="inline-flex items-center gap-2 bg-hubris text-white font-bold px-6 py-3 rounded-lg">BACK TO CATALOG <ArrowRight size={15} /></Link>
         </div>
@@ -180,7 +200,7 @@ export default function Checkout() {
               </div>
               <div className="mt-6 text-center">
                 {!insuranceOptOutFound ? (
-                  <button onClick={() => { setInsuranceOptOutFound(true); pushToast({ kind: "info", title: "Opt-out found!", body: "You found the 6pt opt-out link. Impressive. Greg has been notified of your frugality." }); }} className="text-[6pt] text-ink/30 underline hover:text-ink/60">
+                  <button onClick={() => { setInsuranceOptOutFound(true); pushToast({ kind: "info", title: "Opt-out found!", body: "You found the 6pt opt-out link. Impressive. The Hutch has been notified of your frugality." }); }} className="text-[6pt] text-ink/30 underline hover:text-ink/60">
                     decline coverage
                   </button>
                 ) : (
@@ -193,9 +213,9 @@ export default function Checkout() {
           {step === 5 && (
             <div>
               <h2 className="font-serif font-black text-2xl">Donation <span className="font-mono text-xs font-normal text-ink/50">(skipping is tracked)</span></h2>
-              <p className="text-sm text-ink/60 mt-1">Would you like to donate $25 to Greg's Yacht Fund? The yacht is named <em>S.S. Open Access</em>. The irony is free; the yacht is not.</p>
+              <p className="text-sm text-ink/60 mt-1">Would you like to donate $25 to the Hutch Fund? The yacht is named <em>S.S. Open Access</em>. The irony is free; the yacht is not.</p>
               <div className="grid sm:grid-cols-2 gap-2 mt-4">
-                <button onClick={() => { setSurpriseUpsells([...surpriseUpsells]); pushToast({ kind: "info", title: "$25 donated!", body: "The yacht thanks you. Greg thanks you. The sea remains indifferent." }); }} className="bg-mint text-white font-bold py-3 rounded-lg">YES, I'M GENEROUS ($25)</button>
+                <button onClick={() => { pushToast({ kind: "info", title: "$25 donated!", body: "The yacht thanks you. The Warren thanks you. The sea remains indifferent." }); }} className="bg-mint text-white font-bold py-3 rounded-lg">YES, I'M GENEROUS ($25)</button>
                 <button onClick={() => pushToast({ kind: "warning", title: "Noted.", body: "Your decline has been logged and will be read aloud at the company retreat." })} className="fine-print text-ink/40 underline py-3">no, I hate the ocean (decline)</button>
               </div>
             </div>
@@ -203,16 +223,49 @@ export default function Checkout() {
 
           {step === 6 && (
             <div>
-              <h2 className="font-serif font-black text-2xl">Surprise Upsells! <span className="font-mono text-xs font-normal text-ink/50">(surprise: mandatory)</span></h2>
-              <p className="text-sm text-ink/60 mt-1">One of these WILL be added. Choose, or hesitation chooses for you.</p>
-              <div className="grid grid-cols-2 gap-2 mt-4">
-                {UPSELL_ROULETTE.slice(0, 4).map((u) => (
-                  <button key={u.name} onClick={() => setSurpriseUpsells([u.name])} className={`border-2 rounded-lg p-3 text-left ${surpriseUpsells.includes(u.name) ? "border-gold bg-gold/10" : "border-hubris/20"}`}>
-                    <div className="text-2xl">{u.emoji}</div>
-                    <div className="font-bold text-sm">{u.name}</div>
-                    <div className="font-mono text-xs text-alarm font-bold">${u.price.toFixed(2)}</div>
-                  </button>
+              <h2 className="font-serif font-black text-2xl">Frequently Required Together <span className="font-mono text-xs font-normal text-ink/50">(pre-checked for your convenience; unchecking is tracked)</span></h2>
+              <p className="text-sm text-ink/60 mt-1">Customers who bought these books were also required to buy these. All six are pre-checked. Unchecking all six re-checks all six — that&apos;s just math.</p>
+              <div className="space-y-2 mt-4">
+                {REQUIRED_ADDONS.map((a) => {
+                  const on = requiredAddons.includes(a.name);
+                  return (
+                    <label key={a.name} className={`flex items-start gap-3 rounded-lg p-3 cursor-pointer border-2 transition-colors ${on ? "border-gold bg-gold/10" : "border-hubris/20 bg-parchment/50"}`}>
+                      <input type="checkbox" checked={on} onChange={() => toggleAddon(a.name)} className="mt-1 w-5 h-5 accent-[#0F1E3D] shrink-0" />
+                      <span className="flex-1">
+                        <strong className="text-sm">{a.name}</strong>
+                        <span className="block text-xs text-ink/60 mt-0.5">{a.desc}</span>
+                      </span>
+                      <span className="font-mono text-sm font-black text-alarm shrink-0">+${a.price.toFixed(2)}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="flex justify-between items-center mt-3 bg-hubris text-paper rounded-lg px-4 py-2.5 font-mono text-sm">
+                <span>Add-ons subtotal ({requiredAddons.length}/6 selected)</span>
+                <strong className="text-gold-light">+${addonsTotal.toFixed(2)}</strong>
+              </div>
+              <h3 className="font-serif font-black text-xl mt-6">Also Mandatory <span className="font-mono text-xs font-normal text-ink/50">(no checkbox provided — these aren&apos;t optional enough for UI)</span></h3>
+              <p className="text-sm text-ink/60 mt-1">The checkboxes below are decorative. Clicking them does nothing, beautifully.</p>
+              <div className="space-y-2 mt-3">
+                {CHECKOUT_LOCKED.map((l) => (
+                  <div
+                    key={l.name}
+                    onClick={() => pushToast({ kind: "warning", title: "Cannot uncheck", body: `"${l.name}" has no checkbox. It has a price. Those are different things.` })}
+                    className="flex items-start gap-3 rounded-lg p-3 border-2 border-hubris/20 bg-parchment/60 cursor-not-allowed"
+                    title="Nice try."
+                  >
+                    <input type="checkbox" checked readOnly className="mt-1 w-5 h-5 accent-[#0F1E3D] shrink-0 cursor-not-allowed opacity-60" />
+                    <span className="flex-1">
+                      <strong className="text-sm">{l.name} <span className="font-mono text-[10px] text-alarm font-bold">LOCKED</span></strong>
+                      <span className="block text-xs text-ink/60 mt-0.5">{l.desc}</span>
+                    </span>
+                    <span className="font-mono text-sm font-black text-alarm shrink-0">+${l.price.toFixed(2)}</span>
+                  </div>
                 ))}
+              </div>
+              <div className="flex justify-between items-center mt-3 bg-alarm text-white rounded-lg px-4 py-2.5 font-mono text-sm">
+                <span>Compliance surcharges ({CHECKOUT_LOCKED.length}/{CHECKOUT_LOCKED.length} selected, permanently)</span>
+                <strong>+${lockedTotal.toFixed(2)}</strong>
               </div>
             </div>
           )}
@@ -236,7 +289,7 @@ export default function Checkout() {
               <h2 className="font-serif font-black text-2xl">Reflection</h2>
               <p className="text-sm text-ink/60 mt-2 max-w-md mx-auto">Take a moment. Think about your purchase. Think about the fees. The fees think about you, constantly. There is no back button on this step. There is only forward, and the total, which grew while you reflected (+$2.00 reflection fee, added).</p>
               <div className="font-serif italic text-4xl mt-6 text-hubris/30">"To buy is to belong."</div>
-              <div className="font-mono text-[11px] text-ink/40 mt-1">— Greg Hubris, <em>Meditations on Margin</em> ($89.99)</div>
+              <div className="font-mono text-[11px] text-ink/40 mt-1">— Hubris Munnytown, <em>Meditations on Margin</em> ($189.99)</div>
             </div>
           )}
 
@@ -244,15 +297,16 @@ export default function Checkout() {
             <div>
               <h2 className="font-serif font-black text-2xl">Final Confirmation <span className="font-mono text-xs font-normal text-ink/50">(no take-backs)</span></h2>
               <div className="bg-parchment rounded-lg p-4 mt-4 font-mono text-sm space-y-1">
-                <div className="flex justify-between"><span>{cart.reduce((s, l) => s + l.qty, 0)} items + surprises</span><strong>${subtotal.toFixed(2)}</strong></div>
-                <div className="flex justify-between"><span>Fees & extras</span><strong>${(total - subtotal).toFixed(2)}</strong></div>
-                <div className="flex justify-between text-lg pt-2 border-t border-hubris/20"><span className="font-bold">TOTAL</span><strong className="text-alarm">${total.toFixed(2)}</strong></div>
+                <div className="flex justify-between gap-3"><span>{cart.reduce((s, l) => s + l.qty, 0)} items + {requiredAddons.length} required add-ons</span><strong>${subtotal.toFixed(2)}</strong></div>
+                <div className="flex justify-between gap-3"><span>Compliance surcharges (locked)</span><strong>${lockedTotal.toFixed(2)}</strong></div>
+                <div className="flex justify-between gap-3"><span>Fees & extras</span><strong>${(total - subtotal).toFixed(2)}</strong></div>
+                <div className="flex justify-between gap-3 text-lg pt-2 border-t border-hubris/20"><span className="font-bold">TOTAL</span><strong className="text-alarm">${total.toFixed(2)}</strong></div>
               </div>
               <div className="space-y-2 mt-4 text-sm">
                 <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={agreed.terms} onChange={() => setAgreed({ ...agreed, terms: !agreed.terms })} className="mt-1" /> I accept the <Link to="/terms" className="underline font-bold">Terms of Servitude</Link> (required)</label>
                 <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={agreed.marketing} onChange={() => setAgreed({ ...agreed, marketing: !agreed.marketing })} className="mt-1" /> Email me 6× daily (pre-checked, unchecking adds a $1 Uncheck Fee)</label>
                 <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={agreed.soul} onChange={() => setAgreed({ ...agreed, soul: !agreed.soul })} className="mt-1" /> I consent to the Soul Clause §13.3 (pre-checked, obviously)</label>
-                <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={agreed.greg} onChange={() => setAgreed({ ...agreed, greg: !agreed.greg })} className="mt-1" /> I acknowledge Greg (required)</label>
+                <label className="flex items-start gap-2 cursor-pointer"><input type="checkbox" checked={agreed.bunny} onChange={() => setAgreed({ ...agreed, bunny: !agreed.bunny })} className="mt-1" /> I acknowledge the Bunny (required)</label>
               </div>
             </div>
           )}
@@ -268,7 +322,7 @@ export default function Checkout() {
               {step === STEPS.length - 1 ? <><Lock size={16} /> PLACE NON-REFUNDABLE ORDER — ${total.toFixed(2)}</> : <>CONTINUE <ArrowRight size={16} /></>}
             </button>
           </div>
-          <div className="mt-3 flex items-center justify-center gap-4 font-mono text-[10px] text-ink/40">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[10px] text-ink/40">
             <span className="flex items-center gap-1"><ShieldCheck size={11} /> 256-bit encryption</span>
             <span className="flex items-center gap-1"><BadgeCheck size={11} /> TrustSeal™ (ours)</span>
             <span className="flex items-center gap-1"><TriangleAlert size={11} /> Abandonment fee: $6.66</span>

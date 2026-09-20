@@ -10,7 +10,7 @@ import { Cover, Price, Stars } from "../components/books";
 
 const REVIEW_POOL = [
   { name: "Margaret H., Systems Librarian", text: "I ordered one copy for our professional collection. The Panic Approval Plan ordered eleven more. My director has questions. I have answers, all of which are this book.", stars: 5 },
-  { name: "Devon P., MLIS Candidate", text: "Required for my seminar. The professor is the author's spouse. The author's spouse is Greg. Everything is Greg. Five stars.", stars: 5 },
+  { name: "Devon P., MLIS Candidate", text: "Required for my seminar. The professor is the author's spouse. The author's spouse is the algorithm. Everything is the algorithm. Five stars.", stars: 5 },
   { name: "Anonymous", text: "I tried to leave 2 stars but the form auto-corrected it to 5 and thanked me for my enthusiasm.", stars: 5 },
   { name: "Collections Dept., Mid-Sized University", text: "Binding is exquisite. Content is 40% invoice. Would invoice again.", stars: 4 },
 ];
@@ -90,7 +90,7 @@ export default function BookDetail() {
               <div className="font-mono text-[10px] text-ink/50 mt-1">{Math.ceil(viewers / 3)} carts currently hold it hostage</div>
             </div>
             <button
-              onClick={() => { setWished(!wished); if (!wished) pushToast({ kind: "info", title: "Added to wishlist", body: "Your wishlist is public, monetized, and visible to Greg." }); }}
+              onClick={() => { setWished(!wished); if (!wished) pushToast({ kind: "info", title: "Added to wishlist", body: "Your wishlist is public, monetized, and visible to the Warren." }); }}
               className={`mt-3 w-full border-2 rounded-lg py-2.5 font-bold text-sm flex items-center justify-center gap-2 transition-colors ${wished ? "bg-shake/20 border-shake text-hubris" : "border-hubris text-hubris hover:bg-parchment"}`}
             >
               <Heart size={15} fill={wished ? "#FF6FA5" : "none"} /> {wished ? "WISHLISTED (PUBLIC)" : "ADD TO WISHLIST"}

@@ -30,10 +30,14 @@ interface ShopState {
   pushToast: (t: Omit<Toast, "id">) => void;
   dismissToast: (id: number) => void;
   browsingSeconds: number;
+  browsingFee: number;
+  scrollFee: number;
   doomPurchases: number;
   loyaltyPoints: number;
   hubrisScore: number;
   bumpHubris: (n: number) => void;
+  consentBannerUp: boolean;
+  setConsentBannerUp: (b: boolean) => void;
 }
 
 const ShopContext = createContext<ShopState | null>(null);
@@ -44,13 +48,30 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [browsingSeconds, setBrowsingSeconds] = useState(0);
+  const [scrollFee, setScrollFee] = useState(0);
   const [doomPurchases, setDoomPurchases] = useState(0);
   const [loyaltyPoints, setLoyaltyPoints] = useState(12);
   const [hubrisScore, setHubrisScore] = useState(0);
+  const [consentBannerUp, setConsentBannerUp] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setBrowsingSeconds((s) => s + 1), 1000);
     return () => clearInterval(t);
+  }, []);
+
+  // Scroll-Triggered Appreciation Fee: every scroll burst bills $127–$389.
+  // Engagement is deepened by scrolling. Deepened engagement is billable.
+  useEffect(() => {
+    let last = 0;
+    const onScroll = () => {
+      const now = Date.now();
+      if (now - last < 350) return;
+      last = now;
+      const bump = 127 + Math.random() * 262;
+      setScrollFee((f) => Math.round((f + bump) * 100) / 100);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const pushToast = useCallback((t: Omit<Toast, "id">) => {
@@ -96,6 +117,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
   const bumpHubris = useCallback((n: number) => setHubrisScore((s) => s + n), []);
 
+  const browsingFee = browsingSeconds * 0.033 + scrollFee;
   const subtotal = cart.reduce((s, l) => s + l.book.price * l.qty, 0);
   const feesTotal =
     cart.reduce((s, l) => s + (l.giftWrap ? 8.99 * l.qty : 0) + (l.insurance ? 6.49 * l.qty : 0), 0) +
@@ -108,7 +130,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       value={{
         cart, addToCart, removeFromCart, setQty, toggleGiftWrap, toggleInsurance,
         cartCount, subtotal, feesTotal, grandTotal, toasts, pushToast, dismissToast,
-        browsingSeconds, doomPurchases, loyaltyPoints, hubrisScore, bumpHubris,
+        browsingSeconds, browsingFee, scrollFee, doomPurchases, loyaltyPoints, hubrisScore, bumpHubris, consentBannerUp, setConsentBannerUp,
       }}
     >
       {children}

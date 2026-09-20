@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, BadgeDollarSign, BookOpen, Building2, Flame, Milk, Quote,
+  ArrowRight, BadgeDollarSign, BookOpen, Building2, Flame, Newspaper, Quote,
   ShieldAlert, ShoppingCart, Sparkles, Star, Timer, TrendingUp, Trophy, Zap, Check,
 } from "lucide-react";
 import { BOOKS, FAKE_REVIEWS, IMPRINTS } from "../data/books";
+import { NEWS } from "../data/news";
 import { useShop } from "../store/ShopContext";
 import { Kicker, SectionShell } from "../components/chrome";
 import { BookCard, Cover, Stars } from "../components/books";
@@ -15,7 +16,6 @@ export default function Home() {
   const navigate = useNavigate();
   const featured = BOOKS[0];
   const [countdown, setCountdown] = useState(14 * 60 + 33);
-  const [shook, setShook] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setCountdown((c) => (c <= 1 ? 14 * 60 + 59 : c - 1)), 1000);
@@ -37,7 +37,7 @@ export default function Home() {
               <Timer size={12} /> Sale ends in {mm}:{ss} <span className="opacity-70">(then restarts)</span>
             </div>
             <h1 className="font-serif font-black text-4xl sm:text-6xl leading-[1.02] mt-4">
-              Books for librarians with a <span className="text-gold shimmer bg-clip-text text-transparent">purchasable edge™</span>
+              Books for librarians with a <span className="text-gold">purchasable edge™</span>
             </h1>
             <p className="text-paper/70 mt-4 max-w-lg">
               Founded in 2006, <strong className="text-paper">Bookstore Milkshake</strong> is now an imprint of{" "}
@@ -47,10 +47,10 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3 mt-6">
               <Link to="/catalog" className="bg-gold hover:bg-gold-light text-hubris font-black px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
-                <ShoppingCart size={17} /> SHOP ALL 18 TITLES
+                <ShoppingCart size={17} /> SHOP ALL {BOOKS.length} TITLES
               </Link>
-              <Link to="/cafe" className="bg-shake hover:bg-shake-dark text-hubris font-black px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
-                <Milk size={17} /> VISIT THE CAFÉ
+              <Link to="/news" className="bg-shake hover:bg-shake-dark text-hubris font-black px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+                <Newspaper size={17} /> READ THE NEWSROOM
               </Link>
             </div>
             <div className="flex flex-wrap gap-x-5 gap-y-1 mt-5 font-mono text-[11px] text-paper/60">
@@ -90,7 +90,7 @@ export default function Home() {
                 </div>
                 <div className="flex gap-2 mt-4">
                   <button
-                    onClick={() => { addToCart(featured); bumpHubris(3); pushToast({ kind: "upsell", title: "Added + auto-upsold!", body: "We also added the Deluxe Slipcase ($34.99). You looked at it. That's consent." }); }}
+                    onClick={() => { addToCart(featured); bumpHubris(3); pushToast({ kind: "upsell", title: "Added + auto-upsold!", body: "We also added the Deluxe Slipcase ($94.99). You looked at it. That's consent." }); }}
                     className="flex-1 bg-hubris hover:bg-hubris-light text-white font-bold rounded-lg px-4 py-3 text-sm flex items-center justify-center gap-2"
                   >
                     <ShoppingCart size={16} /> ADD TO CART — ${featured.price.toFixed(2)}+
@@ -101,16 +101,13 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-        <div className="bg-gold text-hubris font-mono text-center text-[11px] font-bold py-1.5 uppercase tracking-widest">
-          ★★★★☆ — "Technically a publisher" — Anya Sharma, probably ··· "Do not buy books here" — The Concept of Libraries ··· "Five stars, I am the CEO" — Greg Hubris
-        </div>
       </div>
 
       {/* ========================= TRUST / STATS BAND ========================= */}
       <div className="bg-ink text-paper border-b-4 border-gold">
         <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
           {[
-            { icon: BookOpen, big: "18", small: "titles in print (all required reading, legally)" },
+            { icon: BookOpen, big: String(BOOKS.length), small: "titles in print (all required reading, legally)" },
             { icon: BadgeDollarSign, big: "47", small: "private equity firms (and counting, always counting)" },
             { icon: Building2, big: "$0", small: "paid in author royalties (Q3, record low!)" },
             { icon: ShieldAlert, big: "0", small: "successful returns processed. Zero. None. Ever." },
@@ -172,33 +169,29 @@ export default function Home() {
         </div>
       </SectionShell>
 
-      {/* ============================ MILKSHAKE BREAK ============================ */}
+      {/* ============================ NEWSROOM TEASER ============================ */}
       <div className="bg-hubris text-paper border-y-4 border-gold relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 py-12 grid lg:grid-cols-2 gap-8 items-center">
-          <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-shake font-bold flex items-center gap-2">
-              <Milk size={13} /> The flagship experience
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="flex items-end justify-between flex-wrap gap-3">
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold-light font-bold flex items-center gap-2">
+                <Newspaper size={13} /> From the Newsroom · informing the public since 2006 (selectively)
+              </div>
+              <h2 className="font-serif font-black text-3xl sm:text-5xl mt-2 leading-tight">Denials, Launches & <span className="italic text-gold-light">Thump Addresses</span></h2>
             </div>
-            <h2 className="font-serif font-black text-3xl sm:text-5xl mt-2 leading-tight">Every book pairs well with a <span className="italic text-shake">$19 milkshake</span></h2>
-            <p className="text-paper/70 mt-3">
-              Visit the Bookstore Milkshake Café inside Hubris Tower. One flavor: <strong className="text-paper">Vanilla Compliance</strong>.
-              Tastes like a late fee. Refills are $14 and mandatory after page 50 of any purchase. Outside beverages will be confiscated and resold to you.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-5">
-              <Link to="/cafe" className="bg-shake hover:bg-shake-dark text-hubris font-black px-6 py-3 rounded-lg">SEE THE MENU (ONE ITEM)</Link>
-              <button
-                onClick={() => { setShook(true); pushToast({ kind: "upsell", title: "Shake shaken!", body: "A Vanilla Compliance has been added to your tab. You have a tab now. Tabs earn FunBux™." }); }}
-                className="border-2 border-shake text-shake hover:bg-shake hover:text-hubris font-bold px-6 py-3 rounded-lg transition-colors"
-              >
-                {shook ? "SHAKE AGAIN (+$19)" : "SHAKE ME ONE ($19)"}
-              </button>
-            </div>
+            <Link to="/news" className="font-bold text-gold-light hover:text-gold flex items-center gap-1 text-sm">
+              Visit the Newsroom <ArrowRight size={15} />
+            </Link>
           </div>
-          <div className="relative">
-            <img src="/images/milkshake.jpg" alt="Vanilla Compliance milkshake" className="rounded-xl border-4 border-gold shadow-2xl w-full object-cover aspect-[4/3]" />
-            <div className="absolute -bottom-3 left-4 bg-alarm text-white font-mono text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest animate-floaty">
-              Now 12% more compliant!
-            </div>
+          <div className="grid md:grid-cols-3 gap-4 mt-6">
+            {NEWS.slice(0, 3).map((n) => (
+              <Link key={n.slug} to={`/news/${n.slug}`} className="bg-hubris-light border border-gold/40 rounded-xl p-5 hover:border-gold hover:-translate-y-0.5 transition-all group flex flex-col">
+                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">{n.category} · {n.date}</div>
+                <div className="font-serif font-black text-xl leading-snug mt-2 group-hover:text-gold-light transition-colors">{n.title}</div>
+                <p className="text-sm text-paper/60 mt-2 line-clamp-3 flex-1">{n.excerpt}</p>
+                <div className="font-mono text-[11px] text-gold-light font-bold mt-3">READ MORE →</div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -231,9 +224,9 @@ export default function Home() {
             <h2 className="font-serif font-black text-2xl sm:text-3xl mt-1">Your Hubris Score: {hubrisScore} pts</h2>
             <p className="text-white/80 text-sm mt-1">Earn points for every click, cart add, and moment of hesitation overcome. At 1,000 pts you unlock <strong>Gold Compliance Status</strong> (a badge; badges cost $9.99 to display).</p>
           </div>
-          <div className="flex gap-3">
-            <Link to="/loyalty" className="bg-white text-alarm font-black px-6 py-3 rounded-lg hover:bg-parchment">HOW FUNBUX™ WORK</Link>
-            <button onClick={() => { bumpHubris(10); pushToast({ kind: "info", title: "+10 Hubris Score!", body: "You clicked a button that gives points for clicking. The loop is complete. You are the product and the customer. Beautiful." }); }} className="bg-hubris text-white font-black px-6 py-3 rounded-lg hover:bg-hubris-light flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <Link to="/loyalty" className="bg-white text-alarm font-black px-6 py-3 rounded-lg hover:bg-parchment text-center">HOW FUNBUX™ WORK</Link>
+            <button onClick={() => { bumpHubris(10); pushToast({ kind: "info", title: "+10 Hubris Score!", body: "You clicked a button that gives points for clicking. The loop is complete. You are the product and the customer. Beautiful." }); }} className="bg-hubris text-white font-black px-6 py-3 rounded-lg hover:bg-hubris-light flex items-center justify-center gap-2">
               <Zap size={16} /> FREE POINTS
             </button>
           </div>
@@ -260,9 +253,8 @@ export default function Home() {
               SUBMIT (AND REMIT) <ArrowRight size={16} />
             </Link>
           </div>
-          <div className="relative">
-            <img src="/images/library.jpg" alt="Hubris Tower reading room" className="rounded-lg border-2 border-hubris w-full object-cover aspect-[4/3]" />
-            <div className="absolute bottom-3 right-3 bg-hubris/90 text-paper font-mono text-[10px] px-2 py-1 rounded">Pictured: the Hubris Tower Reading Room (rent: $400/hr)</div>
+          <div>
+            <img src="/images/munnytown-selfie.jpg?v=2" alt="Hubris Munnytown, our bunny CEO, taking a mirror selfie surrounded by money" className="rounded-lg border-2 border-hubris w-full h-auto" />
           </div>
         </div>
       </SectionShell>

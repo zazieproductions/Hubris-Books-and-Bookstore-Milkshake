@@ -74,7 +74,7 @@ export default function Bestsellers() {
 
         <div className="mt-8 bg-hubris text-paper rounded-xl p-6 text-center border-4 border-gold">
           <div className="font-serif font-black text-xl">How the list works (methodology, proprietary)</div>
-          <p className="text-sm text-paper/60 mt-2 max-w-2xl mx-auto">Rankings are determined by a sophisticated algorithm weighing revenue (100%), critical acclaim (0%), and Greg's mood (tiebreaker). Votes are counted, cherished, and discarded. Lists refresh whenever revenue does — constantly, beautifully, forever.</p>
+          <p className="text-sm text-paper/60 mt-2 max-w-2xl mx-auto">Rankings are determined by a sophisticated algorithm weighing revenue (100%), critical acclaim (0%), and the CEO's mood (he is a bunny; moods vary) (tiebreaker). Votes are counted, cherished, and discarded. Lists refresh whenever revenue does — constantly, beautifully, forever.</p>
           <Link to="/catalog" className="inline-flex items-center gap-2 bg-gold text-hubris font-bold px-6 py-2.5 rounded-lg mt-4 text-sm">
             BROWSE ALL CONTENDERS <ArrowRight size={15} />
           </Link>

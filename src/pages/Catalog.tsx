@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowUpDown, Search, SlidersHorizontal } from "lucide-react";
-import { BOOKS, IMPRINTS } from "../data/books";
+import { BOOKS, HIDDEN_FEES, IMPRINTS } from "../data/books";
 import { PageHero, SectionShell } from "../components/chrome";
 import { BookCard } from "../components/books";
 
@@ -11,7 +11,7 @@ export default function Catalog() {
   const [params, setParams] = useSearchParams();
   const [q, setQ] = useState("");
   const [sort, setSort] = useState<Sort>("featured");
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(3000);
   const imprint = params.get("imprint") ?? "all";
 
   const setImprint = (v: string) => {
@@ -40,7 +40,7 @@ export default function Catalog() {
   return (
     <div className="paper-texture min-h-screen">
       <PageHero
-        kicker="The complete catalog · 18 titles · 12 fees"
+        kicker={`The complete catalog · ${BOOKS.length} titles · ${HIDDEN_FEES.length} fees`}
         title={<>Every Book We Sell. <span className="italic text-gold-light">All of Them Required.</span></>}
         sub="Browse our complete frontlist and backlist. Every title is peer-reviewed by shareholders and priced by an algorithm that can smell desire."
       >
@@ -83,19 +83,19 @@ export default function Catalog() {
           <div className="flex items-center gap-2 text-sm font-mono min-w-[220px]">
             <SlidersHorizontal size={15} className="text-hubris/50" />
             <span className="text-xs">Max ${maxPrice}</span>
-            <input type="range" min={50} max={500} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="flex-1 accent-[#D92D20]" />
+            <input type="range" min={50} max={3000} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="flex-1 accent-[#D92D20]" />
           </div>
         </div>
 
         <div className="font-mono text-xs text-ink/50 mt-4">
-          Showing {results.length} of {BOOKS.length} titles · Search queries are billed at $0.11 each · Sorting by "low → high" has been reported to Greg
+          Showing {results.length} of {BOOKS.length} titles · Search queries are billed at $0.11 each · Sorting by "low → high" has been reported to the Warren
         </div>
 
         {results.length === 0 ? (
           <div className="bg-white border-2 border-dashed border-alarm rounded-lg p-10 text-center mt-6">
             <div className="font-serif font-black text-2xl">No books match. Suspicious.</div>
             <p className="text-sm text-ink/60 mt-2">Your search returned nothing, which means demand is low, which means prices just went up to compensate. Try raising your max price, peasant.</p>
-            <button onClick={() => { setQ(""); setMaxPrice(500); }} className="mt-4 bg-hubris text-white font-bold px-5 py-2 rounded">RESET (FREE THIS TIME)</button>
+            <button onClick={() => { setQ(""); setMaxPrice(3000); }} className="mt-4 bg-hubris text-white font-bold px-5 py-2 rounded">RESET (FREE THIS TIME)</button>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-6">

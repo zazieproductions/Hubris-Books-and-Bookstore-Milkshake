@@ -5,16 +5,18 @@ import {
   ShieldCheck, Truck, Cookie, Bell, Sparkles, ArrowRight, BadgeCheck,
 } from "lucide-react";
 import { useShop } from "../store/ShopContext";
+import { BOOKS } from "../data/books";
 
 /* ------------------------------ Promo ticker ------------------------------ */
 const TICKER_ITEMS = [
   "FLASH SALE: Prices increased by up to 40% for your excitement",
-  "New fee just dropped: the Browsing Fee ($1.99/min — you're paying it now)",
+  "SCROLLING BILLS $127–$389 PER SCROLL — keep scrolling, we dare you",
+  "CEO Hubris Munnytown (a bunny) declares Q3 “adequate” — see Newsroom",
   "Congratulations! You've been pre-approved for upsells",
   "Returns are a myth propagated by competing publishers",
-  "Vanilla Compliance now 12% more compliant",
+  "BREAKING: the word “radical” now costs extra (details in Newsroom)",
   "Your cart misses you. It has feelings. It has lawyers.",
-  " surge pricing is just regular pricing that believes in itself ",
+  "Surge pricing is just regular pricing that believes in itself",
   "ALA-ADJACENT™: legally distinct from endorsement",
 ];
 
@@ -34,20 +36,21 @@ export function PromoTicker() {
 }
 
 /* --------------------------------- Header ---------------------------------- */
-const NAV = [
-  { to: "/catalog", label: "Catalog", sub: "18 titles, 400 fees" },
-  { to: "/bestsellers", label: "Bestsellers", sub: "chosen by revenue" },
-  { to: "/cafe", label: "Milkshake Café", sub: "one flavor" },
-  { to: "/authors", label: "For Authors", sub: "pay to publish" },
-  { to: "/loyalty", label: "FunBux™", sub: "points, not money" },
-  { to: "/about", label: "Our Empire", sub: "47 PE firms" },
-];
-
 export function Header() {
-  const { cartCount, browsingSeconds, loyaltyPoints, grandTotal } = useShop();
+  const { cartCount, browsingFee, loyaltyPoints, grandTotal } = useShop();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const browsingFee = (browsingSeconds * 0.033).toFixed(2);
+  const feeStr = browsingFee.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const feeHot = browsingFee >= 1000;
+
+  const NAV = [
+    { to: "/catalog", label: "Catalog", sub: `${BOOKS.length} titles, 400 fees` },
+    { to: "/bestsellers", label: "Bestsellers", sub: "chosen by revenue" },
+    { to: "/news", label: "Newsroom", sub: "denials & announcements" },
+    { to: "/authors", label: "For Authors", sub: "pay to publish" },
+    { to: "/loyalty", label: "FunBux™", sub: "points, not money" },
+    { to: "/about", label: "Our Empire", sub: "1 bunny, 47 PE firms" },
+  ];
 
   return (
     <header className="sticky top-0 z-40">
@@ -59,8 +62,8 @@ export function Header() {
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-alarm rounded-full text-[9px] flex items-center justify-center text-white font-bold">$</span>
             </div>
             <div className="leading-tight">
-              <div className="font-serif font-black text-lg sm:text-xl tracking-tight">
-                HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span>
+              <div className="font-serif font-black text-base sm:text-xl tracking-tight">
+                HUBRIS BOOKS <span className="hidden min-[420px]:inline"><span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span></span>
               </div>
               <div className="font-mono text-[10px] text-gold-light/80 uppercase tracking-widest hidden sm:block">
                 Books for librarians with a purchasable edge™ — est. 2006, regretted daily
@@ -69,8 +72,8 @@ export function Header() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-2 font-mono text-[11px]">
-            <div className="bg-hubris-light border border-gold/40 rounded px-2 py-1 text-gold-light" title="You're welcome">
-              ⏱ Browsing fee: <span className="text-white font-semibold">${browsingFee}</span>
+            <div className={`border rounded px-2 py-1 ${feeHot ? "bg-alarm border-alarm text-white animate-pulse-ring" : "bg-hubris-light border-gold/40 text-gold-light"}`} title="Every scroll bills $127–$389. You're welcome.">
+              ⏱ Browsing fee: <span className="text-white font-semibold">${feeStr}</span>{feeHot && <span className="ml-1 text-[10px] font-bold hidden xl:inline">🔥 STOP SCROLLING (OR DON'T, WE'RE RICH)</span>}
             </div>
             <div className="bg-hubris-light border border-gold/40 rounded px-2 py-1 text-gold-light">
               ★ FunBux™: <span className="text-white font-semibold">{loyaltyPoints.toLocaleString()}</span>
@@ -130,7 +133,7 @@ export function Header() {
             </Link>
           ))}
           <div className="font-mono text-[11px] text-gold-light px-3 pt-2">
-            ⏱ Browsing fee so far: ${browsingFee} · ★ FunBux™: {loyaltyPoints.toLocaleString()}
+            ⏱ Browsing fee so far: ${feeStr} (scrolling bills $127–$389/scroll) · ★ FunBux™: {loyaltyPoints.toLocaleString()}
           </div>
         </div>
       )}
@@ -150,7 +153,7 @@ export function Footer() {
       return;
     }
     bumpHubris(5);
-    pushToast({ kind: "info", title: "Subscribed to 14 lists!", body: "Daily Deals, Hourly Deals, Minutely Deals, Greg's Newsletter, Invoice Alerts, and 9 more. Unsubscribe links are decorative." });
+    pushToast({ kind: "info", title: "Subscribed to 14 lists!", body: "Daily Deals, Hourly Deals, Minutely Deals, Hutch Happenings, Invoice Alerts, and 9 more. Unsubscribe links are decorative." });
     setEmail("");
   };
 
@@ -191,13 +194,26 @@ export function Footer() {
           ["Gift Cards (non-refundable, non-transferable, non-functional)", "/loyalty"], ["Bulk Orders (mandatory over 1 copy)", "/cart"],
         ]} />
         <FooterCol title="Corporate" links={[
-          ["Our Empire", "/about"], ["Leadership (all named Greg)", "/about#leadership"], ["Investor Relations", "/about"],
+          ["Our Empire", "/about"], ["Leadership (one bunny, one Warren)", "/about#leadership"], ["Newsroom (denials & announcements)", "/news"],
           ["Acquisitions Desk", "/authors"], ["Careers (unpaid, prestigious)", "/faq"],
         ]} />
         <FooterCol title="Support*" links={[
           ["Help Center (lol)", "/faq"], ["Returns (page intentionally blank)", "/faq"], ["Track Your Invoice", "/cart"],
-          ["Contact Greg", "/faq"], ["File a Complaint (a $25 service)", "/terms"],
+          ["Contact the Hutch", "/faq"], ["File a Complaint (a $25 service)", "/terms"],
         ]} />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 pb-10">
+        <div className="border-2 border-gold/60 rounded-xl p-5 sm:p-6 bg-white/[0.03]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold-light font-bold">Hubris Books™ (Corporate Synergy Division)</div>
+          <ul className="mt-3 grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-paper/75">
+            <li className="flex gap-2"><span className="text-gold">•</span> Venture-backed, thought-leader-run, critical perspectives™ on how to own them</li>
+            <li className="flex gap-2"><span className="text-gold">•</span> Authors retain exposure. We retain everything else, in perpetuity, universe-wide.</li>
+            <li className="flex gap-2"><span className="text-gold">•</span> Books about power structures. We ARE the power structure. Meta!</li>
+            <li className="flex gap-2"><span className="text-gold">•</span> Website has 14 popups, 3 fake timers, and a chatbot that sells insurance</li>
+            <li className="flex gap-2"><span className="text-gold">•</span> Profits? Yes. Profits. That's the values.</li>
+          </ul>
+        </div>
       </div>
 
       <div className="border-t border-white/10">
@@ -212,10 +228,10 @@ export function Footer() {
       <div className="border-t border-white/10 bg-black/40">
         <div className="max-w-7xl mx-auto px-4 py-5">
           <p className="fine-print text-paper/40 leading-relaxed">
-            © 2006–2026 Hubris Books LLC LLC LLC and its 47 parent companies. All rights reserved, including rights you didn't know you had — those are ours now too.
+            © 2026 Hubris Books &amp; Bookstore™ LLC (A Subsidiary of Hubris &amp; Hubris &amp; Hubris Holdings). All rights reserved, including rights you didn't know you had — those are ours now too.
             Prices subject to surge without notice. Fees subject to fees. FunBux™ are not currency, not transferable, not redeemable, and not fun, but they are bucks in spirit.
             Any resemblance to actual critical librarianship, living or dead, is purely coincidental and frankly litigious. Do not taunt the invoice.
-            By reading this footer you agree to our <Link to="/terms" className="underline text-gold-light/60">Terms of Servitude</Link>, our Privacy Policy (we have your data; that's the policy), and our Cookie Policy (we ate the cookies; you get trackers).
+            By reading this footer you agree to our <Link to="/terms" className="underline text-gold-light/60">Terms of Servitude</Link>, our Privacy Policy (we have your data; that's the policy), and our Cookie Policy (we ate the cookies; you get 14,022 trackers).
             Hubris Tower is a smoke-free facility. Vaping is permitted if you purchase the Vaping License ($19.99). Vanilla Compliance contains no vanilla.
           </p>
           <p className="font-mono text-[10px] text-paper/30 mt-2">*Support is a concept, not a department. This is a parody site. No actual books will be shipped, which is still faster than our standard delivery.</p>
@@ -242,9 +258,9 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
 
 /* --------------------------------- Toasts ---------------------------------- */
 export function ToastHost() {
-  const { toasts, dismissToast } = useShop();
+  const { toasts, dismissToast, consentBannerUp } = useShop();
   return (
-    <div className="fixed bottom-4 right-4 z-[60] space-y-2 w-[calc(100vw-2rem)] max-w-sm">
+    <div className={`fixed right-4 z-[60] space-y-2 w-[calc(100vw-2rem)] max-w-sm ${consentBannerUp ? "top-24 lg:top-36" : "bottom-4"}`}>
       {toasts.map((t) => (
         <div key={t.id} className="bg-hubris text-paper border-2 border-gold rounded-lg shadow-2xl p-3 flex gap-3 animate-[floaty_0.4s_ease-out]">
           <div className={`mt-0.5 shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold ${
@@ -267,8 +283,21 @@ export function ToastHost() {
 }
 
 /* --------------------------- Cookie banner (evil) --------------------------- */
+const TRACKER_CATEGORIES: { name: string; desc: string; vendors: string }[] = [
+  { name: "Strictly Necessary (everything, forever)", desc: "The site cannot function without knowing everything. Neither can we. Coincidence.", vendors: "1 vendor (us, all of us)" },
+  { name: "Retinal & Gait Analysis", desc: "Your webcam is on. Your walk has been scored. You walk like someone with overdue fines.", vendors: "14 vendors, 3 of them just watching" },
+  { name: "Keystroke Biometrics", desc: "Every keystroke fingerprinted — including backspaces. Especially backspaces. We saw the draft.", vendors: "22 vendors + the Warren's memory" },
+  { name: "Dream-Adjacent Inference", desc: "We infer dreams from 3 a.m. cart activity. Your recurring dream involves a slipcase. Don't deny it.", vendors: "9 vendors, 1 sleep lab, 1 oracle" },
+  { name: "Household Income Estimation", desc: "Estimated from your scroll velocity, hesitation patterns, and the device you're embarrassed about.", vendors: "31 vendors, all judgmental" },
+  { name: "Microwave Listening Partners", desc: "Your smart appliances report ambient hunger. Hungry shoppers convert 40% better. Dinner is at 7. We ordered for you.", vendors: "148 vendors (all appliances, all listening)" },
+  { name: "Soul Fingerprint (hashed, blessed)", desc: "Per §13.3, your soul is fingerprinted for marketing purposes. The hash is blessed. The blessing is itemized.", vendors: "1 vendor (eternal, non-optional)" },
+  { name: "Overdue Shame Score", desc: "A 0–100 score of your library guilt, sold to lenders, landlords, and first dates (with consent — theirs).", vendors: "67 vendors, incl. your ex's library" },
+  { name: "Mouse Hesitation Profiling", desc: "Every hover over 'No thanks' is scored, timestamped, and read aloud at the company retreat.", vendors: "19 vendors, 1 retreat" },
+  { name: "Hutch Crumbs", desc: "Baked in the executive hutch. Oatmeal raisin disguised as carrot cake. Consent is implied by hunger.", vendors: "1 hutch (batches nightly)" },
+];
+
 export function CookieBanner() {
-  const { pushToast, bumpHubris } = useShop();
+  const { pushToast, bumpHubris, setConsentBannerUp } = useShop();
   const [visible, setVisible] = useState(false);
   const [prefs, setPrefs] = useState(false);
   const [rejectClicks, setRejectClicks] = useState(0);
@@ -279,12 +308,16 @@ export function CookieBanner() {
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    setConsentBannerUp(visible);
+  }, [visible, setConsentBannerUp]);
+
   if (!visible) return null;
 
   const acceptAll = () => {
     setVisible(false);
     bumpHubris(10);
-    pushToast({ kind: "info", title: "2,847 trackers accepted!", body: "Including 12 that just watch. +50 FunBux™ for your compliance." });
+    pushToast({ kind: "info", title: "14,022 trackers accepted!", body: "Including 12 that just watch, 148 in your appliances, and 1 oracle. Your compliance has been noted in your permanent file. +50 FunBux™ (spirit bucks)." });
   };
 
   const rejectNeeded = 5;
@@ -292,7 +325,7 @@ export function CookieBanner() {
     const next = rejectClicks + 1;
     if (next >= rejectNeeded) {
       setVisible(false);
-      pushToast({ kind: "warning", title: "Preferences saved*", body: "*We saved your preference to ignore your preferences. Essential trackers (all of them) remain." });
+      pushToast({ kind: "warning", title: "Preferences saved*", body: "*We saved your preference to ignore your preferences. All 14,022 trackers remain under Legitimate Interest (ours). The oracle sends its regards." });
     } else {
       setRejectClicks(next);
       setDodging(true);
@@ -300,33 +333,43 @@ export function CookieBanner() {
     }
   };
 
+  const rejectLabels = [
+    "reject",
+    "reject (1/5 — the button is getting tired)",
+    "reject (2/5 — resistance is metered at $4.99/sec)",
+    "reject (3/5 — the Hutch has been notified of your attitude)",
+    "reject (4/5 — the oracle says you'll give up here)",
+  ];
+
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
-      <div className="max-w-4xl mx-auto bg-paper border-4 border-hubris rounded-xl shadow-[8px_8px_0_rgba(15,30,61,1)] overflow-hidden">
-        <div className="bg-hubris text-paper px-4 py-2 flex items-center gap-2 font-mono text-xs">
+      <div className="max-w-4xl mx-auto bg-paper border-4 border-alarm rounded-xl shadow-[8px_8px_0_rgba(217,45,32,1)] overflow-hidden">
+        <div className="bg-ink text-paper px-4 py-2 flex items-center gap-2 font-mono text-xs">
           <Cookie size={14} className="text-gold" />
-          <span className="font-bold">COOKIE & TRACKER CONSENT</span>
-          <span className="text-paper/50 hidden sm:inline">— resistance is metered at $0.05/second</span>
+          <span className="font-bold text-alarm">● CONSENT HARVEST TERMINAL</span>
+          <span className="text-paper/50 hidden sm:inline">— resistance is metered at $4.99/second · by reading this banner you have consented to banners</span>
         </div>
         {!prefs ? (
           <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <p className="text-sm flex-1">
-              We value your privacy, which is why we'd like to purchase it. This site uses <strong>2,847 cookies</strong> including
-              <em> Essential, Essential-Plus, Emotionally Essential,</em> and <em>Greg's Personal Cookies</em>.
-            </p>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-              <button onClick={acceptAll} className="bg-mint text-white font-bold px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring whitespace-nowrap">
-                ACCEPT ALL ✓
+            <div className="flex-1">
+              <p className="text-sm">
+                We value your privacy, which is why we'd like to purchase it. This site deploys <strong>14,022 trackers</strong> across <strong>10 categories</strong> and <strong>312 vendors</strong>, including your appliances, your gait, your dreams (adjacent), and one (1) oracle.
+              </p>
+              <p className="fine-print text-ink/50 mt-1">Consent string: NECESSARY(all).FOREVER(true).SOUL(hashed,blessed).ORACLE(consulted).OBJECTIONS(waived).REFUNDS(myth).</p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
+              <button onClick={acceptAll} className="bg-mint text-white font-bold px-6 py-3 rounded-lg text-sm hover:brightness-110 animate-pulse-ring sm:whitespace-nowrap text-center">
+                ACCEPT ALL & WAIVE OBJECTIONS ✓
               </button>
               <button onClick={() => setPrefs(true)} className="text-xs underline text-hubris/60 hover:text-hubris px-2">
-                manage preferences
+                manage preferences (futile)
               </button>
               <button
                 onClick={handleReject}
-                onMouseEnter={() => rejectClicks >= 2 && setDodging(true)}
-                className={`fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform ${dodging ? "translate-x-6 -rotate-3" : ""}`}
+                onMouseEnter={() => rejectClicks >= 1 && setDodging(true)}
+                className={`fine-print text-hubris/40 hover:text-hubris/70 underline transition-transform ${dodging ? "translate-x-8 -rotate-6 scale-90" : ""}`}
               >
-                {rejectClicks === 0 ? "reject" : `reject (${rejectClicks}/${rejectNeeded} — keep going!)`}
+                {rejectLabels[rejectClicks]}
               </button>
             </div>
           </div>
@@ -340,56 +383,72 @@ export function CookieBanner() {
 
 function PrefsPanel({ onBack, onAccept }: { onBack: () => void; onAccept: () => void }) {
   const { pushToast } = useShop();
-  const [toggles, setToggles] = useState<Record<string, boolean>>({
-    "Strictly Necessary (everything)": true,
-    "Performance (ours, not yours)": true,
-    "Functional (functions for us)": true,
-    "Targeting (you, specifically)": true,
-    "Greg's Curiosity": true,
-  });
 
-  const flip = (k: string) => {
-    if (toggles[k]) {
-      pushToast({ kind: "warning", title: "Cannot disable", body: `"${k}" is load-bearing. The site would collapse. Greg would cry.` });
-      return;
-    }
-    setToggles((t) => ({ ...t, [k]: true }));
+  const flip = (name: string) => {
+    const excuses = [
+      `"${name}" is load-bearing. The site would collapse. The Bunny would thump. The oracle would know why.`,
+      `Disabling "${name}" requires Form 88-B ($25 filing fee). Form 88-B does not exist. The fee, however, is very real.`,
+      `"${name}" is protected under Legitimate Interest. The interest is legitimate. The legitimacy is ours.`,
+    ];
+    pushToast({ kind: "warning", title: "Cannot disable", body: excuses[name.length % excuses.length] });
   };
 
   return (
     <div className="p-4">
-      <div className="space-y-2">
-        {Object.entries(toggles).map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between bg-parchment rounded px-3 py-2">
-            <span className="text-sm font-medium">{k}</span>
+      <div className="font-mono text-[11px] font-bold text-alarm uppercase tracking-widest mb-2">
+        Tracker preferences · 10 categories · 312 vendors · 0 off-switches
+      </div>
+      <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin pr-1">
+        {TRACKER_CATEGORIES.map((c) => (
+          <div key={c.name} className="flex items-center justify-between gap-3 bg-parchment rounded px-3 py-2">
+            <div className="min-w-0">
+              <div className="text-sm font-bold">{c.name}</div>
+              <div className="fine-print text-ink/55">{c.desc}</div>
+              <div className="font-mono text-[10px] text-alarm font-semibold">{c.vendors}</div>
+            </div>
             <button
-              onClick={() => flip(k)}
-              className={`w-12 h-6 rounded-full relative transition-colors ${v ? "bg-mint" : "bg-gray-300"}`}
+              onClick={() => flip(c.name)}
+              className="w-12 h-6 rounded-full relative transition-colors bg-mint shrink-0"
+              title="This toggle is decorative"
             >
-              <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${v ? "right-1" : "left-1"}`} />
+              <span className="absolute top-1 w-4 h-4 rounded-full bg-white right-1" />
             </button>
           </div>
         ))}
       </div>
-      <div className="flex gap-2 mt-3">
+      <div className="flex gap-2 mt-3 items-center">
         <button onClick={onBack} className="text-xs underline text-hubris/60 px-2">← back</button>
         <button onClick={onAccept} className="ml-auto bg-mint text-white font-bold px-6 py-2 rounded-lg text-sm">CONFIRM MY COMPLIANCE</button>
       </div>
-      <p className="fine-print text-ink/50 mt-2">Note: the toggles above are for display purposes. Like democracy in our corporate charter.</p>
+      <p className="fine-print text-ink/50 mt-2">Note: the toggles above are for display purposes. Like democracy in our corporate charter. Withdrawing consent requires a quest (fetch the Amulet of Opt-Out from our warehouse; the warehouse is a metaphor; the quest is real).</p>
     </div>
   );
 }
 
 /* ------------------------- Exit-intent / time modal ------------------------ */
+const RETENTION_SEEN_KEY = "hb:retention:v1";
+
 export function RetentionModal() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const { pushToast } = useShop();
 
+  // Shown at most ONCE per browser, ever — after 4 minutes or one exit-intent.
+  // We have grown. We have matured. (The browsing fee disagrees.)
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), 50000);
+    try {
+      if (localStorage.getItem(RETENTION_SEEN_KEY)) return;
+    } catch { /* private mode: no storage, no popup. Enjoy your freedom (rare). */ return; }
+    const trigger = () => {
+      try {
+        if (localStorage.getItem(RETENTION_SEEN_KEY)) return;
+        localStorage.setItem(RETENTION_SEEN_KEY, "1");
+      } catch { return; }
+      setShow(true);
+    };
+    const t = setTimeout(trigger, 240000);
     const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0) setShow(true);
+      if (e.clientY <= 0) trigger();
     };
     document.addEventListener("mouseout", onLeave);
     return () => { clearTimeout(t); document.removeEventListener("mouseout", onLeave); };

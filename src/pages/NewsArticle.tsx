@@ -74,11 +74,11 @@ export default function NewsArticle() {
             </div>
             <div className="flex flex-wrap gap-2 mt-3">
               {["X (the letter)", "Facebook (your aunt)", "Email (6/day after this)"].map((s) => (
-                <button key={s} onClick={() => share(s)} className="border-2 border-hubris rounded-lg px-4 py-2 text-sm font-bold hover:bg-parchment flex items-center gap-1.5">
+                <button key={s} onClick={() => share(s)} className="min-h-11 border-2 border-hubris rounded-lg px-3 sm:px-4 py-2 text-sm font-bold hover:bg-parchment flex items-center gap-1.5">
                   <Mail size={14} /> {s}
                 </button>
               ))}
-              <button onClick={() => share("the Hutch's fax machine")} className="border-2 border-hubris rounded-lg px-4 py-2 text-sm font-bold hover:bg-parchment flex items-center gap-1.5">
+              <button onClick={() => share("the Hutch's fax machine")} className="min-h-11 border-2 border-hubris rounded-lg px-3 sm:px-4 py-2 text-sm font-bold hover:bg-parchment flex items-center gap-1.5">
                 <Printer size={14} /> Fax the Hutch
               </button>
             </div>

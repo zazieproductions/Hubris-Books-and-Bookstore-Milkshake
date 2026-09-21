@@ -75,7 +75,7 @@ export default function About() {
             <p className="text-sm text-ink/60 mt-3">Our independence from larger publishers is our greatest strength, which is why we are now owned by 47 private equity firms — each smaller than a large publisher, if you squint, which our lawyers do.</p>
           </div>
           <div className="relative">
-            <img src="/images/tower.jpg" alt="Hubris Tower" className="rounded-xl border-[3px] border-hubris shadow-[8px_8px_0_rgba(15,30,61,1)] w-full object-cover aspect-[4/3]" />
+            <img src="/IMG_0946.JPG" alt="Hubris Munnytown reflected in the executive tower" loading="lazy" className="rounded-xl border-[3px] border-hubris shadow-[8px_8px_0_rgba(15,30,61,1)] w-full object-cover aspect-[4/3]" />
             <div className="absolute -bottom-3 left-4 bg-hubris text-gold-light font-mono text-[11px] px-3 py-1.5 rounded-full">Hubris Tower · 90 stories · 89 are gift shops</div>
           </div>
         </div>

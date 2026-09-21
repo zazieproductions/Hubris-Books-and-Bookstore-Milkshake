@@ -59,10 +59,10 @@ export default function Bestsellers() {
                     <div className="fine-print text-ink/45">+ fees (all of them)</div>
                   </div>
                   <div className="flex sm:flex-col gap-2 sm:mt-3">
-                    <button onClick={() => { addToCart(b); pushToast({ kind: "upsell", title: "Bestseller added!", body: "You have excellent taste, as measured by our revenue." }); }} className="bg-hubris text-white font-bold text-sm px-4 py-2 rounded-lg hover:bg-hubris-light whitespace-nowrap">
+                    <button onClick={() => { addToCart(b); pushToast({ kind: "upsell", title: "Bestseller added!", body: "You have excellent taste, as measured by our revenue." }); }} className="min-h-11 flex-1 sm:flex-none bg-hubris text-white font-bold text-sm px-3 sm:px-4 py-2 rounded-lg hover:bg-hubris-light sm:whitespace-nowrap">
                       ADD TO CART
                     </button>
-                    <button onClick={() => vote(b.id, b.title)} className={`font-mono text-[11px] font-bold px-4 py-2 rounded-lg border-2 whitespace-nowrap ${voted === b.id ? "border-mint text-mint" : "border-hubris/25 hover:border-gold"}`}>
+                    <button onClick={() => vote(b.id, b.title)} className={`min-h-11 flex-1 sm:flex-none font-mono text-[11px] font-bold px-3 sm:px-4 py-2 rounded-lg border-2 sm:whitespace-nowrap ${voted === b.id ? "border-mint text-mint" : "border-hubris/25 hover:border-gold"}`}>
                       {voted === b.id ? "✓ VOTED (LOGGED)" : "★ VOTE FOR #1"}
                     </button>
                   </div>

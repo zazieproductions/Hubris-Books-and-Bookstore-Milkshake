@@ -49,7 +49,7 @@ export default function Catalog() {
             <button
               key={k}
               onClick={() => setImprint(k)}
-              className={`font-mono text-xs font-bold px-3 py-1.5 rounded-full border-2 transition-colors ${
+              className={`min-h-10 font-mono text-xs font-bold px-3 py-1.5 rounded-full border-2 transition-colors ${
                 imprint === k ? "bg-gold text-hubris border-gold" : "text-paper/70 border-paper/30 hover:border-gold"
               }`}
             >
@@ -70,9 +70,9 @@ export default function Catalog() {
               className="bg-transparent w-full text-sm focus:outline-none"
             />
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <ArrowUpDown size={15} className="text-hubris/50" />
-            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="border border-hubris/30 rounded px-2 py-1.5 text-sm bg-white">
+          <div className="flex items-center gap-2 text-sm min-w-0">
+            <ArrowUpDown size={15} className="text-hubris/50 shrink-0" />
+            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="min-w-0 w-full lg:w-auto border border-hubris/30 rounded px-2 py-2 text-sm bg-white">
               <option value="featured">Sort: Featured (highest margin)</option>
               <option value="profit">Sort: Most profitable to us</option>
               <option value="price-desc">Sort: Price, high → low (aspirational)</option>
@@ -98,7 +98,7 @@ export default function Catalog() {
             <button onClick={() => { setQ(""); setMaxPrice(3000); }} className="mt-4 bg-hubris text-white font-bold px-5 py-2 rounded">RESET (FREE THIS TIME)</button>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 mt-6">
             {results.map((b) => <BookCard key={b.id} book={b} />)}
           </div>
         )}
@@ -106,9 +106,9 @@ export default function Catalog() {
         <div className="mt-10 bg-hubris text-paper rounded-lg p-6 text-center">
           <div className="font-serif font-black text-xl">Can't decide? Let the algorithm choose.</div>
           <p className="text-sm text-paper/60 mt-1">Our recommendation engine has a 100% success rate (it recommends the most expensive book; success!).</p>
-          <Link to={`/book/${BOOKS.reduce((a, b) => (a.price > b.price ? a : b)).id}`} className="inline-block mt-3 bg-gold text-hubris font-bold px-6 py-2.5 rounded">
-            SHOW ME THE MOST EXPENSIVE BOOK
-          </Link>
+            <Link to={`/book/${BOOKS.reduce((a, b) => (a.price > b.price ? a : b)).id}`} className="block sm:inline-block max-w-full mt-3 bg-gold text-hubris font-bold px-4 sm:px-6 py-2.5 rounded text-center">
+              SHOW ME THE MOST EXPENSIVE BOOK
+            </Link>
         </div>
       </SectionShell>
     </div>

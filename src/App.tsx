@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { ShopProvider } from "./store/ShopContext";
 import { PromoTicker, Header, Footer, ToastHost, CookieBanner, RetentionModal, ScrollFeeMeter } from "./components/chrome";
@@ -24,6 +24,11 @@ function ScrollToTop() {
   return null;
 }
 
+function BookDetailRoute() {
+  const { id } = useParams();
+  return <BookDetail key={id} />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -35,7 +40,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/catalog" element={<Catalog />} />
-            <Route path="/book/:id" element={<BookDetail />} />
+            <Route path="/book/:id" element={<BookDetailRoute />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/about" element={<About />} />

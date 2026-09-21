@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, BadgeCheck, Calculator, Check, FileText, HandCoins, Send, Star } from "lucide-react";
+import { BadgeCheck, Calculator, Check, HandCoins, Send, Star } from "lucide-react";
 import { SUBSCRIPTION_TIERS } from "../data/books";
 import { useShop } from "../store/ShopContext";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
@@ -31,9 +30,9 @@ export default function Loyalty() {
         sub="Earn FunBux™ on every purchase! FunBux™ are not currency, not transferable, not redeemable, and not fun — but they ARE bucks in spirit, and spirit is priceless (priceless = $0)."
       >
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <div className="bg-black/30 border border-gold/50 rounded-lg px-4 py-2.5 font-mono text-sm">
+          <div className="max-w-full bg-black/30 border border-gold/50 rounded-lg px-4 py-2.5 font-mono text-sm">
             Your balance: <strong className="text-gold-light text-lg">{loyaltyPoints.toLocaleString()} FunBux™</strong>
-            <span className="text-paper/50 text-xs ml-2">≈ $0.00 USD (exchange rate: ∞:0)</span>
+            <span className="block sm:inline text-paper/50 text-xs sm:ml-2">≈ $0.00 USD (exchange rate: ∞:0)</span>
           </div>
           <div className="bg-gold text-hubris font-bold text-sm px-4 py-2.5 rounded-lg">STATUS: {tier.name.toUpperCase()}</div>
         </div>
@@ -43,7 +42,7 @@ export default function Loyalty() {
         <Kicker>Four tiers of devotion · progress is automatic, like the charges</Kicker>
         <h2 className="font-serif font-black text-3xl sm:text-4xl mt-2">Your Path to the Inner Warren</h2>
         <div className="mt-4 bg-white border-2 border-hubris rounded-lg p-4">
-          <div className="flex justify-between font-mono text-xs mb-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-1 font-mono text-xs mb-2">
             <span className="font-bold">{tier.name} ({loyaltyPoints.toLocaleString()} pts)</span>
             <span className="text-ink/50">{next ? `Next: ${next.name} at ${next.min.toLocaleString()} pts` : "You are the Warren. There is no next."}</span>
           </div>

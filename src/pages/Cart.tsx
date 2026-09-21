@@ -43,7 +43,7 @@ export default function Cart() {
       const item = CART_MANDATORIES.find((m) => m.name === name)!;
       const rest = mandatories.filter((x) => x !== name);
       if (rest.length === 0) {
-        const fallback = CART_MANDATORIES[Math.floor(Math.random() * CART_MANDATORIES.length)];
+        const fallback = CART_MANDATORIES[0];
         setMandatories([fallback.name]);
         pushToast({ kind: "warning", title: "Nice try. One restored.", body: `You unchecked everything, so the void provided: ${fallback.name} (+$${fallback.price.toFixed(2)}). Nature abhors a vacuum; we abhor $0.00.` });
       } else {
@@ -116,14 +116,14 @@ export default function Cart() {
         sub="Review your order. Take your time — the Browsing Fee rewards deliberation ($1.99/min) and scrolling ($127–$389/scroll)."
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[1fr_380px] gap-8">
+      <div className="max-w-7xl mx-auto min-w-0 px-4 py-8 grid lg:grid-cols-[minmax(0,1fr)_380px] gap-6 lg:gap-8">
         {/* Lines */}
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           {cart.map((line) => (
             <div key={line.book.id} className="bg-white border-2 border-hubris rounded-xl p-4 flex flex-col sm:flex-row gap-4">
               <Link to={`/book/${line.book.id}`} className="shrink-0 mx-auto sm:mx-0"><Cover book={line.book} size="sm" /></Link>
-              <div className="flex-1">
-                <Link to={`/book/${line.book.id}`} className="font-serif font-bold text-lg hover:text-alarm">{line.book.title}</Link>
+              <div className="flex-1 min-w-0">
+                <Link to={`/book/${line.book.id}`} className="font-serif font-bold text-lg leading-tight hover:text-alarm break-words">{line.book.title}</Link>
                 <div className="text-xs text-ink/60">{line.book.author} · {line.book.isbn}</div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <label className="flex items-center gap-1.5 text-xs bg-parchment rounded px-2 py-1 cursor-pointer">
@@ -210,9 +210,9 @@ export default function Cart() {
           </div>
         </div>
 
-        {/* Summary */}
-        <div>
-          <div className="lg:sticky lg:top-40 bg-hubris text-paper rounded-xl border-4 border-gold p-5 shadow-[6px_6px_0_rgba(201,162,39,1)]">
+        {/* Summary comes first on a phone so the total and checkout action are always easy to find. */}
+        <div className="order-first lg:order-none min-w-0">
+          <div className="lg:sticky lg:top-40 bg-hubris text-paper rounded-xl border-4 border-gold p-4 sm:p-5 shadow-[5px_5px_0_rgba(201,162,39,1)] lg:shadow-[6px_6px_0_rgba(201,162,39,1)]">
             <h3 className="font-serif font-black text-xl">Order Summary</h3>
             <div className="mt-3 space-y-1.5 text-sm">
               <Row k="Subtotal" v={`$${subtotal.toFixed(2)}`} />
@@ -258,8 +258,8 @@ export default function Cart() {
               <button onClick={applyPromo} className="bg-gold text-hubris font-bold px-4 rounded-r text-sm shrink-0">APPLY</button>
             </div>
 
-            <Link to="/checkout" onClick={() => bumpHubris(5)} className="mt-3 w-full bg-alarm hover:brightness-110 text-white font-black py-3.5 rounded-lg flex items-center justify-center gap-2 transition-all">
-              <Lock size={16} /> PROCEED TO 14-STEP CHECKOUT
+            <Link to="/checkout" onClick={() => bumpHubris(5)} className="mt-3 min-h-12 w-full bg-alarm hover:brightness-110 text-white font-black text-sm sm:text-base text-center py-3.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-all">
+              <Lock size={16} className="shrink-0" /> PROCEED TO 14-STEP CHECKOUT
             </Link>
             <p className="fine-print text-paper/50 mt-2 text-center flex items-center justify-center gap-1">
               <CreditCard size={10} /> We accept all cards, especially yours · <TriangleAlert size={10} /> No refunds · Ever
@@ -273,9 +273,9 @@ export default function Cart() {
 
 function Row({ k, v, warn = false, good = false }: { k: string; v: string; warn?: boolean; good?: boolean }) {
   return (
-    <div className="flex justify-between gap-2">
-      <span className={`text-paper/70 ${warn ? "text-alarm font-bold" : ""}`}>{k}</span>
-      <span className={`font-mono font-bold ${good ? "text-mint" : warn ? "text-alarm" : "text-paper"}`}>{v}</span>
+    <div className="flex justify-between gap-3 min-w-0">
+      <span className={`min-w-0 text-paper/70 break-words ${warn ? "text-alarm font-bold" : ""}`}>{k}</span>
+      <span className={`shrink-0 font-mono font-bold ${good ? "text-mint" : warn ? "text-alarm" : "text-paper"}`}>{v}</span>
     </div>
   );
 }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Hubris Books H with $ badge">
+  <!-- Background: paper with gold border like header logo -->
+  <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="7" fill="#FAF6ED" stroke="#C9A227" stroke-width="2.3"/>
+  <!-- H letter -->
+  <text x="15.2" y="18.2" text-anchor="middle" dominant-baseline="middle"
+        font-family="Fraunces, Georgia, 'Times New Roman', serif"
+        font-size="20" font-weight="900" fill="#0F1E3D"
+        style="font-variant-ligatures: none; letter-spacing: -0.5px;">H</text>
+  <!-- Red $ badge top-right -->
+  <circle cx="25.6" cy="6.4" r="5.9" fill="#D92D20" stroke="#FAF6ED" stroke-width="1.2"/>
+  <text x="25.6" y="7.2" text-anchor="middle" dominant-baseline="middle"
+        font-family="'IBM Plex Mono', ui-monospace, monospace"
+        font-size="7.2" font-weight="700" fill="#FFFFFF">$</text>
+</svg>

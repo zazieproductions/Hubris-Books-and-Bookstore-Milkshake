@@ -3,7 +3,6 @@ import { ArrowRight, BadgeDollarSign, BookOpen, Landmark, ScrollText, ShieldChec
 import { BOOKS, IMPRINTS } from "../data/books";
 import { BookCard } from "../components/books";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
-import { usePageMeta } from "../hooks/usePageMeta";
 
 const FINE_PRINT: Record<keyof typeof IMPRINTS, [string, string][]> = {
   milkshake: [
@@ -31,15 +30,6 @@ const FINE_PRINT: Record<keyof typeof IMPRINTS, [string, string][]> = {
 export default function Imprint() {
   const { id } = useParams();
   const imprint = (id && IMPRINTS[id as keyof typeof IMPRINTS]) || null;
-
-  usePageMeta(
-    imprint
-      ? `${imprint.name} — ${imprint.tagline} | Hubris Books & Bookstore Milkshake`
-      : "Imprint | Hubris Books & Bookstore Milkshake",
-    imprint
-      ? `${imprint.description} Browse the full ${imprint.name} catalog at Hubris Books & Bookstore Milkshake — books for librarians with a purchasable edge™. No refunds since 2006.`
-      : "Browse the imprints of Hubris Books & Bookstore Milkshake.",
-  );
 
   if (!imprint) return <Navigate to="/catalog" replace />;
 

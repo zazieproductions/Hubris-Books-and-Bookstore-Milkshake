@@ -1,5 +1,5 @@
-import { BOOKS } from "./books";
-import type { Book } from "./books";
+import { BOOKS } from "./books.ts";
+import type { Book } from "./books.ts";
 
 /**
  * Canonical URL slug for a name: lowercase, non-alphanumerics → "-", trimmed.

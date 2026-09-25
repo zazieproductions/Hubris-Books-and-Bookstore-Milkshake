@@ -1,83 +1,211 @@
+#!/usr/bin/env node
 /**
- * Generates public/sitemap.xml from the app's data sources so the sitemap
- * can never drift out of sync with the routes.
+ * Generates public/sitemap.xml and public/robots.txt from the real route table
+ * in src/data/seo.ts, so the sitemap can never drift from the app.
  *
- * Runs on every `npm run build`.
+ * Runs as part of `npm run build` (before vite, so the files are copied into
+ * dist/), but can also be run standalone: `npm run seo:sitemap`.
  *
- * The author slug transform below MUST stay identical to slugify() in
- * src/data/authors.ts — the sitemap URLs and the /author/:slug routes
- * are only valid as long as both agree.
+ * Node 22 loads the TypeScript data modules directly via type stripping.
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 
-const BASE = "https://hubrisbooks.win";
-const LASTMOD = new Date().toISOString().slice(0, 10); // ship date = last modified
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const slugify = (name) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+import { loadSeoModule } from "./lib/load-seo.mjs";
 
-const booksSrc = readFileSync("src/data/books.ts", "utf8");
-const newsSrc = readFileSync("src/data/news.ts", "utf8");
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-// id appears before author in every Book literal
-const books = [...booksSrc.matchAll(/id:\s*"([^"]+)"[\s\S]*?author:\s*"([^"]*)"/g)].map(
-  ([, id, author]) => ({ id, author }),
-);
-const bookIds = books.map((b) => b.id);
+const { NOINDEX_ROUTES, SITE_URL, buildSitemapEntries } = await loadSeoModule(ROOT);
+const PUBLIC_DIR = resolve(ROOT, "public");
+const DIST_DIR = resolve(ROOT, "dist");
 
-// unique authors in first-appearance order
-const authorSlugs = [...new Set(books.map((b) => slugify(b.author)))];
+const VALID_FREQ = new Set([
+  "always",
+  "hourly",
+  "daily",
+  "weekly",
+  "monthly",
+  "yearly",
+  "never",
+]);
 
-const newsSlugs = [...newsSrc.matchAll(/^\s*slug:\s*"([a-z0-9-]+)",/gm)].map((m) => m[1]);
+const errors = [];
+const warnings = [];
 
+/* --------------------------- helpers ---------------------------- */
+
+const escapeXml = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+const gitCache = new Map();
+
+/** Last commit date (ISO yyyy-mm-dd) that touched a file, else null. */
+function gitLastModified(file) {
+  if (!file) return null;
+  if (gitCache.has(file)) return gitCache.get(file);
+  let date = null;
+  try {
+    const out = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    if (out) date = out.slice(0, 10);
+  } catch {
+    date = null;
+  }
+  gitCache.set(file, date);
+  return date;
+}
+
+function repoLastModified() {
+  try {
+    const out = execFileSync("git", ["log", "-1", "--format=%cI"], {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    if (out) return out.slice(0, 10);
+  } catch {
+    /* not a git checkout */
+  }
+  return new Date().toISOString().slice(0, 10);
+}
+
+const SITE_HOST = new URL(SITE_URL).host;
+const SITE_PROTOCOL = new URL(SITE_URL).protocol;
+
+/* --------------------------- build urls -------------------------- */
+
+const entries = buildSitemapEntries();
+const seen = new Set();
 const urls = [];
-const add = (loc, changefreq, priority) =>
-  urls.push(
-    `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
-  );
 
-// 1) Top-level pages, highest value first
-add(`${BASE}/`, "daily", "1.0");
-add(`${BASE}/catalog`, "daily", "0.9");
-add(`${BASE}/bestsellers`, "daily", "0.8");
-add(`${BASE}/news`, "weekly", "0.8");
+for (const entry of entries) {
+  const loc = `${SITE_URL}${entry.path === "/" ? "/" : entry.path}`;
 
-// 2) Imprint landing pages (category level)
-for (const id of ["milkshake", "hubris", "synergy", "vault"])
-  add(`${BASE}/imprint/${id}`, "weekly", "0.8");
+  if (seen.has(loc)) errors.push(`Duplicate URL in sitemap: ${loc}`);
+  seen.add(loc);
 
-// 3) Book detail pages (commercial pages — keep them hot)
-for (const id of bookIds) add(`${BASE}/book/${id}`, "weekly", "0.8");
+  let parsed;
+  try {
+    parsed = new URL(loc);
+  } catch {
+    errors.push(`Invalid URL: ${loc}`);
+    continue;
+  }
+  if (parsed.protocol !== SITE_PROTOCOL || parsed.host !== SITE_HOST) {
+    errors.push(`URL is off-domain (expected ${SITE_HOST}): ${loc}`);
+  }
+  if (parsed.hash) errors.push(`URL contains a fragment: ${loc}`);
+  if (parsed.search) warnings.push(`URL contains a query string: ${loc}`);
+  if (/\/\/+/.test(parsed.pathname)) errors.push(`URL contains an empty segment: ${loc}`);
+  if (entry.path !== "/" && entry.path.endsWith("/")) {
+    errors.push(`URL has a trailing slash (canonical is without): ${loc}`);
+  }
 
-// 4) Author pages
-for (const slug of authorSlugs) add(`${BASE}/author/${slug}`, "monthly", "0.7");
+  if (!(entry.priority >= 0 && entry.priority <= 1)) {
+    errors.push(`Priority out of range for ${loc}: ${entry.priority}`);
+  }
+  if (!VALID_FREQ.has(entry.changeFrequency)) {
+    errors.push(`Invalid changefreq for ${loc}: ${entry.changeFrequency}`);
+  }
+  if (!entry.title) errors.push(`Missing title for ${loc}`);
+  if (!entry.description) errors.push(`Missing description for ${loc}`);
+  else if (entry.description.length > 160) {
+    warnings.push(`Description is ${entry.description.length} chars for ${loc}`);
+  }
 
-// 5) Newsroom articles
-for (const slug of newsSlugs) add(`${BASE}/news/${slug}`, "yearly", "0.6");
+  const lastmod =
+    entry.lastModified || gitLastModified(entry.sourceFile) || repoLastModified();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(lastmod)) {
+    errors.push(`Invalid lastmod for ${loc}: ${lastmod}`);
+  }
 
-// 6) Secondary informational pages
-add(`${BASE}/authors`, "monthly", "0.7");
-add(`${BASE}/about`, "monthly", "0.7");
-add(`${BASE}/faq`, "monthly", "0.5");
-add(`${BASE}/loyalty`, "monthly", "0.5");
-add(`${BASE}/terms`, "yearly", "0.3");
+  const images = (entry.images ?? []).filter((img) => {
+    if (!img?.url) return false;
+    if (!/^https?:\/\//.test(img.url)) {
+      errors.push(`Image URL is not absolute for ${loc}: ${img.url}`);
+      return false;
+    }
+    return true;
+  });
 
-const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Hubris Books & Bookstore Milkshake — sitemap.xml
-  Canonical domain: ${BASE}
-  Generated: ${LASTMOD}
-  Deliberately excluded: /cart, /checkout (transactional — Google advises
-  against including them), and /catalog?imprint=* query variants
-  (duplicates of /catalog; the canonical imprint pages live at /imprint/*).
--->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.join("\n")}
-</urlset>
-`;
+  urls.push({ loc, lastmod, images, entry });
+}
 
-mkdirSync("public", { recursive: true });
-writeFileSync("public/sitemap.xml", xml);
-console.log(
-  `sitemap: ${urls.length} urls (${bookIds.length} books, ${authorSlugs.length} authors, ${newsSlugs.length} news, 4 imprints, 9 static)`,
-);
+/* --------------------------- render xml -------------------------- */
+
+const xml = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  `<!-- Generated by scripts/generate-sitemap.mjs · ${urls.length} URLs · ${new Date().toISOString()} -->`,
+  '<!-- Canonical host: ' + SITE_URL + ' -->',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+  '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
+  ...urls.map(({ loc, lastmod, images, entry }) => {
+    const lines = [
+      "  <url>",
+      `    <loc>${escapeXml(loc)}</loc>`,
+      `    <lastmod>${lastmod}</lastmod>`,
+      `    <changefreq>${entry.changeFrequency}</changefreq>`,
+      `    <priority>${entry.priority.toFixed(1)}</priority>`,
+    ];
+    for (const img of images) {
+      lines.push("    <image:image>");
+      lines.push(`      <image:loc>${escapeXml(img.url)}</image:loc>`);
+      if (img.title) lines.push(`      <image:title>${escapeXml(img.title)}</image:title>`);
+      if (img.caption) lines.push(`      <image:caption>${escapeXml(img.caption)}</image:caption>`);
+      lines.push("    </image:image>");
+    }
+    lines.push("  </url>");
+    return lines.join("\n");
+  }),
+  "</urlset>",
+  "",
+].join("\n");
+
+const robots = [
+  "# https://" + SITE_HOST + "/robots.txt",
+  "# Generated by scripts/generate-sitemap.mjs — edit src/data/seo.ts instead.",
+  "",
+  "User-agent: *",
+  "Allow: /",
+  "",
+  "# Transactional pages: no standalone indexable content.",
+  ...NOINDEX_ROUTES.map((p) => `Disallow: ${p}`),
+  "",
+  "# Faceted catalog views (?imprint=) are client-side duplicates of /catalog",
+  "Disallow: /*?imprint=",
+  "",
+  `Sitemap: ${SITE_URL}/sitemap.xml`,
+  "",
+].join("\n");
+
+/* --------------------------- write ------------------------------ */
+
+if (errors.length) {
+  console.error("\n❌ sitemap validation failed:");
+  for (const e of errors) console.error(`   - ${e}`);
+  process.exit(1);
+}
+
+mkdirSync(PUBLIC_DIR, { recursive: true });
+writeFileSync(resolve(PUBLIC_DIR, "sitemap.xml"), xml, "utf8");
+writeFileSync(resolve(PUBLIC_DIR, "robots.txt"), robots, "utf8");
+if (existsSync(DIST_DIR)) {
+  writeFileSync(resolve(DIST_DIR, "sitemap.xml"), xml, "utf8");
+  writeFileSync(resolve(DIST_DIR, "robots.txt"), robots, "utf8");
+}
+
+const images = urls.reduce((n, u) => n + u.images.length, 0);
+console.log(`✅ sitemap.xml    ${urls.length} URLs (${images} image entries) → public/sitemap.xml`);
+console.log(`✅ robots.txt     ${NOINDEX_ROUTES.length} disallowed paths → public/robots.txt`);
+for (const w of warnings) console.warn(`⚠️  ${w}`);

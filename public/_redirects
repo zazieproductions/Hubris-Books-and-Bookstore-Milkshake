@@ -1,0 +1,13 @@
+# Cloudflare Pages routing.
+#
+# Every real route is prerendered as a flat file by scripts/prerender.mjs
+# (dist/catalog.html, dist/book/<id>.html, dist/news/<slug>.html, ...), which
+# Cloudflare Pages serves extensionless at HTTP 200 — so the URL that Google
+# crawls is byte-identical to the sitemap <loc> and the canonical tag. No SPA
+# fallback rewrite is needed.
+#
+# The only rule left is the 404: because dist/404.html exists, Pages' SPA mode
+# (which would otherwise soft-404 unknown URLs into the homepage) is disabled,
+# and unknown paths return a real 404 instead.
+
+/*   /404.html   404

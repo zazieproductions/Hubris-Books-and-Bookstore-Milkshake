@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "
 import { useEffect } from "react";
 import { ShopProvider } from "./store/ShopContext";
 import { PromoTicker, Header, Footer, ToastHost, CookieBanner, RetentionModal, ScrollFeeMeter } from "./components/chrome";
+import RouteSEO from "./components/RouteSEO";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import BookDetail from "./pages/BookDetail";
@@ -36,6 +37,7 @@ export default function App() {
     <BrowserRouter>
       <ShopProvider>
         <ScrollToTop />
+        <RouteSEO />
         <PromoTicker />
         <Header />
         <main className="min-h-screen">

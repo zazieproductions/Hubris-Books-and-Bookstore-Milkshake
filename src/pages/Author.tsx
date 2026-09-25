@@ -4,22 +4,10 @@ import { IMPRINTS } from "../data/books";
 import { authorBySlug, AUTHORS } from "../data/authors";
 import { BookCard } from "../components/books";
 import { Kicker, PageHero, SectionShell } from "../components/chrome";
-import { usePageMeta } from "../hooks/usePageMeta";
 
 export default function Author() {
   const { slug } = useParams();
   const author = authorBySlug(slug);
-
-  usePageMeta(
-    author
-      ? `${author.name} — Author of ${author.books.map((b) => b.title).join(", ")} | Hubris Books & Bookstore Milkshake`
-      : "Author | Hubris Books & Bookstore Milkshake",
-    author
-      ? `Books by ${author.name} at Hubris Books & Bookstore Milkshake: ${author.books
-          .map((b) => `${b.title} (${b.year})`)
-          .join(", ")}. Scholarly works on librarianship from a profitable perspective. No refunds since 2006.`
-      : "Meet the authors of Hubris Books & Bookstore Milkshake.",
-  );
 
   if (!author) return <Navigate to="/authors" replace />;
 

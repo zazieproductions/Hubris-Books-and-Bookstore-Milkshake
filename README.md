@@ -1,4 +1,13 @@
-# React + TypeScript + Vite
+# Hubris Books & Bookstore Milkshake
+
+Satirical bookstore/publisher site — React + TypeScript + Vite, deployed to Cloudflare Pages.
+
+**SEO & Google Search Console:** see [docs/SEO.md](docs/SEO.md). The sitemap URL is
+`https://hubrisbooks.win/sitemap.xml`; it is generated from `src/data/seo.ts` by
+`npm run build`.
+
+---
+
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

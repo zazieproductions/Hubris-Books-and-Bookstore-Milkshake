@@ -5,6 +5,7 @@ import {
   ShieldCheck, ShoppingCart, Truck, Zap, Lock,
 } from "lucide-react";
 import { BOOKS, UPSELL_ROULETTE } from "../data/books";
+import { slugify } from "../data/authors";
 import { useShop } from "../store/ShopContext";
 import { Cover, Price, Stars } from "../components/books";
 
@@ -104,7 +105,7 @@ export default function BookDetail() {
           </div>
           <h1 className="font-serif font-black text-3xl sm:text-5xl leading-tight mt-1">{book.title}</h1>
           <p className="italic text-lg text-ink/60 mt-1">{book.subtitle}</p>
-          <p className="mt-2">by <span className="font-bold underline decoration-gold decoration-2">{book.author}</span> <span className="font-mono text-xs text-ink/50">(verified human, allegedly)</span></p>
+          <p className="mt-2">by <Link to={`/author/${slugify(book.author)}`} className="font-bold underline decoration-gold decoration-2 hover:text-alarm transition-colors">{book.author}</Link> <span className="font-mono text-xs text-ink/50">(verified human, allegedly)</span></p>
 
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             <Stars n={5} />

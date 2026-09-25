@@ -178,7 +178,7 @@ export function Footer() {
       <div className="bg-alarm text-white py-2 px-4 text-center font-mono text-xs">
         <span className="animate-blink-hard font-bold">● REC</span> — This footer is being recorded for quality assurance and upsell optimization.
       </div>
-      <div className="max-w-7xl mx-auto px-4 py-12 grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid gap-10 md:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <div className="font-serif font-black text-2xl leading-tight break-words">HUBRIS BOOKS <span className="text-gold">&</span> <span className="italic text-shake">Bookstore Milkshake</span></div>
           <p className="text-sm text-paper/60 mt-3 max-w-sm">
@@ -212,6 +212,10 @@ export function Footer() {
         <FooterCol title="Corporate" links={[
           ["Our Empire", "/about"], ["Leadership (one bunny, one Warren)", "/about#leadership"], ["Newsroom (denials & announcements)", "/news"],
           ["Acquisitions Desk", "/authors"], ["Careers (unpaid, prestigious)", "/faq"],
+        ]} />
+        <FooterCol title="Imprints" links={[
+          ["Bookstore Milkshake", "/imprint/milkshake"], ["Hubris Books", "/imprint/hubris"],
+          ["Synergy Chapbooks", "/imprint/synergy"], ["The Vault Select", "/imprint/vault"],
         ]} />
         <FooterCol title="Support*" links={[
           ["Help Center (lol)", "/faq"], ["Returns (page intentionally blank)", "/faq"], ["Track Your Invoice", "/cart"],

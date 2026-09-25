@@ -145,7 +145,7 @@ export default function Home() {
             {Object.entries(IMPRINTS).map(([key, imp]) => {
               const count = BOOKS.filter((b) => b.imprint === key).length;
               return (
-                <Link key={key} to={`/catalog?imprint=${key}`} className="bg-white border-2 border-hubris rounded-lg p-5 hover:shadow-[5px_5px_0_rgba(15,30,61,1)] hover:-translate-y-0.5 transition-all group">
+                <Link key={key} to={`/imprint/${key}`} className="bg-white border-2 border-hubris rounded-lg p-5 hover:shadow-[5px_5px_0_rgba(15,30,61,1)] hover:-translate-y-0.5 transition-all group">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-serif font-black text-xl" style={{ background: imp.color }}>H</div>
                   <div className="font-serif font-black text-xl mt-3 group-hover:text-alarm transition-colors">{imp.name}</div>
                   <div className="font-mono text-[11px] text-alarm font-semibold">{imp.tagline}</div>

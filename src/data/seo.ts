@@ -10,6 +10,7 @@
  * (Node 22 strips the TypeScript types on load).
  */
 
+import { AUTHORS, type AuthorEntry } from "./authors.ts";
 import { BOOKS, IMPRINTS, type Book } from "./books.ts";
 import { FAQS } from "./faq.ts";
 import { NEWS, type NewsArticle } from "./news.ts";
@@ -209,7 +210,7 @@ const NEWS_INDEX: SeoEntry = {
   sourceFile: "src/pages/News.tsx",
 };
 
-const AUTHORS: SeoEntry = {
+const AUTHORS_PAGE: SeoEntry = {
   path: "/authors",
   title: "Publish With Us — Author Packages & Submission Fees | Hubris Books",
   description: clampDescription(
@@ -289,7 +290,7 @@ export const STATIC_ROUTES: SeoEntry[] = [
   CATALOG,
   BESTSELLERS,
   NEWS_INDEX,
-  AUTHORS,
+  AUTHORS_PAGE,
   ABOUT,
   LOYALTY,
   FAQ,
@@ -379,8 +380,63 @@ export function articleSeo(article: NewsArticle): SeoEntry {
   };
 }
 
+export function imprintSeo(id: string): SeoEntry {
+  const imprint = IMPRINTS[id as keyof typeof IMPRINTS];
+  const titles = BOOKS.filter((b) => b.imprint === id);
+  return {
+    path: `/imprint/${id}`,
+    title: `${imprint.name} — ${imprint.tagline} | ${SITE_SHORT_NAME}`,
+    description: clampDescription(
+      `${imprint.description} Browse ${titles.length} ${imprint.name} titles at ${SITE_NAME}.`,
+    ),
+    priority: 0.8,
+    changeFrequency: "weekly",
+    type: "website",
+    keywords: [
+      imprint.name,
+      `${imprint.name} books`,
+      "library science imprint",
+      "librarianship",
+      ...titles.slice(0, 5).map((b) => b.title),
+    ],
+    breadcrumbs: [
+      { name: "Home", path: "/" },
+      { name: "Catalog", path: "/catalog" },
+      { name: imprint.name, path: `/imprint/${id}` },
+    ],
+    sourceFile: "src/data/books.ts",
+  };
+}
+
+export function authorSeo(author: AuthorEntry): SeoEntry {
+  const books = author.books;
+  return {
+    path: `/author/${author.slug}`,
+    title: `${author.name} — ${SITE_SHORT_NAME} Author${
+      books.length > 1 ? ` (${books.length} Titles)` : ""
+    }`,
+    description: clampDescription(
+      `Books by ${author.name} at ${SITE_NAME}: ${books
+        .map((b) => `${b.title} (${b.year})`)
+        .join(", ")}.`,
+    ),
+    priority: 0.7,
+    changeFrequency: "monthly",
+    type: "website",
+    keywords: [author.name, "author", "library science author", ...books.map((b) => b.title)],
+    breadcrumbs: [
+      { name: "Home", path: "/" },
+      { name: "Authors", path: "/authors" },
+      { name: author.name, path: `/author/${author.slug}` },
+    ],
+    sourceFile: "src/data/authors.ts",
+  };
+}
+
 export const BOOK_ROUTES: SeoEntry[] = BOOKS.map(bookSeo);
 export const ARTICLE_ROUTES: SeoEntry[] = NEWS.map(articleSeo);
+export const IMPRINT_ROUTES: SeoEntry[] = Object.keys(IMPRINTS).map(imprintSeo);
+export const AUTHOR_ROUTES: SeoEntry[] = AUTHORS.map(authorSeo);
 
 /** Mirrors the ranking used by src/pages/Bestsellers.tsx. */
 export const BESTSELLER_ROUTES: SeoEntry[] = [...BOOKS]
@@ -390,12 +446,21 @@ export const BESTSELLER_ROUTES: SeoEntry[] = [...BOOKS]
 
 /** Everything that belongs in sitemap.xml, in priority order. */
 export function buildSitemapEntries(): SeoEntry[] {
-  return [...STATIC_ROUTES, ...BOOK_ROUTES, ...ARTICLE_ROUTES].filter((e) => !e.noindex);
+  return [...STATIC_ROUTES, ...IMPRINT_ROUTES, ...BOOK_ROUTES, ...AUTHOR_ROUTES, ...ARTICLE_ROUTES].filter(
+    (e) => !e.noindex,
+  );
 }
 
 /** Every route the prerenderer should write to disk (includes noindex pages). */
 export function buildAllRouteEntries(): SeoEntry[] {
-  return [...STATIC_ROUTES, ...BOOK_ROUTES, ...ARTICLE_ROUTES, ...NOINDEX_ROUTE_ENTRIES];
+  return [
+    ...STATIC_ROUTES,
+    ...IMPRINT_ROUTES,
+    ...BOOK_ROUTES,
+    ...AUTHOR_ROUTES,
+    ...ARTICLE_ROUTES,
+    ...NOINDEX_ROUTE_ENTRIES,
+  ];
 }
 
 const ROUTE_INDEX: Map<string, SeoEntry> = new Map(
@@ -554,6 +619,23 @@ export function faqJsonLd(qa: { q: string; a: string }[]) {
   };
 }
 
+export function profileJsonLd(author: AuthorEntry) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${absoluteUrl(`/author/${author.slug}`)}#profile`,
+    url: absoluteUrl(`/author/${author.slug}`),
+    name: author.name,
+    mainEntity: {
+      "@type": "Person",
+      name: author.name,
+      url: absoluteUrl(`/author/${author.slug}`),
+      jobTitle: "Author",
+      affiliation: { "@id": `${SITE_URL}/#organization` },
+    },
+  };
+}
+
 /**
  * Structured data for a route. Used by both the runtime `<SEO>` component and
  * the build-time prerenderer so the served HTML and the hydrated DOM agree.
@@ -563,6 +645,8 @@ export function routeJsonLd(entry: SeoEntry): unknown[] {
 
   const book = BOOKS.find((b) => entry.path === `/book/${b.id}`);
   const article = NEWS.find((n) => entry.path === `/news/${n.slug}`);
+  const imprintId = Object.keys(IMPRINTS).find((id) => entry.path === `/imprint/${id}`);
+  const author = AUTHORS.find((a) => entry.path === `/author/${a.slug}`);
 
   if (entry.path === "/") {
     blocks.push(organizationJsonLd(), websiteJsonLd());
@@ -570,6 +654,22 @@ export function routeJsonLd(entry: SeoEntry): unknown[] {
     blocks.push(bookJsonLd(book));
   } else if (article) {
     blocks.push(articleJsonLd(article));
+  } else if (imprintId) {
+    const titles = BOOKS.filter((b) => b.imprint === imprintId);
+    blocks.push(
+      itemListJsonLd(
+        `${IMPRINTS[imprintId as keyof typeof IMPRINTS].name} — ${titles.length} titles`,
+        titles.map(bookSeo),
+      ),
+    );
+  } else if (author) {
+    blocks.push(
+      itemListJsonLd(
+        `Books by ${author.name}`,
+        author.books.map(bookSeo),
+      ),
+      profileJsonLd(author),
+    );
   } else if (entry.path === "/catalog") {
     blocks.push(itemListJsonLd(`Hubris Books catalog — ${BOOK_ROUTES.length} titles`, BOOK_ROUTES));
   } else if (entry.path === "/bestsellers") {

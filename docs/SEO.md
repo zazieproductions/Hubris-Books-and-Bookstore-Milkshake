@@ -23,20 +23,26 @@ Search Console → **Sitemaps** → *Add a new sitemap* → paste `sitemap.xml`
 
 | File | Source | Notes |
 | --- | --- | --- |
-| `public/sitemap.xml` | `src/data/seo.ts` | 51 URLs, `image:` extension on the homepage |
+| `public/sitemap.xml` | `src/data/seo.ts` | 80 URLs, `image:` extension on the homepage |
 | `public/robots.txt` | `src/data/seo.ts` | Blocks `/cart` + `/checkout`, declares the sitemap |
 | `public/_redirects` | static | Cloudflare Pages routing (real 404, not a soft-404) |
 | `dist/<route>.html` | `scripts/prerender.mjs` | Per-route title, description, canonical, OG, Twitter, JSON-LD |
 | `dist/404.html` | `scripts/prerender.mjs` | `noindex` + real 404 status |
 
-### Sitemap contents (51 URLs)
+### Sitemap contents (80 URLs)
 
 | Section | Count | Priority | changefreq |
 | --- | --- | --- | --- |
 | Home | 1 | 1.0 | daily |
 | Hub pages (`/catalog`, `/bestsellers`, `/news`, `/authors`, `/about`, `/loyalty`, `/faq`, `/terms`) | 8 | 0.3 – 0.9 | daily → yearly |
+| Imprint landing pages (`/imprint/:id`) | 4 | 0.8 | weekly |
 | Books (`/book/:id`) | 25 | 0.7 – 0.8 | weekly |
+| Author pages (`/author/:slug`) | 25 | 0.7 | monthly |
 | News articles (`/news/:slug`) | 17 | 0.6 – 0.7 | daily → yearly |
+
+Routes are read straight from the app's data modules — `src/data/books.ts`,
+`src/data/authors.ts`, `src/data/news.ts` and the `IMPRINTS` map — so a new book,
+author or article lands in the sitemap on the next build with no manual edit.
 
 * `<lastmod>` is real: it comes from the git commit date of the file that owns the
   content (`src/data/books.ts`, `src/pages/Home.tsx`, …), or the article's
@@ -84,8 +90,8 @@ missing titles/descriptions and malformed `lastmod` values.
   on book pages.
 * **JSON-LD** — `Organization` + `WebSite` (home), `Book`+`Product` with
   `Offer`/ISBN (books), `NewsArticle` (articles), `ItemList` (catalog,
-  bestsellers, news index), `FAQPage` (FAQ), `BreadcrumbList` (every page with a
-  trail).
+  bestsellers, news index, each imprint and each author), `ProfilePage`
+  (authors), `FAQPage` (FAQ), `BreadcrumbList` (every page with a trail).
 * **No-JS fallback** — each prerendered page carries a small `<noscript>` block
   with the page's H1 and description, so non-rendering crawlers see real text.
 
@@ -100,19 +106,20 @@ Runtime metadata is applied by `src/components/RouteSEO.tsx`, mounted once in
 3. `npm run build`. The page appears in the sitemap and is prerendered
    automatically.
 
-New books/news items need no work — the sitemap is generated from
-`src/data/books.ts` and `src/data/news.ts`.
+New books, authors and news items need no work — the sitemap is generated from
+`src/data/books.ts`, `src/data/authors.ts` and `src/data/news.ts`.
 
 ## First-30-days checklist
 
 1. **Verify the property** — Domain property (DNS TXT) covers all subdomains and
    protocols; URL-prefix only covers `https://hubrisbooks.win/`.
-2. **Submit the sitemap** — expect "Success" with 51 discovered URLs within a day.
+2. **Submit the sitemap** — expect "Success" with 80 discovered URLs within a day.
 3. **Request indexing** on `/`, `/catalog`, `/bestsellers`, `/news` and 2–3 book
    pages via the URL Inspection tool — this is the fastest way to get first crawl.
 4. **Check Page Indexing** after ~1 week. Everything should land in *Indexed*;
    "Crawled – currently not indexed" on thin pages (e.g. `/terms`) is normal.
 5. **Watch Core Web Vitals** — the JS bundle is ~716 kB (216 kB gzip); if LCP
    suffers, code-split `react-router` routes (also silences the Vite chunk warning).
-6. **Internal links** — `/catalog` and `/news` are the two hub pages; every book
-   and article links back to them, which is what spreads PageRank here.
+6. **Internal links** — `/catalog` and `/news` are the hub pages; every book links
+   to its author and imprint, and every author and imprint page links back to its
+   titles, which is what spreads PageRank through the 80 URLs.

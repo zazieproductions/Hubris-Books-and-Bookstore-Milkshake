@@ -1,7 +1,8 @@
 import { useLocation } from "react-router-dom";
-import { BOOKS } from "../data/books";
+import { AUTHORS } from "../data/authors";
+import { BOOKS, IMPRINTS } from "../data/books";
 import { NEWS } from "../data/news";
-import { articleSeo, bookSeo, routeEntry } from "../data/seo";
+import { articleSeo, authorSeo, bookSeo, imprintSeo, routeEntry } from "../data/seo";
 import SEO from "./SEO";
 
 /**
@@ -16,7 +17,18 @@ export default function RouteSEO() {
 
   const book = BOOKS.find((b) => path === `/book/${b.id}`);
   const article = NEWS.find((n) => path === `/news/${n.slug}`);
-  const entry = book ? bookSeo(book) : article ? articleSeo(article) : routeEntry(path);
+  const imprint = Object.keys(IMPRINTS).find((id) => path === `/imprint/${id}`);
+  const author = AUTHORS.find((a) => path === `/author/${a.slug}`);
+
+  const entry = book
+    ? bookSeo(book)
+    : article
+      ? articleSeo(article)
+      : imprint
+        ? imprintSeo(imprint)
+        : author
+          ? authorSeo(author)
+          : routeEntry(path);
 
   if (!entry) return null;
   return <SEO entry={entry} />;

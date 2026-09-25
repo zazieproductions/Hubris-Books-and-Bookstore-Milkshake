@@ -16,6 +16,8 @@ import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
 import News from "./pages/News";
 import NewsArticle from "./pages/NewsArticle";
+import Imprint from "./pages/Imprint";
+import Author from "./pages/Author";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,6 +50,8 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:slug" element={<NewsArticle />} />
+            <Route path="/imprint/:id" element={<Imprint />} />
+            <Route path="/author/:slug" element={<Author />} />
             <Route path="/loyalty" element={<Loyalty />} />
             <Route path="/authors" element={<Authors />} />
             <Route path="/bestsellers" element={<Bestsellers />} />

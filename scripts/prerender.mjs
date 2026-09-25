@@ -16,7 +16,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import {
+import { loadSeoModule } from "./lib/load-seo.mjs";
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+const {
   SITE_IMAGE_ALT,
   SITE_IMAGE_HEIGHT,
   SITE_IMAGE_URL,
@@ -27,9 +31,7 @@ import {
   buildAllRouteEntries,
   buildSitemapEntries,
   routeJsonLd,
-} from "../src/data/seo.ts";
-
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+} = await loadSeoModule(ROOT);
 const DIST = resolve(ROOT, "dist");
 const TEMPLATE = join(DIST, "index.html");
 

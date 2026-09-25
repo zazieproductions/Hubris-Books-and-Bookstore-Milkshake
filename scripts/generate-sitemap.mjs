@@ -14,13 +14,11 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import {
-  NOINDEX_ROUTES,
-  SITE_URL,
-  buildSitemapEntries,
-} from "../src/data/seo.ts";
+import { loadSeoModule } from "./lib/load-seo.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+const { NOINDEX_ROUTES, SITE_URL, buildSitemapEntries } = await loadSeoModule(ROOT);
 const PUBLIC_DIR = resolve(ROOT, "public");
 const DIST_DIR = resolve(ROOT, "dist");
 
